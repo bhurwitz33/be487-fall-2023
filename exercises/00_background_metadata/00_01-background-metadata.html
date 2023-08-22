@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>00_01-background-metadata.md</title>
+<meta http-equiv="Content-type" content="text/html;charset=UTF-8">
+
+<style>
+/* https://github.com/microsoft/vscode/blob/master/extensions/markdown-language-features/media/markdown.css */
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
+body {
+	font-family: var(--vscode-markdown-font-family, -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif);
+	font-size: var(--vscode-markdown-font-size, 14px);
+	padding: 0 26px;
+	line-height: var(--vscode-markdown-line-height, 22px);
+	word-wrap: break-word;
+}
+
+#code-csp-warning {
+	position: fixed;
+	top: 0;
+	right: 0;
+	color: white;
+	margin: 16px;
+	text-align: center;
+	font-size: 12px;
+	font-family: sans-serif;
+	background-color:#444444;
+	cursor: pointer;
+	padding: 6px;
+	box-shadow: 1px 1px 1px rgba(0,0,0,.25);
+}
+
+#code-csp-warning:hover {
+	text-decoration: none;
+	background-color:#007acc;
+	box-shadow: 2px 2px 2px rgba(0,0,0,.25);
+}
+
+body.scrollBeyondLastLine {
+	margin-bottom: calc(100vh - 22px);
+}
+
+body.showEditorSelection .code-line {
+	position: relative;
+}
+
+body.showEditorSelection .code-active-line:before,
+body.showEditorSelection .code-line:hover:before {
+	content: "";
+	display: block;
+	position: absolute;
+	top: 0;
+	left: -12px;
+	height: 100%;
+}
+
+body.showEditorSelection li.code-active-line:before,
+body.showEditorSelection li.code-line:hover:before {
+	left: -30px;
+}
+
+.vscode-light.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.15);
+}
+
+.vscode-light.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.40);
+}
+
+.vscode-light.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+.vscode-dark.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.4);
+}
+
+.vscode-dark.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.60);
+}
+
+.vscode-dark.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+.vscode-high-contrast.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 160, 0, 0.7);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 160, 0, 1);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+img {
+	max-width: 100%;
+	max-height: 100%;
+}
+
+a {
+	text-decoration: none;
+}
+
+a:hover {
+	text-decoration: underline;
+}
+
+a:focus,
+input:focus,
+select:focus,
+textarea:focus {
+	outline: 1px solid -webkit-focus-ring-color;
+	outline-offset: -1px;
+}
+
+hr {
+	border: 0;
+	height: 2px;
+	border-bottom: 2px solid;
+}
+
+h1 {
+	padding-bottom: 0.3em;
+	line-height: 1.2;
+	border-bottom-width: 1px;
+	border-bottom-style: solid;
+}
+
+h1, h2, h3 {
+	font-weight: normal;
+}
+
+table {
+	border-collapse: collapse;
+}
+
+table > thead > tr > th {
+	text-align: left;
+	border-bottom: 1px solid;
+}
+
+table > thead > tr > th,
+table > thead > tr > td,
+table > tbody > tr > th,
+table > tbody > tr > td {
+	padding: 5px 10px;
+}
+
+table > tbody > tr + tr > td {
+	border-top: 1px solid;
+}
+
+blockquote {
+	margin: 0 7px 0 5px;
+	padding: 0 16px 0 10px;
+	border-left-width: 5px;
+	border-left-style: solid;
+}
+
+code {
+	font-family: Menlo, Monaco, Consolas, "Droid Sans Mono", "Courier New", monospace, "Droid Sans Fallback";
+	font-size: 1em;
+	line-height: 1.357em;
+}
+
+body.wordWrap pre {
+	white-space: pre-wrap;
+}
+
+pre:not(.hljs),
+pre.hljs code > div {
+	padding: 16px;
+	border-radius: 3px;
+	overflow: auto;
+}
+
+pre code {
+	color: var(--vscode-editor-foreground);
+	tab-size: 4;
+}
+
+/** Theming */
+
+.vscode-light pre {
+	background-color: rgba(220, 220, 220, 0.4);
+}
+
+.vscode-dark pre {
+	background-color: rgba(10, 10, 10, 0.4);
+}
+
+.vscode-high-contrast pre {
+	background-color: rgb(0, 0, 0);
+}
+
+.vscode-high-contrast h1 {
+	border-color: rgb(0, 0, 0);
+}
+
+.vscode-light table > thead > tr > th {
+	border-color: rgba(0, 0, 0, 0.69);
+}
+
+.vscode-dark table > thead > tr > th {
+	border-color: rgba(255, 255, 255, 0.69);
+}
+
+.vscode-light h1,
+.vscode-light hr,
+.vscode-light table > tbody > tr + tr > td {
+	border-color: rgba(0, 0, 0, 0.18);
+}
+
+.vscode-dark h1,
+.vscode-dark hr,
+.vscode-dark table > tbody > tr + tr > td {
+	border-color: rgba(255, 255, 255, 0.18);
+}
+
+</style>
+
+<style>
+/* Tomorrow Theme */
+/* http://jmblog.github.com/color-themes-for-google-code-highlightjs */
+/* Original theme - https://github.com/chriskempson/tomorrow-theme */
+
+/* Tomorrow Comment */
+.hljs-comment,
+.hljs-quote {
+	color: #8e908c;
+}
+
+/* Tomorrow Red */
+.hljs-variable,
+.hljs-template-variable,
+.hljs-tag,
+.hljs-name,
+.hljs-selector-id,
+.hljs-selector-class,
+.hljs-regexp,
+.hljs-deletion {
+	color: #c82829;
+}
+
+/* Tomorrow Orange */
+.hljs-number,
+.hljs-built_in,
+.hljs-builtin-name,
+.hljs-literal,
+.hljs-type,
+.hljs-params,
+.hljs-meta,
+.hljs-link {
+	color: #f5871f;
+}
+
+/* Tomorrow Yellow */
+.hljs-attribute {
+	color: #eab700;
+}
+
+/* Tomorrow Green */
+.hljs-string,
+.hljs-symbol,
+.hljs-bullet,
+.hljs-addition {
+	color: #718c00;
+}
+
+/* Tomorrow Blue */
+.hljs-title,
+.hljs-section {
+	color: #4271ae;
+}
+
+/* Tomorrow Purple */
+.hljs-keyword,
+.hljs-selector-tag {
+	color: #8959a8;
+}
+
+.hljs {
+	display: block;
+	overflow-x: auto;
+	color: #4d4d4c;
+	padding: 0.5em;
+}
+
+.hljs-emphasis {
+	font-style: italic;
+}
+
+.hljs-strong {
+	font-weight: bold;
+}
+</style>
+
+<style>
+/*
+ * Markdown PDF CSS
+ */
+
+ body {
+	font-family: -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif, "Meiryo";
+	padding: 0 12px;
+}
+
+pre {
+	background-color: #f8f8f8;
+	border: 1px solid #cccccc;
+	border-radius: 3px;
+	overflow-x: auto;
+	white-space: pre-wrap;
+	overflow-wrap: break-word;
+}
+
+pre:not(.hljs) {
+	padding: 23px;
+	line-height: 19px;
+}
+
+blockquote {
+	background: rgba(127, 127, 127, 0.1);
+	border-color: rgba(0, 122, 204, 0.5);
+}
+
+.emoji {
+	height: 1.4em;
+}
+
+code {
+	font-size: 14px;
+	line-height: 19px;
+}
+
+/* for inline code */
+:not(pre):not(.hljs) > code {
+	color: #C9AE75; /* Change the old color so it seems less like an error */
+	font-size: inherit;
+}
+
+/* Page Break : use <div class="page"/> to insert page break
+-------------------------------------------------------- */
+.page {
+	page-break-after: always;
+}
+
+</style>
+
+<script src="https://unpkg.com/mermaid/dist/mermaid.min.js"></script>
+</head>
+<body>
+  <script>
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: document.body.classList.contains('vscode-dark') || document.body.classList.contains('vscode-high-contrast')
+          ? 'dark'
+          : 'default'
+    });
+  </script>
+<h1 id="starting-a-metagenomics-project">Starting a Metagenomics Project</h1>
+<h3 id="questions">Questions:</h3>
+<ul>
+<li>&quot;How do you plan a metagenomics experiment?&quot;</li>
+<li>&quot;How does a metagenomics project look like?&quot;</li>
+</ul>
+<h3 id="objectives">Objectives:</h3>
+<ul>
+<li>&quot;Learn the differences between shotgun and metabarcoding (amplicon metagenomics) techniques.&quot;</li>
+<li>&quot;Understand the importance of metadata.&quot;</li>
+<li>&quot;Familiarize yourself with the Cuatro Ciénegas experiment.&quot;</li>
+</ul>
+<h3 id="keypoints">Keypoints:</h3>
+<ul>
+<li>&quot;Shotgun metagenomics can be used for taxonomic and functional studies.&quot;</li>
+<li>&quot;Metabarcoding can be used for taxonomic studies.&quot;</li>
+<li>&quot;Collecting metadata beforehand is fundamental for downstream analysis.&quot;</li>
+<li>&quot;We will use data from a Cuatro Ciénegas project to learn about shotgun metagenomics.&quot;</li>
+</ul>
+<h2 id="metagenomics">Metagenomics</h2>
+<p>Metagenomes are collections of genomic
+sequences from various (micro)organisms that coexist in any
+given space. They are like snapshots that can give us information
+about the taxonomic and even metabolic or functional composition
+of the communities we decide to study. Thus, metagenomes
+are usually employed to investigate the ecology of defining
+characteristics of niches (* e.g.,*, the human gut or the ocean floor).</p>
+<p>Since metagenomes are mixtures of sequences that belong to different species, a metagenomic workflow is designed to answer two questions:</p>
+<ol>
+<li>What species are represented in the sample?</li>
+<li>What are they capable of doing?</li>
+</ol>
+<p>To find which species are present in a niche, we must do a taxonomic assignation of the obtained sequences.
+To find out their capabilities, we can
+look at the genes directly encoded in the metagenome or find the
+genes associated with the species that we found. In order to
+know which methodology we should use, it is essential to
+know what questions we want to answer.</p>
+<h2 id="shotgun-and-amplicon">Shotgun and amplicon</h2>
+<p>There are two paths to obtain information from a complex sample:</p>
+<ol>
+<li><strong>Shotgun Metagenomics</strong></li>
+<li><strong>Metabarcoding</strong></li>
+</ol>
+<p>Each is named after the sequencing methodology employed
+Moreover, have particular use cases with inherent advantages and disadvantages.</p>
+<p>With <strong>Shotgun Metagenomics</strong>, we sequence random parts (ideally all of them) of the
+genomes present in a sample. We can search the origin of these
+pieces (<em>i.e.,</em> their taxonomy) and also try to find to what
+part of the genome they correspond. Given enough pieces, it is possible
+to obtain complete individual genomes from a shotgun metagenome (MAGs),
+which could give us a bunch of information about the species
+in our study. MAGs assembly, however, requires a lot of genomic
+sequences from one organism. Since the sequencing is done at random,
+it needs a high depth of community sequencing
+to ensure that we obtain enough pieces of a given genome. Required depth gets
+exponentially challenging when our species of interest is not very abundant.
+It also requires that we have enough DNA to work with, which can be
+challenging to obtain in some instances. Finally, sequencing is expensive, and because of this, making technical
+and biological replicates can be prohibitively costly.</p>
+<p>On the contrary, <strong>Metabarcoding</strong> tends to be cheaper,
+which makes it easier to duplicate and even triplicate
+them without taking a big financial hit. The lower cost is because
+Metabarcoding is the collection of small genomic fragments
+present in the community and amplified through PCR. Ideally, if the
+amplified region is present only once in every genome,
+we would not need to sequence the amplicon metagenome so thoroughly
+because one sequence is all we need to get the information
+about that genome, and by extension, about that species. On the other
+hand, if a genome in the community lacks the region targeted by the
+PCR primers, then no amount of sequencing can give us information
+about that genome. Conservation across species is why the most popular amplicon used for this methodology are 16S amplicons for Bacteria since every known bacterium has this particular region. Other regions can be chosen,
+but they are used for specific cases. However, even 16S amplicons
+are limited to, well, the 16S region, so amplicon metagenomes cannot
+directly tell us a lot about the metabolic functions found in each genome, although educated guesses can be made by knowing which genes are commonly found in every identified species.</p>
+<a href="../fig/03-01-01.png">
+  <img src="../fig/03-01-01.png" alt="Flow chart that shows the steps of a metagenomics project: Experimental design, Sampling, DNA extraction, Sequencing, Read quality, Assembly, Binning, Bin quality and Data analysis " />
+</a>
+<h2 id="on-metadata">On Metadata</h2>
+<p>Once we have chosen an adequate methodology for our study,
+we must take extensive notes on the origin of our samples and how we treated them. These notes constitute the <strong>metadata</strong>, or data about our data, and they are crucial to understanding and interpreting the results we will obtain later in our metagenomic analysis. Most of the time, the differences that we observe when comparing metagenomes can be correlated to the metadata, which is why we must devote a whole section of our experimental design to the metadata we expect to collect and record carefully.</p>
+<blockquote>
+<h2 id="discussion-1-choosing-amplicon-or-shotgun-sequencing">Discussion #1: Choosing amplicon or shotgun sequencing?</h2>
+<p>Think/Pair/Share: Suppose you want to find the source of a nasty gut infection in people. Which type of sequencing methodology would you choose? Which type of metadata would be helpful to record?</p>
+</blockquote>
+<details>
+  <summary markdown="span">Solution</summary>
+<ul>
+For a first exploration, 16S is a better idea since you could detect known pathogens by knowing the taxons in the community. Nevertheless, if the disease is the consequence of a viral infection, the pathogen can only be discovered with shotgun metagenomics (that was the case of SARS-CoV 2). 
+</ul>
+<ul>
+Also, metabarcoding does not provide insights into the genetic basis of the pathogenic phenotypes.
+Metadata will depend on the type of experiment. For this case, some helpful metadata could be sampling methodology, 
+date, place (country, state, region, city, etc.), patient's sex and age, the anatomical origin of the sample, symptoms, medical history, diet, lifestyle, and environment.
+</ul> 
+</details>
+<h2 id="cuatro-ci%C3%A9negas">Cuatro Ciénegas</h2>
+<a href="../fig/03-01-02.jpeg">
+  <img src="../fig/03-01-02.jpeg" alt="Photography of a pond in Cuatro Ciénegas" />
+</a>
+<p>During this lesson, we will work with actual metagenomic information,
+so we should be familiarized with it. The metagenomes that we will
+use were collected in Cuatro Ciénegas, a region that has been
+extensively studied by <a href="https://es.wikipedia.org/wiki/Valeria_Souza_Saldivar">Valeria Souza</a>.
+Cuatro Ciénegas is an oasis in the Mexican desert whose
+environmental conditions are often linked to the ones present in
+<a href="https://elifesciences.org/articles/38278">ancient seas</a>, due to
+a higher-than-average content of sulfur and magnesium but a lower
+concentrations of phosphorus and other nutrients. Because of these particular
+conditions, the Cuatro Ciénegas basin is a fascinating place to conduct
+a metagenomic study to learn more about the bacterial diversity that is capable to
+survive and thrive in that environment.</p>
+<p>The particular metagenomic study that we are going to work with was collected in a
+<a href="https://elifesciences.org/articles/49816">study about the response of the Cuatro Cienegas' bacterial community to nutrient enrichment.</a>
+In this study, authors compared the differences between the microbial community in its natural,
+oligotrophic, phosphorus-deficient environment, a pond from the Cuatro Ciénegas Basin (CCB),
+and the same microbial community under a fertilization treatment. The comparison between bacterial
+communities showed that many genomic traits, such as mean bacterial genome size, GC content,
+total number of tRNA genes, total number of rRNA genes, and codon usage bias were significantly
+changed when the bacterial community underwent the treatment.</p>
+<blockquote>
+<h2 id="exercise-1-reviewing-metadata">Exercise 1: Reviewing metadata</h2>
+<p>Case Study: According to the results described for this CCB study.</p>
+<ol>
+<li>
+<p>What kind of sequencing method do you think they used, and why do you think so?<br>
+A) Metabarcoding<br>
+B) Shotgun metagenomics<br>
+C) Genomics of axenic cultures</p>
+</li>
+<li>
+<p>In the table <a href="https://github.com/carpentries-incubator/metagenomics/blob/gh-pages/files/Samples_treatment_information.tsv">samples treatment information</a>, what was the most critical piece of metadata that the authors took?</p>
+</li>
+</ol>
+</blockquote>
+<details>
+  <summary markdown="span">Solution</summary>
+  <ul>
+<li>A) Metabarcoding. False. With this technique, usually, only one region of the genome is amplified.</li>
+<li>B) Shotgun Metagenomics. True. Only shotgun metagenomics could have been used to investigate the total number of tRNA genes.</li>    
+<li>C) Genomics of axenic cultures. False. Information on the microbial community cannot be fully obtained with axenic cultures.</li>    
+ </ul>
+The most crucial thing to know about our data is which community was and was not supplemented with fertilizers. However, any differences in the technical parts of the study, such as the DNA extraction protocol,
+could have affected the results, so tracking those is also essential.
+</details>
+<blockquote>
+<h2 id="exercise-2-differentiate-between-ids-and-sample-names">Exercise 2: Differentiate between IDs and sample names</h2>
+<p>Depending on the database, several kinds of IDs can be used for the same sample.
+Please open the document where the <a href="https://github.com/carpentries-incubator/metagenomics/blob/gh-pages/files/Samples_treatment_information.tsv">metadata information is stored</a>. Here, inspect the IDs and find out which of them correspond to sample	<strong>JP4110514WATERRESIZE</strong></p>
+</blockquote>
+<details>
+  <summary markdown="span">Solution</summary>
+ERS1949771	is the SRA ID corresponding to JP4110514WATERRESIZE
+</details>
+<blockquote>
+<h2 id="exercise-3-discuss-the-importance-of-metadata">Exercise 3: Discuss the importance of metadata</h2>
+<p>Think/Pair/Share: Which other information could you recommend to add in the metadata?</p>
+</blockquote>
+<details>
+  <summary markdown="span">Solution</summary>
+Metadata will depend on the type of the experiment, but some examples are the properties of the water before and after fertilization, sampling, and processing methodology, date and time, place (country, state, region, city, etc.). 
+</details>
+ <br>
+Throughout the lesson, we will use the first four 
+characters of the `File names (alias)` to identify the data files 
+corresponding to a sample. We are going to use the first two samples for most of the lesson and the third one for one exercise at the end.
+<table>
+<thead>
+<tr>
+<th>SRA Accession</th>
+<th>File name (alias)</th>
+<th>Sample name in the lesson</th>
+<th>Treatment</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ERS1949784</td>
+<td>JC1ASEDIMENT120627</td>
+<td>JC1A</td>
+<td>Control mesocosm</td>
+</tr>
+<tr>
+<td>ERS1949801</td>
+<td>JP4DASH2120627WATERAMPRESIZED</td>
+<td>JP4D</td>
+<td>Fertilized pond</td>
+</tr>
+<tr>
+<td>ERS1949771</td>
+<td>JP4110514WATERRESIZE</td>
+<td>JP41</td>
+<td>Unenriched pond</td>
+</tr>
+</tbody>
+</table>
+<p>The results of this study, raw sequences, and metadata have
+been submitted to the NCBI Sequence Read Archive (SRA) and stored in the BioProject <a href="https://www.ncbi.nlm.nih.gov/sra/?term=PRJEB22811">PRJEB22811</a>.</p>
+
+</body>
+</html>

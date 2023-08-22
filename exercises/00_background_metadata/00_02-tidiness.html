@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>00_02-tidiness.md</title>
+<meta http-equiv="Content-type" content="text/html;charset=UTF-8">
+
+<style>
+/* https://github.com/microsoft/vscode/blob/master/extensions/markdown-language-features/media/markdown.css */
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
+body {
+	font-family: var(--vscode-markdown-font-family, -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif);
+	font-size: var(--vscode-markdown-font-size, 14px);
+	padding: 0 26px;
+	line-height: var(--vscode-markdown-line-height, 22px);
+	word-wrap: break-word;
+}
+
+#code-csp-warning {
+	position: fixed;
+	top: 0;
+	right: 0;
+	color: white;
+	margin: 16px;
+	text-align: center;
+	font-size: 12px;
+	font-family: sans-serif;
+	background-color:#444444;
+	cursor: pointer;
+	padding: 6px;
+	box-shadow: 1px 1px 1px rgba(0,0,0,.25);
+}
+
+#code-csp-warning:hover {
+	text-decoration: none;
+	background-color:#007acc;
+	box-shadow: 2px 2px 2px rgba(0,0,0,.25);
+}
+
+body.scrollBeyondLastLine {
+	margin-bottom: calc(100vh - 22px);
+}
+
+body.showEditorSelection .code-line {
+	position: relative;
+}
+
+body.showEditorSelection .code-active-line:before,
+body.showEditorSelection .code-line:hover:before {
+	content: "";
+	display: block;
+	position: absolute;
+	top: 0;
+	left: -12px;
+	height: 100%;
+}
+
+body.showEditorSelection li.code-active-line:before,
+body.showEditorSelection li.code-line:hover:before {
+	left: -30px;
+}
+
+.vscode-light.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.15);
+}
+
+.vscode-light.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.40);
+}
+
+.vscode-light.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+.vscode-dark.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.4);
+}
+
+.vscode-dark.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.60);
+}
+
+.vscode-dark.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+.vscode-high-contrast.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 160, 0, 0.7);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 160, 0, 1);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+img {
+	max-width: 100%;
+	max-height: 100%;
+}
+
+a {
+	text-decoration: none;
+}
+
+a:hover {
+	text-decoration: underline;
+}
+
+a:focus,
+input:focus,
+select:focus,
+textarea:focus {
+	outline: 1px solid -webkit-focus-ring-color;
+	outline-offset: -1px;
+}
+
+hr {
+	border: 0;
+	height: 2px;
+	border-bottom: 2px solid;
+}
+
+h1 {
+	padding-bottom: 0.3em;
+	line-height: 1.2;
+	border-bottom-width: 1px;
+	border-bottom-style: solid;
+}
+
+h1, h2, h3 {
+	font-weight: normal;
+}
+
+table {
+	border-collapse: collapse;
+}
+
+table > thead > tr > th {
+	text-align: left;
+	border-bottom: 1px solid;
+}
+
+table > thead > tr > th,
+table > thead > tr > td,
+table > tbody > tr > th,
+table > tbody > tr > td {
+	padding: 5px 10px;
+}
+
+table > tbody > tr + tr > td {
+	border-top: 1px solid;
+}
+
+blockquote {
+	margin: 0 7px 0 5px;
+	padding: 0 16px 0 10px;
+	border-left-width: 5px;
+	border-left-style: solid;
+}
+
+code {
+	font-family: Menlo, Monaco, Consolas, "Droid Sans Mono", "Courier New", monospace, "Droid Sans Fallback";
+	font-size: 1em;
+	line-height: 1.357em;
+}
+
+body.wordWrap pre {
+	white-space: pre-wrap;
+}
+
+pre:not(.hljs),
+pre.hljs code > div {
+	padding: 16px;
+	border-radius: 3px;
+	overflow: auto;
+}
+
+pre code {
+	color: var(--vscode-editor-foreground);
+	tab-size: 4;
+}
+
+/** Theming */
+
+.vscode-light pre {
+	background-color: rgba(220, 220, 220, 0.4);
+}
+
+.vscode-dark pre {
+	background-color: rgba(10, 10, 10, 0.4);
+}
+
+.vscode-high-contrast pre {
+	background-color: rgb(0, 0, 0);
+}
+
+.vscode-high-contrast h1 {
+	border-color: rgb(0, 0, 0);
+}
+
+.vscode-light table > thead > tr > th {
+	border-color: rgba(0, 0, 0, 0.69);
+}
+
+.vscode-dark table > thead > tr > th {
+	border-color: rgba(255, 255, 255, 0.69);
+}
+
+.vscode-light h1,
+.vscode-light hr,
+.vscode-light table > tbody > tr + tr > td {
+	border-color: rgba(0, 0, 0, 0.18);
+}
+
+.vscode-dark h1,
+.vscode-dark hr,
+.vscode-dark table > tbody > tr + tr > td {
+	border-color: rgba(255, 255, 255, 0.18);
+}
+
+</style>
+
+<style>
+/* Tomorrow Theme */
+/* http://jmblog.github.com/color-themes-for-google-code-highlightjs */
+/* Original theme - https://github.com/chriskempson/tomorrow-theme */
+
+/* Tomorrow Comment */
+.hljs-comment,
+.hljs-quote {
+	color: #8e908c;
+}
+
+/* Tomorrow Red */
+.hljs-variable,
+.hljs-template-variable,
+.hljs-tag,
+.hljs-name,
+.hljs-selector-id,
+.hljs-selector-class,
+.hljs-regexp,
+.hljs-deletion {
+	color: #c82829;
+}
+
+/* Tomorrow Orange */
+.hljs-number,
+.hljs-built_in,
+.hljs-builtin-name,
+.hljs-literal,
+.hljs-type,
+.hljs-params,
+.hljs-meta,
+.hljs-link {
+	color: #f5871f;
+}
+
+/* Tomorrow Yellow */
+.hljs-attribute {
+	color: #eab700;
+}
+
+/* Tomorrow Green */
+.hljs-string,
+.hljs-symbol,
+.hljs-bullet,
+.hljs-addition {
+	color: #718c00;
+}
+
+/* Tomorrow Blue */
+.hljs-title,
+.hljs-section {
+	color: #4271ae;
+}
+
+/* Tomorrow Purple */
+.hljs-keyword,
+.hljs-selector-tag {
+	color: #8959a8;
+}
+
+.hljs {
+	display: block;
+	overflow-x: auto;
+	color: #4d4d4c;
+	padding: 0.5em;
+}
+
+.hljs-emphasis {
+	font-style: italic;
+}
+
+.hljs-strong {
+	font-weight: bold;
+}
+</style>
+
+<style>
+/*
+ * Markdown PDF CSS
+ */
+
+ body {
+	font-family: -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif, "Meiryo";
+	padding: 0 12px;
+}
+
+pre {
+	background-color: #f8f8f8;
+	border: 1px solid #cccccc;
+	border-radius: 3px;
+	overflow-x: auto;
+	white-space: pre-wrap;
+	overflow-wrap: break-word;
+}
+
+pre:not(.hljs) {
+	padding: 23px;
+	line-height: 19px;
+}
+
+blockquote {
+	background: rgba(127, 127, 127, 0.1);
+	border-color: rgba(0, 122, 204, 0.5);
+}
+
+.emoji {
+	height: 1.4em;
+}
+
+code {
+	font-size: 14px;
+	line-height: 19px;
+}
+
+/* for inline code */
+:not(pre):not(.hljs) > code {
+	color: #C9AE75; /* Change the old color so it seems less like an error */
+	font-size: inherit;
+}
+
+/* Page Break : use <div class="page"/> to insert page break
+-------------------------------------------------------- */
+.page {
+	page-break-after: always;
+}
+
+</style>
+
+<script src="https://unpkg.com/mermaid/dist/mermaid.min.js"></script>
+</head>
+<body>
+  <script>
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: document.body.classList.contains('vscode-dark') || document.body.classList.contains('vscode-high-contrast')
+          ? 'dark'
+          : 'default'
+    });
+  </script>
+<h1 id="data-tidiness">Data Tidiness</h1>
+<h3 id="questions">Questions:</h3>
+<ul>
+<li>&quot;What metadata should I collect?&quot;</li>
+<li>&quot;How should I structure my sequencing data and metadata?&quot;</li>
+<li>&quot;Which ethical considerations involve microbiome data and metadata?&quot;</li>
+</ul>
+<h3 id="objectives">Objectives:</h3>
+<ul>
+<li>&quot;Think about and understand the types of metadata a sequencing experiment will generate.&quot;</li>
+<li>&quot;Understand the importance of metadata and potential metadata standards.&quot;</li>
+<li>&quot;Explore common formatting challenges in spreadsheet data.&quot;</li>
+<li>&quot;Consider confidentiality issues that may arise from storing and sharing the metadata.&quot;</li>
+</ul>
+<h3 id="keypoints">Keypoints:</h3>
+<ul>
+<li>&quot;Assigning and keeping track of appropriate unique ID identifiers must be a well-thought process.&quot;</li>
+<li>&quot;Metadata is key for you and others to work with your data.&quot;</li>
+<li>&quot;Tabular data needs to be structured to work with it effectively.&quot;</li>
+<li>&quot;Human microbiome data requires informed consent and confidentiality.&quot;</li>
+</ul>
+<h1 id="data-tidiness">Data Tidiness</h1>
+<p>When we think about the data for a sequencing project, we often start by thinking about
+the sequencing data that we get back from the sequencing center, but just as important,
+if not more so, is the data you have generated about the sequences before they ever go to
+the sequencing center. Data about the data are often called the metadata.
+The sequence data itself is useless without the information about what you sequenced.</p>
+<blockquote>
+<h2 id="discussion-1">Discussion 1</h2>
+<p>Think/Pair/Share: With the person next to you, discuss:
+What kinds of data and information should you generate before you send your DNA/RNA off for sequencing?</p>
+</blockquote>
+<details>
+  <summary markdown="span">Solution</summary>
+Types of files and information you have generated:  
+<ul>
+<li>Spreadsheet or tabular data with the data from your experiment and 
+whatever you were measuring for your study.</li>
+<li>Lab notebook notes about how you conducted those experiments.</li>
+<li>Spreadsheet or tabular data about the samples you sent for sequencing.Sequencing centers often have a particular format they need 
+with the name of the sample, DNA concentration, and other information.</li>
+<li>Lab notebook notes about how you prepared the DNA/RNA for sequencing and what type of sequencing you are doing, e.g., paired-end Illumina HiSeq.</li>
+<br>
+There likely will be other ideas here too.
+Was this more information and data than you were expecting?
+</details>
+<br>
+<p>All the data and information discussed can be considered metadata,
+i.e., data about the data. We want to follow a few guidelines for metadata.</p>
+<h2 id="notes-about-your-experiment">Notes about your experiment</h2>
+<p>Notes about your experiment, including how you prepared your samples for sequencing,
+should be in your lab notebook, whether a physical lab notebook or an electronic one.
+For guidelines on good lab notebooks, see the Howard Hughes Medical Institute
+&quot;Making the Right Moves: A Practical Guide to Scientifıc Management for Postdocs and New Faculty&quot;
+the section on <a href="http://www.hhmi.org/sites/default/files/Educational%20Materials/Lab%20Management/Making%20the%20Right%20Moves/moves2_ch8.pdf">Data Management and Laboratory Notebooks</a>.</p>
+<p>Including dates on your lab notebook pages, the samples themselves, and in
+any records about those samples help you associate everything with each
+other later. Using dates also helps create unique identifiers because even
+if you process the same sample twice, you do not usually do it on the same
+day, or if you do, you are aware of it and give them names like A and B.</p>
+<blockquote>
+<h2 id="unique-identifiers">Unique identifiers</h2>
+<p>Unique identifiers are unique names for a sample or set of sequencing data.
+They are names for that data that only exist for that data. Having these
+unique names makes them much easier to track later.</p>
+</blockquote>
+<h2 id="metadata-data-about-the-experiment">Metadata: Data about the experiment</h2>
+<p>Data about the experiment is usually collected in <strong>spreadsheets</strong>, like Excel.
+Alongside the spreadsheet, creating a text file called <strong>README</strong> is convenient.
+This file holds information about the research project, how the samples were generated,
+and how to read the metadata spreadsheet.
+This information is very convenient when working on a team, and more
+people join the project even at different
+experiment steps. This order may help better your collaborators to easily understand
+what the data is about.</p>
+<h2 id="metadata-standards">Metadata standards</h2>
+<p>The kind of data you would collect depends on your experiment; often, there are guidelines from metadata standards.
+Many fields have particular ways that they structure their metadata, so it is consistent and can be used across the area. The Digital Curation Center maintains
+<a href="http://www.dcc.ac.uk/resources/metadata-standards/list">a list of metadata standards</a> and some that are particularly relevant for genomics data are available from the <a href="http://gensc.org/projects/">Genomics Standards Consortium</a>. In particular, assembly quality and an estimate of genome completeness and contamination are <a href="https://www.nature.com/articles/nbt.3893">standards for Metagenome-Assambled-Genomes</a> (MAGs).</p>
+<p>Cornell University gives us a useful <a href="https://data.research.cornell.edu/content/readme">guide</a> and template <a href="https://github.com/nselem/organization-metagenomics/blob/master/files/AUTHOR_DATASET_ReadmeTemplate.txt">file</a> to write README-style metadata.</p>
+<blockquote>
+<h2 id="discussion-2-what-information-would-you-write-in-your-readme-file">Discussion 2. What information would you write in your README file?</h2>
+<p>Propose a solution: Suppose that in your field, there are no metadata standards yet. Think about the
+minimum amount of information that someone would need to be able to work with your data without talking to you.
+What type of information would you put in your README file?</p>
+</blockquote>
+<details>
+  <summary markdown="span">Solution</summary>
+Some examples of clarifications that need to be written in the README are:
+<ul>
+<li>Date format (mm-dd-yyyy or dd-mm-yyyy, for example).</li>
+<li>Meaning of abbreviations.</li>
+<li>Meaning or pattern followed to construct the unique IDs of samples.</li>
+<li>Details about the methodology.</li>
+<li>Contact information about the persons who performed the collection and/or experiments.</li>
+<li>Meaning of each variable name.</li>
+</ul>
+</details>
+<blockquote>
+<h2 id="discussion-3-ethical-considerations-in-microbiome-studies">Discussion 3: Ethical considerations in microbiome studies</h2>
+<p>Case Study: The microbiomes knowledge is human's global heritage and must be ruled by ethical principles such as do good, do not harm, respect, and act justly.
+While studying the human microbiome, there are particular concerns. For example, if you discover an infection such as HIV in the blood microbiome, would you inform the participants? What If they did not want to know? Following these principles, what other ethical considerations can you think about human microbiomes?</p>
+</blockquote>
+<details>
+  <summary markdown="span">Solution</summary>
+  <ul>
+<li>Respect: Ask participants to sign explicit prior informed consent.</li>  
+<li>Do good: Share the data but protect participant's privacy</li>
+<li>Do no harm: establish a policy about results communications.</li>
+<li>Do no harm: Consider the Invasiveness of sampling and minimize the risk</li>
+<li>Act justly: Favor diversity of subjects and justice</li> 
+</ul>
+</details>
+<br>
+<h3 id="structuring-data-in-spreadsheets">Structuring data in spreadsheets</h3>
+<p>Independent of the type of data you are collecting, there are standard ways to enter that data
+into the spreadsheet to make it easier to analyze later. We often enter data that makes it easy
+for us as humans to read and work with it because we are human! Computers need data structured in
+a way that they can use it. So to use this data in a computational workflow, we need to think
+like computers when we use spreadsheets.</p>
+<p>The cardinal rules of using spreadsheet programs for data:</p>
+<ul>
+<li>Leave the raw data raw - do not change it!</li>
+<li>Put each observation in its own row. An observation is each of our samples,
+the subjects for which we store information in the spreadsheet.</li>
+<li>Put all your variables in columns. The variables are the different pieces of information
+that we have about our sample (its genotype, phenotype, treatment, etc.).</li>
+<li>Have column names explanatory but without spaces. Use '-', '_' or
+<a href="https://en.wikipedia.org/wiki/Camel_case">camel case</a> instead of a space.
+For instance, 'library-prep-method' or 'LibraryPrep'is better than 'library preparation method'
+or 'prep', because computers interpret spaces in particular ways.</li>
+<li>Do not combine multiple pieces of information in one cell. Sometimes it just seems
+like one thing, but think if that is the only way you will want to be able to use or sort that data.
+For example, instead of having a column with species and strain name (e.g., <em>E. coli</em>
+K12) you would have one column with the species name (<em>E. coli</em>) and another with
+the strain name (K12). Depending on the type of analysis you want to do, you may
+even separate the genus and species names into distinct columns.</li>
+<li>Export the cleaned data to a text-based format like CSV (comma-separated values).
+This format ensures that anyone can use the data required by most data repositories.</li>
+</ul>
+<blockquote>
+<h2 id="discussion-4-spreadsheet-organization">Discussion 4. Spreadsheet organization.</h2>
+<p>Think/Pair/Share: This is a potential spreadsheet data generated about a sequencing experiment. With the person next to you, for about 2 minutes, discuss some problems with the spreadsheet data shown below. You can look at the image or download the file to your computer via this <a href="https://github.com/datacarpentry/organization-genomics/raw/gh-pages/files/Ecoli_metadata_composite_messy.xlsx">link</a> and open it in a spreadsheet reader like Excel.
+<a href="https://github.com/datacarpentry/organization-genomics/raw/gh-pages/files/Ecoli_metadata_composite_messy.xlsx"><img src="../fig/01_tidiness_datasheet_example_messy.png" alt="Messy spreadsheet"></a></p>
+</blockquote>
+<details>
+  <summary markdown="span">Solution</summary>
+  <ul>
+There are a few potential errors to be on the lookout for in your own data and data from collaborators or the Internet. Suppose you are aware of the errors and the possible negative effect on downstream data analysis and result interpretation. In that case, it might motivate you and your project members to try and avoid them. Making small changes to how you format your data in spreadsheets can greatly impact efficiency and reliability when it comes to data cleaning and analysis.
+</ul>
+<li>Using multiple tables
+<li>Using multiple tabs
+<li>Not filling in zeros
+<li>Using problematic null values
+<li>Using formatting to convey information
+<li>Using formatting to make the datasheet look pretty
+<li>Placing comments or units in cells
+<li>Entering more than one piece of information in a cell
+<li>Using problematic field names
+<li>Using special characters in data
+<li>Inclusion of metadata in the data table
+<li>Date formatting
+</details>
+<br>
+<p>You can keep exploring issues on the metadata file in the <a href="http://www.datacarpentry.org/spreadsheet-ecology-lesson/02-common-mistakes/">Data Carpentry Ecology spreadsheet lesson</a>. Not all are present in this example. Discuss with the group what they found. Some problems include not all data sets having the same columns, datasets split into their own tables, color to encode information, different column names, and spaces in some columns names. Here is a &quot;clean&quot; version of the same spreadsheet:
+<a href="https://raw.githubusercontent.com/datacarpentry/wrangling-genomics/gh-pages/files/Ecoli_metadata_composite.tsv">Cleaned spreadsheet</a>
+Download the file using right-click (PC)/command-click (Mac).</p>
+<h2 id="further-notes-on-data-tidiness">Further notes on data tidiness</h2>
+<p>Data organization at this point of your experiment will help facilitate
+your analysis later, as well as prepare your data and notes for data deposition
+now often required by journals and funding agencies. If this is a collaborative
+the project, as most projects are now, it is also information that collaborators will
+need to interpret your data and results and is very useful for communication and
+efficiency.</p>
+<p>Fear not! If you have already started your project and it is not set up this way,
+there are still opportunities to make updates. One of the biggest challenges is
+tabular data that is not formatted so computers can use it or has inconsistencies
+that make it hard to analyze.</p>
+<p>When working in the command line, it is problematic to put spaces in the names of directories and files.</p>
+<p>More practice on how to structure data is outlined in our
+<a href="http://www.datacarpentry.org/spreadsheet-ecology-lesson/02-common-mistakes/">Data Carpentry Ecology spreadsheet lesson</a></p>
+<p>Tools like <a href="http://www.datacarpentry.org/OpenRefine-ecology-lesson/">OpenRefine</a> can help you clean your data.</p>
+
+</body>
+</html>
