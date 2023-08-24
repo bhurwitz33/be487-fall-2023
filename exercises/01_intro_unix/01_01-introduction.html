@@ -1,0 +1,667 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>01_01-introduction.md</title>
+<meta http-equiv="Content-type" content="text/html;charset=UTF-8">
+
+<style>
+/* https://github.com/microsoft/vscode/blob/master/extensions/markdown-language-features/media/markdown.css */
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
+body {
+	font-family: var(--vscode-markdown-font-family, -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif);
+	font-size: var(--vscode-markdown-font-size, 14px);
+	padding: 0 26px;
+	line-height: var(--vscode-markdown-line-height, 22px);
+	word-wrap: break-word;
+}
+
+#code-csp-warning {
+	position: fixed;
+	top: 0;
+	right: 0;
+	color: white;
+	margin: 16px;
+	text-align: center;
+	font-size: 12px;
+	font-family: sans-serif;
+	background-color:#444444;
+	cursor: pointer;
+	padding: 6px;
+	box-shadow: 1px 1px 1px rgba(0,0,0,.25);
+}
+
+#code-csp-warning:hover {
+	text-decoration: none;
+	background-color:#007acc;
+	box-shadow: 2px 2px 2px rgba(0,0,0,.25);
+}
+
+body.scrollBeyondLastLine {
+	margin-bottom: calc(100vh - 22px);
+}
+
+body.showEditorSelection .code-line {
+	position: relative;
+}
+
+body.showEditorSelection .code-active-line:before,
+body.showEditorSelection .code-line:hover:before {
+	content: "";
+	display: block;
+	position: absolute;
+	top: 0;
+	left: -12px;
+	height: 100%;
+}
+
+body.showEditorSelection li.code-active-line:before,
+body.showEditorSelection li.code-line:hover:before {
+	left: -30px;
+}
+
+.vscode-light.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.15);
+}
+
+.vscode-light.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.40);
+}
+
+.vscode-light.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+.vscode-dark.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.4);
+}
+
+.vscode-dark.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.60);
+}
+
+.vscode-dark.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+.vscode-high-contrast.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 160, 0, 0.7);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 160, 0, 1);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+img {
+	max-width: 100%;
+	max-height: 100%;
+}
+
+a {
+	text-decoration: none;
+}
+
+a:hover {
+	text-decoration: underline;
+}
+
+a:focus,
+input:focus,
+select:focus,
+textarea:focus {
+	outline: 1px solid -webkit-focus-ring-color;
+	outline-offset: -1px;
+}
+
+hr {
+	border: 0;
+	height: 2px;
+	border-bottom: 2px solid;
+}
+
+h1 {
+	padding-bottom: 0.3em;
+	line-height: 1.2;
+	border-bottom-width: 1px;
+	border-bottom-style: solid;
+}
+
+h1, h2, h3 {
+	font-weight: normal;
+}
+
+table {
+	border-collapse: collapse;
+}
+
+table > thead > tr > th {
+	text-align: left;
+	border-bottom: 1px solid;
+}
+
+table > thead > tr > th,
+table > thead > tr > td,
+table > tbody > tr > th,
+table > tbody > tr > td {
+	padding: 5px 10px;
+}
+
+table > tbody > tr + tr > td {
+	border-top: 1px solid;
+}
+
+blockquote {
+	margin: 0 7px 0 5px;
+	padding: 0 16px 0 10px;
+	border-left-width: 5px;
+	border-left-style: solid;
+}
+
+code {
+	font-family: Menlo, Monaco, Consolas, "Droid Sans Mono", "Courier New", monospace, "Droid Sans Fallback";
+	font-size: 1em;
+	line-height: 1.357em;
+}
+
+body.wordWrap pre {
+	white-space: pre-wrap;
+}
+
+pre:not(.hljs),
+pre.hljs code > div {
+	padding: 16px;
+	border-radius: 3px;
+	overflow: auto;
+}
+
+pre code {
+	color: var(--vscode-editor-foreground);
+	tab-size: 4;
+}
+
+/** Theming */
+
+.vscode-light pre {
+	background-color: rgba(220, 220, 220, 0.4);
+}
+
+.vscode-dark pre {
+	background-color: rgba(10, 10, 10, 0.4);
+}
+
+.vscode-high-contrast pre {
+	background-color: rgb(0, 0, 0);
+}
+
+.vscode-high-contrast h1 {
+	border-color: rgb(0, 0, 0);
+}
+
+.vscode-light table > thead > tr > th {
+	border-color: rgba(0, 0, 0, 0.69);
+}
+
+.vscode-dark table > thead > tr > th {
+	border-color: rgba(255, 255, 255, 0.69);
+}
+
+.vscode-light h1,
+.vscode-light hr,
+.vscode-light table > tbody > tr + tr > td {
+	border-color: rgba(0, 0, 0, 0.18);
+}
+
+.vscode-dark h1,
+.vscode-dark hr,
+.vscode-dark table > tbody > tr + tr > td {
+	border-color: rgba(255, 255, 255, 0.18);
+}
+
+</style>
+
+<style>
+/* Tomorrow Theme */
+/* http://jmblog.github.com/color-themes-for-google-code-highlightjs */
+/* Original theme - https://github.com/chriskempson/tomorrow-theme */
+
+/* Tomorrow Comment */
+.hljs-comment,
+.hljs-quote {
+	color: #8e908c;
+}
+
+/* Tomorrow Red */
+.hljs-variable,
+.hljs-template-variable,
+.hljs-tag,
+.hljs-name,
+.hljs-selector-id,
+.hljs-selector-class,
+.hljs-regexp,
+.hljs-deletion {
+	color: #c82829;
+}
+
+/* Tomorrow Orange */
+.hljs-number,
+.hljs-built_in,
+.hljs-builtin-name,
+.hljs-literal,
+.hljs-type,
+.hljs-params,
+.hljs-meta,
+.hljs-link {
+	color: #f5871f;
+}
+
+/* Tomorrow Yellow */
+.hljs-attribute {
+	color: #eab700;
+}
+
+/* Tomorrow Green */
+.hljs-string,
+.hljs-symbol,
+.hljs-bullet,
+.hljs-addition {
+	color: #718c00;
+}
+
+/* Tomorrow Blue */
+.hljs-title,
+.hljs-section {
+	color: #4271ae;
+}
+
+/* Tomorrow Purple */
+.hljs-keyword,
+.hljs-selector-tag {
+	color: #8959a8;
+}
+
+.hljs {
+	display: block;
+	overflow-x: auto;
+	color: #4d4d4c;
+	padding: 0.5em;
+}
+
+.hljs-emphasis {
+	font-style: italic;
+}
+
+.hljs-strong {
+	font-weight: bold;
+}
+</style>
+
+<style>
+/*
+ * Markdown PDF CSS
+ */
+
+ body {
+	font-family: -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif, "Meiryo";
+	padding: 0 12px;
+}
+
+pre {
+	background-color: #f8f8f8;
+	border: 1px solid #cccccc;
+	border-radius: 3px;
+	overflow-x: auto;
+	white-space: pre-wrap;
+	overflow-wrap: break-word;
+}
+
+pre:not(.hljs) {
+	padding: 23px;
+	line-height: 19px;
+}
+
+blockquote {
+	background: rgba(127, 127, 127, 0.1);
+	border-color: rgba(0, 122, 204, 0.5);
+}
+
+.emoji {
+	height: 1.4em;
+}
+
+code {
+	font-size: 14px;
+	line-height: 19px;
+}
+
+/* for inline code */
+:not(pre):not(.hljs) > code {
+	color: #C9AE75; /* Change the old color so it seems less like an error */
+	font-size: inherit;
+}
+
+/* Page Break : use <div class="page"/> to insert page break
+-------------------------------------------------------- */
+.page {
+	page-break-after: always;
+}
+
+</style>
+
+<script src="https://unpkg.com/mermaid/dist/mermaid.min.js"></script>
+</head>
+<body>
+  <script>
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: document.body.classList.contains('vscode-dark') || document.body.classList.contains('vscode-high-contrast')
+          ? 'dark'
+          : 'default'
+    });
+  </script>
+<h1 id="introducing-the-shell">Introducing the Shell</h1>
+<h3 id="questions">Questions:</h3>
+<ul>
+<li>&quot;What is a command shell and why would I use one?&quot;</li>
+<li>&quot;How can I move around in a computer?&quot;</li>
+<li>&quot;How can I see what files and directories I have?&quot;</li>
+<li>&quot;How can I specify the location of a file or directory on my computer?&quot;</li>
+</ul>
+<h3 id="objectives">Objectives:</h3>
+<ul>
+<li>&quot;Describe key reasons for learning shell.&quot;</li>
+<li>&quot;Learn how to access a remote machine.&quot;</li>
+<li>&quot;Navigate your file system using the command line.&quot;</li>
+<li>&quot;Access and read help files for <code>bash</code> programs and use help files to identify useful command options.&quot;</li>
+<li>&quot;Demonstrate the use of tab completion, and explain its advantages.&quot;</li>
+</ul>
+<h3 id="keypoints">Keypoints:</h3>
+<ul>
+<li>&quot;The shell gives you the ability to work more efficiently by using keyboard commands rather than a GUI.&quot;</li>
+<li>&quot;Useful commands for navigating your file system include: <code>ls</code>, <code>pwd</code>, and <code>cd</code>.&quot;</li>
+<li>&quot;Most commands take options (flags) which begin with a <code>-</code>.&quot;</li>
+<li>&quot;Tab completion can reduce errors from mistyping and make work more efficient in the shell.&quot;</li>
+</ul>
+<h2 id="what-is-a-shell-and-why-should-i-care">What is a shell and why should I care?</h2>
+<p>A <em>shell</em> is a computer program that presents a command line interface
+which allows you to control your computer using commands entered
+with a keyboard instead of controlling graphical user interfaces
+(GUIs) with a mouse/keyboard combination.</p>
+<p>There are many reasons to learn about the shell.</p>
+<ul>
+<li>Many bioinformatics tools can only be used through a command line interface, or
+have extra capabilities in the command line version that are not available in the GUI.
+This is true, for example, of BLAST, which offers many advanced functions only accessible
+to users who know how to use a shell.</li>
+<li>The shell makes your work less boring. In bioinformatics you often need to do
+the same set of tasks with a large number of files. Learning the shell will allow you to
+automate those repetitive tasks and leave you free to do more exciting things.</li>
+<li>The shell makes your work less error-prone. When humans do the same thing a hundred different times
+(or even ten times), they're likely to make a mistake. Your computer can do the same thing a thousand times
+with no mistakes.</li>
+<li>The shell makes your work more reproducible. When you carry out your work in the command-line
+(rather than a GUI), your computer keeps a record of every step that you've carried out, which you can use
+to re-do your work when you need to. It also gives you a way to communicate unambiguously what you've done,
+so that others can check your work or apply your process to new data.</li>
+<li>Many bioinformatic tasks require large amounts of computing power and can't realistically be run on your
+own machine. These tasks are best performed using remote computers or cloud computing, which can only be accessed
+through a shell.</li>
+</ul>
+<p>In this lesson you will learn how to use the command line interface to move around in your file system.</p>
+<h2 id="accessing-the-campus-hpc">Accessing the campus HPC</h2>
+<p>In this class, we will use the campus HPC and web-based portal to access the shell, so we can invest most of our time learning the basics of shell by manipulating some experimental data, instead of dealing with installations. The bioinformatics packages we will use for this class have already been installed on the HPC. Also, we will work with large datasets that can only be run on a server with a significant amount of CPU and memory  (not your laptop!)</p>
+<p>To get started, please make sure that you have completed these two steps:</p>
+<ol>
+<li>
+<p>Enroll in Netid+ to access <a href="https://webauth.arizona.edu/netid-plus/">HPC systems</a></p>
+</li>
+<li>
+<p>Create an [HPC Account] (https://account.arizona.edu), if you don't already have one.</p>
+</li>
+<li>
+<p>You should have received an email from Dr. Hurwitz saying that you have been added to the bh_class group that she sponsors. If not, email her: bhurwitz@arizona.edu.</p>
+</li>
+</ol>
+<h2 id="testing-your-hpc-account-by-accessing-the-shell">Testing your HPC account by accessing the shell</h2>
+<p>You can also access the campus HPC from the <a href="https://ood.hpc.arizona.edu/pun/sys/dashboard">UA HPC Online portal</a>. Be sure to bookmark this page for future use!</p>
+<ul>
+<li>To get to the shell, go to the top menu bar select &quot;Clusters&quot; and &quot;Shell access&quot; from the pull-down list.</li>
+<li>To get to a Jupyter notebook for the homework, go to the top menu bar and select &quot;Interactive apps&quot; and &quot;Jupyter notebook&quot; from the pull-down menu.</li>
+</ul>
+<h2 id="logging-in-to-the-shell-from-your-laptop">Logging in to the shell from your laptop</h2>
+<p>You can also login to a shell directly from your laptop instead of the online hpc portal. If you get serious about running bioinformatics analyses, you will likely want to do this. But, it is not necessary for the class. Here are instructions for accessing a terminal on different laptops:</p>
+<details>
+  <summary markdown="span">Windows</summary>
+<ul>
+Download the <a href="https://git-for-windows.github.io/">Git for Windows installer</a>. 
+Run the installer and follow the steps below:
+<li>Click on "Next" four times (two times if you've previously installed Git). You don't need to change anything in the information, location, components, and start menu screens.</li>
+<li>Select "Use the nano editor by default" and click on "Next".
+<li>Keep "Use Git from the Windows Command Prompt" selected and click on "Next". If you forget to do this, the programs that you need for the workshop will not work properly. If this happens, rerun the installer and select the appropriate option.
+<li>Select "Use bundled OpenSSH" and click on "Next".
+<li>Select "Use the OpenSSL Library" and click "Next".
+<li>Keep "Checkout Windows-style, commit Unix-style line endings" selected and click on "Next".
+<li>Select "Use Windows' default console window" and click on "Next".
+<li>Select "Default (fast-forward on merge)" and click on "Next".
+<li>Select "None" (Do not use a credential helper) and click on "Next".
+<li>Select "Enable file system caching" and click on "Next".
+<li>Ignore "Configuring experimental options" and click on "Install".
+<li>Click on "Install".
+<li>Click on "Finish".
+<li>If your "HOME" environment variable is not set (or you don't know what this is):
+<li>Open command prompt (Open Start Menu, then type `cmd` and press [Enter])
+<li>Type the following line into the command prompt window exactly as shown: `setx HOME "%USERPROFILE%"`
+<li>Press [Enter], and you should see `SUCCESS: Specified value was saved.`
+<li>Quit the command prompt by typing `exit` and then pressing [Enter]
+<li>See the [video tutorial](https://youtu.be/yo7Z-BEG62A) for an example of how to install Git on Windows 11.
+</ul>  
+<br>
+An alternative option is to install PuTTY by going to <a href="https://www.chiark.greenend.org.uk/~sgtatham/putty/latest.html"> the installation page</a>. For most newer computers, click on putty-64bit-X.XX-installer.msi to download the 64-bit version. If you have an older laptop, you may need to get the 32-bit version putty-X.XX-installer.msi. If you aren't sure whether you need the 64 or 32-bit version, you can check your laptop version by following [the instructions here](https://support.microsoft.com/en-us/help/15056/windows-32-64-bit-faq). Once the installer is downloaded, double-click on it, and PuTTY should install.
+<br>
+Another alternative option is to use the Windows Subsystem Linux (WSL). This option is available for Windows 10 and Windows 11 - detailed <a href="https://learn.microsoft.com/en-us/windows/wsl/install">instructions are available here</a>. See the <a href="https://youtu.be/YoNdTuN-YWk">video tutorial</a> for an example of how to install WSL with Ubuntu 22.04 on Windows 11.
+</ul>
+</details>
+<details>
+  <summary markdown="span">Mac</summary>
+The default shell in some versions of macOS is Bash, and Bash is available in all versions, so no need to install anything. You access Bash from the Terminal Application (found in /Applications/Utilities). See how to open the terminal in the [video tutorial](https://www.youtube.com/watch?v=FuNsWg_VzeQ). You can keep the terminal in your dock for this class.
+</details>
+<details>
+  <summary markdown="span">Linux</summary>
+The default shell is usually Bash, and there is usually no need to install anything. To see if your default shell is Bash type, echo $SHELL in a terminal and press Enter. If the message printed does not end with `/bash`, then your default is something else, and you can run Bash by typing `bash`.
+</details>
+<br>
+<p>If you are accessing the shell from your laptop, you need to log in using the <code>ssh</code> command (ssh stands for Secure Shell), your username and the address of the machine you are logging into.</p>
+<pre class="hljs"><code><div>$ ssh bhurwitz@hpc.arizona.edu
+</div></code></pre>
+<p>When you are prompted to type the password, and use duo mobile for 2-factor authentication. Take into account that while you are typing a password no characters will appear on the screen, trust that they are being typed and press enter.</p>
+<p>After logging in, you will see a screen showing something like this:</p>
+<pre class="hljs"><code><div>Last login: Fri Aug 18 13:36:52 2023 from c-71-226-40-183.hsd1.az.comcast.net
+This is a bastion host used to access the rest of the RT/HPC environment.
+
+Type &quot;shell&quot; to access the job submission hosts for all environments
+-----------------------------------------
+
+[bhurwitz@gatekeeper ~]$ 
+
+</div></code></pre>
+<p>This provides a lot of information about the remote server that you're logging in to. In this case, we are logging into the gatekeeper node. This is the node that is the &quot;gateway&quot; to the clusters at UA. In our case, we want to go the the ocelote cluster (our teaching cluster). To do this, we use the &quot;shell&quot; command and then type &quot;ocelote&quot; on the command line to go to the ocelote cluster.</p>
+<pre class="hljs"><code><div>[bhurwitz@gatekeeper ~]$ shell
+Last login: Fri Aug 18 11:24:47 2023 from ood.hpc.arizona.edu
+***
+The default cluster for job submission is Puma
+***
+Shortcut commands change the target cluster
+-----------------------------------------
+Puma:
+$ puma
+(puma) $
+Ocelote:
+$ ocelote
+(ocelote) $
+ElGato:
+$ elgato
+(elgato) $
+-----------------------------------------
+
+(puma) [junonia@/home/u20/bhurwitz]$ ocelote
+</div></code></pre>
+<p>Once you login, the system will send you to your home directory. In my case, this is &quot;/home/u20/bhurwitz&quot;.</p>
+<h2 id="navigating-your-file-system">Navigating your file system</h2>
+<p>The part of the operating system responsible for managing files and directories is called the <strong>file system</strong>.
+It organizes our data into files, which hold information,
+and directories (also called &quot;folders&quot;), which hold files or other directories.</p>
+<p>Several commands are frequently used to create, inspect, rename, and delete files and directories.</p>
+<p>The dollar sign is a <strong>prompt</strong>, which shows us that the shell is waiting for input;
+your shell may use a different character as a prompt and may add information before the prompt. When typing commands, either from these lessons or from other sources, do not type the prompt, only the commands that follow it. In this lesson we will use the dollar sign to indicate the prompt.</p>
+<pre class="hljs"><code><div>$
+</div></code></pre>
+<p>Let's find out where we are by running a command called <code>pwd</code>
+(which stands for &quot;print working directory&quot;).
+At any moment, our <strong>current working directory</strong>
+is our current default directory,
+i.e.,
+the directory that the computer assumes we want to run commands in
+unless we explicitly specify something else.
+Here, the computer's response is <code>/home/u20/bhurwitz</code>,
+which is my home directory.</p>
+<pre class="hljs"><code><div>$ pwd
+</div></code></pre>
+<pre class="hljs"><code><div>/home/u20/bhurwitz
+</div></code></pre>
+<p>Let's look at how our file system is organized. We can see what files and subdirectories are in this directory by running <code>ls</code>,
+which stands for &quot;listing&quot;:</p>
+<pre class="hljs"><code><div>$ ls
+</div></code></pre>
+<pre class="hljs"><code><div>ondemand  scripts  teaching
+</div></code></pre>
+<p><code>ls</code> prints the names of the files and directories in the current directory in alphabetical order, arranged neatly into columns.</p>
+<p>Your home directory has a limited amount of space. And because our metagenomics files are large, we are going to be working in the <code>/xdisk/bhurwitz/bh_class/&lt;your_netid&gt;</code> directory, where you will create new subdirectories throughout this class.</p>
+<p>The command to change locations in our file system is <code>cd</code> followed by a directory name to change our working directory.
+<code>cd</code> stands for &quot;change directory&quot;.</p>
+<p>Let's say we want to navigate to the <code>/xdisk/bhurwitz/bh_class/&lt;your_netid&gt;</code> directory we saw above (where you swap out &lt;your_netid&gt; with your own netid).  We can use the following command to get there:</p>
+<pre class="hljs"><code><div>$ cd /xdisk/bhurwitz/bh_class/&lt;your_netid&gt;
+</div></code></pre>
+<p>Let's look at what is in this directory:</p>
+<pre class="hljs"><code><div>$ ls
+</div></code></pre>
+<pre class="hljs"><code><div>assignments exercises
+</div></code></pre>
+<p>We can make the <code>ls</code> output more comprehensible by using the <strong>flag</strong> <code>-F</code>, which tells <code>ls</code> to add a trailing <code>/</code> to the names of directories, or other symbols to identify the type of elements in the directory:</p>
+<pre class="hljs"><code><div>$ ls -F
+</div></code></pre>
+<pre class="hljs"><code><div>assignments/  exercises/
+</div></code></pre>
+<p>Anything with a &quot;/&quot; after it is a directory. Things with a &quot;*&quot; after them are programs. If there are no decorations, it's a file.</p>
+<p>To understand a little better how to move between folders, let's look at the following image:</p>
+<a href="../fig/directory_structure.png">
+  <img src="../fig/directory_structure.png" width="870" height="631" alt="Folder organization diagram showing a parent directory called dc_workshop, with tree subdirectories called data, mags, and taxonomy. Insida data there is another one called untrimmed_fastq, and inside taxonomy there is another one called mags_taxonomy."/>
+</a>
+<p>Here we can see a diagram of how the folders are arranged one inside another. In this way, if we think about moving from your directory to the assignments folder, the path must go as they are ordered: <code>cd &lt;your_net_id&gt;/exercises</code></p>
+<p><code>ls</code> has lots of other options. To find out what they are, we can type:</p>
+<pre class="hljs"><code><div>$ man ls
+</div></code></pre>
+<p>Some manual files are very long. You can scroll through the file using
+your keyboard's down arrow or use the <kbd>Space</kbd> key to go forward one page and the <kbd>b</kbd> key to go backwards one page. When you are done reading, hit <kbd>q</kbd> to quit.</p>
+<blockquote>
+<h2 id="excercise-1-extra-information-with-ls--l">Excercise 1: Extra information with <code>ls -l</code></h2>
+<p>Use the <code>-l</code> option for the <code>ls</code> command to display more information for each item
+in the directory. What is one piece of additional information this long format
+gives you that you don't see with the bare <code>ls</code> command?</p>
+</blockquote>
+<details>
+  <summary markdown="span">Solution</summary>
+<pre class="hljs"><code><div>$ ls -l
+</div></code></pre>
+<pre class="hljs"><code><div>drwxrwsr-x. 2 bhurwitz bh_class 0 Aug 21 20:47 01_intro_unix
+drwxrwsr-x. 2 bhurwitz bh_class 0 Aug 21 20:47 02_bash_scripting
+drwxrwsr-x. 2 bhurwitz bh_class 0 Aug 21 20:47 03_intro_hpc
+drwxrwsr-x. 2 bhurwitz bh_class 0 Aug 21 20:47 04_project_setup
+drwxrwsr-x. 2 bhurwitz bh_class 0 Aug 21 20:47 05_getting_data
+drwxrwsr-x. 2 bhurwitz bh_class 0 Aug 21 20:47 06_qc_trimming
+drwxrwsr-x. 2 bhurwitz bh_class 0 Aug 21 20:47 07_contam_removal
+drwxrwsr-x. 2 bhurwitz bh_class 0 Aug 21 20:47 08_assembly
+drwxrwsr-x. 2 bhurwitz bh_class 0 Aug 21 20:47 09_assembly_qc
+drwxrwsr-x. 2 bhurwitz bh_class 0 Aug 21 20:47 10_metag_binning
+drwxrwsr-x. 2 bhurwitz bh_class 0 Aug 21 20:47 11_taxonomy
+drwxrwsr-x. 2 bhurwitz bh_class 0 Aug 21 20:47 12_phyloseq
+drwxrwsr-x. 2 bhurwitz bh_class 0 Aug 21 20:47 13_microviz
+drwxrwsr-x. 2 bhurwitz bh_class 0 Aug 21 20:47 14_alpha_diversity
+drwxrwsr-x. 2 bhurwitz bh_class 0 Aug 21 20:47 15_beta_diversity_1
+drwxrwsr-x. 2 bhurwitz bh_class 0 Aug 21 20:47 16_beta_diversity_2
+drwxrwsr-x. 2 bhurwitz bh_class 0 Aug 21 20:47 17_ordination
+drwxrwsr-x. 2 bhurwitz bh_class 0 Aug 21 20:47 18_abundance_trans
+drwxrwsr-x. 2 bhurwitz bh_class 0 Aug 21 20:47 19_pca_taxon_stats
+drwxrwsr-x. 2 bhurwitz bh_class 0 Aug 21 20:47 20_kmer_comparisons
+drwxrwsr-x. 2 bhurwitz bh_class 0 Aug 21 20:47 21_functional_annot
+</div></code></pre>
+<p>The additional information given includes the name of the owner of the file, when the file was last modified, and whether the current user has permission to read and write to the file.</p>
+</details>
+<br>
+<p>No one can possibly learn all of these arguments, that's why the manual page is for. You can (and should) refer to the manual page or other help files as needed.</p>
+<p>OK, let's get started with working with some real data. Make sure you have a shell open, and then let's go into the <code>/xdisk/bhurwitz/bh_class/**your_netid**/exercises/data/untrimmed_fastq</code> directory and see what is in there. Be sure to replace <strong>your_netid</strong> below.</p>
+<pre class="hljs"><code><div>$ cd /xdisk/bhurwitz/bh_class/**your_netid**/exercises/data/untrimmed_fastq
+$ ls
+</div></code></pre>
+<pre class="hljs"><code><div>JC1A_R1.fastq.gz  JC1A_R2.fastq.gz  JP4D_R1.fastq.gz  JP4D_R2.fastq.gz  TruSeq3-PE.fa
+</div></code></pre>
+<p>This directory contains a file <code>TruSeq3-PE.fa</code>, that we will use in a later lesson and four files with <code>.fastq.gz</code> extensions. FASTQ is a format for storing information about sequencing reads and their quality. GZ is an archive file compressed. We will be learning more about FASTQ files in a later lesson. These data come in a compressed format, which is why there is a <code>.gz</code> at the end of the files.
+This makes it faster to transfer, and allows it to take up less space on our computer.</p>
+<p>Let's copy these files into</p>
+<p>Let's use <code>gunzip</code> to decompress the files in your data directory so we can look at the FASTQ format. Notice that I can unzip all of the fastq files at once using the '*' character to indicate the pattern.</p>
+<pre class="hljs"><code><div>$ gzip *fastq.gz
+$ ls
+</div></code></pre>
+<pre class="hljs"><code><div>JC1A_R1.fastq  JC1A_R2.fastq  JP4D_R1.fastq  JP4D_R2.fastq  TruSeq3-PE.fa
+</div></code></pre>
+<h3 id="shortcut-tab-completion">Shortcut: Tab Completion</h3>
+<p>Usually the key Tab is located on the left side of the keyboard just above the &quot;Shift&quot; key or &quot;Caps lock&quot; key.</p>
+<p>Typing out file or directory names can waste a lot of time and it's easy to make typing mistakes. Instead we can use tab complete
+as a shortcut. When you start typing out the name of a directory or file, then hit the <kbd>Tab</kbd> key, the shell will try to fill in the rest of the directory or file name for you.</p>
+<p>Let's try. Go back one directory</p>
+<pre class="hljs"><code><div>$ cd ..
+</div></code></pre>
+<p>then enter:</p>
+<pre class="hljs"><code><div>$ cd da&lt;tab&gt;
+</div></code></pre>
+<p>The shell will fill in the rest of the directory name for
+<code>data</code>.</p>
+<p>Now change directories to <code>data</code></p>
+<pre class="hljs"><code><div>$ cd data
+</div></code></pre>
+<p>Using tab complete can be very helpful. However, it will only autocomplete a file or directory name if you've typed enough characters to provide a unique identifier for the file or directory you are trying to access.</p>
+<p>After going to our <code>data</code> directory, we can try to access one of our sample files:</p>
+<pre class="hljs"><code><div>$ cd data/untrimmed_fastq
+$ ls JC&lt;tab&gt;
+</div></code></pre>
+<p>The shell auto-completes your command to <code>JC1A_R</code>, because there is another file name in the directory begin with this prefix. When you hit
+<kbd>Tab</kbd> again, the shell will list the possible choices.</p>
+<pre class="hljs"><code><div>$ ls JC1A_R&lt;tab&gt;&lt;tab&gt;
+</div></code></pre>
+<pre class="hljs"><code><div>JC1A_R1.fastq  JC1A_R2.fastq
+</div></code></pre>
+<p>Tab completion can also fill in the names of programs, which can be useful if you remember the beginning of a program name.</p>
+<pre class="hljs"><code><div>$ pw&lt;tab&gt;&lt;tab&gt;
+</div></code></pre>
+<pre class="hljs"><code><div>pwd   pwdx
+</div></code></pre>
+<p>Displays the name of every program that starts with <code>pw</code>.</p>
+<h2 id="summary">Summary</h2>
+<p>We now know how to move around our file system using the command line.
+This gives us an advantage over interacting with the file system through a Graphical User Interface (GUI) as it allows us to work on a remote server, carry out the same set of operations on a large number of files quickly, and opens up many opportunities for using bioinformatics software that is only available in command line versions.</p>
+<p>In the next few exercises, we'll be expanding on these skills and seeing how using the command line shell enables us to make our workflow more efficient and reproducible.</p>
+<h2 id="key-points">Key Points</h2>
+<ul>
+<li>&quot;The shell gives you the ability to work more efficiently by using keyboard commands rather than a GUI.&quot;</li>
+<li>&quot;Useful commands for navigating your file system include: <code>ls</code>, <code>pwd</code>, and <code>cd</code>.&quot;</li>
+<li>&quot;Most commands take options (flags) which begin with a <code>-</code>.&quot;</li>
+<li>&quot;Tab completion can reduce errors from mistyping and make work more efficient in the shell.&quot;</li>
+</ul>
+
+</body>
+</html>

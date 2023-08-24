@@ -49,27 +49,72 @@ through a shell.
 
 In this lesson you will learn how to use the command line interface to move around in your file system. 
 
-## How to access the shell
+## Accessing the campus HPC
+In this class, we will use the campus HPC and web-based portal to access the shell, so we can invest most of our time learning the basics of shell by manipulating some experimental data, instead of dealing with installations. The bioinformatics packages we will use for this class have already been installed on the HPC. Also, we will work with large datasets that can only be run on a server with a significant amount of CPU and memory  (not your laptop!)
 
-On a Mac or Linux machine, you can access a shell through a program called Terminal, which is already available
-on your computer. If you're using Windows, you'll need to download a separate program to access the shell (see installation instructions [here](https://carpentries-incubator.github.io/metagenomics-workshop/setup.html)).
+To get started, please make sure that you have completed these two steps:
 
-In this workshop, we will use the campus HPC, so we can invest most of our time learning the basics of shell by manipulating some experimental data, instead of dealing with installations. The bioinformatics packages we will use for this class have already been installed on the HPC. Also, we will work with large datasets that can only be run on a server with a significant amount of CPU and memory  (not your laptop!)
+1. Enroll in Netid+ to access [HPC systems](https://webauth.arizona.edu/netid-plus/)
 
-> ## Shell alternatives
-> 
-> You can also access the campus HPC from the [UA HPC Online portal](https://ood.hpc.arizona.edu/pun/sys/dashboard). To get to the shell, go to the top menu bar select "Clusters" and "Shell access" from the pull-down list. 
-> This resource also provides you with access to other interactive resources like Jupyter notebook and R studio servers that we will use in this class.
-> 
+2. Create an [HPC Account] (https://account.arizona.edu), if you don't already have one. 
 
-## HPC Sponsorship
-Ask Dr. Hurwitz for sponsorship to the HPC if you have not already received an email with a notice that you have received sponsorship.
+3. You should have received an email from Dr. Hurwitz saying that you have been added to the bh_class group that she sponsors. If not, email her: bhurwitz@arizona.edu. 
+
+## Testing your HPC account by accessing the shell
+ 
+You can also access the campus HPC from the [UA HPC Online portal](https://ood.hpc.arizona.edu/pun/sys/dashboard). Be sure to bookmark this page for future use! 
+* To get to the shell, go to the top menu bar select "Clusters" and "Shell access" from the pull-down list.
+* To get to a Jupyter notebook for the homework, go to the top menu bar and select "Interactive apps" and "Jupyter notebook" from the pull-down menu.  
 
 ## Logging in to the shell from your laptop
+You can also login to a shell directly from your laptop instead of the online hpc portal. If you get serious about running bioinformatics analyses, you will likely want to do this. But, it is not necessary for the class. Here are instructions for accessing a terminal on different laptops:
+<details>
+  <summary markdown="span">Windows</summary>
+<ul>
+Download the <a href="https://git-for-windows.github.io/">Git for Windows installer</a>. 
+Run the installer and follow the steps below:
+<li>Click on "Next" four times (two times if you've previously installed Git). You don't need to change anything in the information, location, components, and start menu screens.</li>
+<li>Select "Use the nano editor by default" and click on "Next".
+<li>Keep "Use Git from the Windows Command Prompt" selected and click on "Next". If you forget to do this, the programs that you need for the workshop will not work properly. If this happens, rerun the installer and select the appropriate option.
+<li>Select "Use bundled OpenSSH" and click on "Next".
+<li>Select "Use the OpenSSL Library" and click "Next".
+<li>Keep "Checkout Windows-style, commit Unix-style line endings" selected and click on "Next".
+<li>Select "Use Windows' default console window" and click on "Next".
+<li>Select "Default (fast-forward on merge)" and click on "Next".
+<li>Select "None" (Do not use a credential helper) and click on "Next".
+<li>Select "Enable file system caching" and click on "Next".
+<li>Ignore "Configuring experimental options" and click on "Install".
+<li>Click on "Install".
+<li>Click on "Finish".
+<li>If your "HOME" environment variable is not set (or you don't know what this is):
+<li>Open command prompt (Open Start Menu, then type `cmd` and press [Enter])
+<li>Type the following line into the command prompt window exactly as shown: `setx HOME "%USERPROFILE%"`
+<li>Press [Enter], and you should see `SUCCESS: Specified value was saved.`
+<li>Quit the command prompt by typing `exit` and then pressing [Enter]
+<li>See the [video tutorial](https://youtu.be/yo7Z-BEG62A) for an example of how to install Git on Windows 11.
+</ul>  
+<br>
+An alternative option is to install PuTTY by going to <a href="https://www.chiark.greenend.org.uk/~sgtatham/putty/latest.html"> the installation page</a>. For most newer computers, click on putty-64bit-X.XX-installer.msi to download the 64-bit version. If you have an older laptop, you may need to get the 32-bit version putty-X.XX-installer.msi. If you aren't sure whether you need the 64 or 32-bit version, you can check your laptop version by following [the instructions here](https://support.microsoft.com/en-us/help/15056/windows-32-64-bit-faq). Once the installer is downloaded, double-click on it, and PuTTY should install.
+<br>
+Another alternative option is to use the Windows Subsystem Linux (WSL). This option is available for Windows 10 and Windows 11 - detailed <a href="https://learn.microsoft.com/en-us/windows/wsl/install">instructions are available here</a>. See the <a href="https://youtu.be/YoNdTuN-YWk">video tutorial</a> for an example of how to install WSL with Ubuntu 22.04 on Windows 11.
+</ul>
+</details>
+<details>
+  <summary markdown="span">Mac</summary>
+The default shell in some versions of macOS is Bash, and Bash is available in all versions, so no need to install anything. You access Bash from the Terminal Application (found in /Applications/Utilities). See how to open the terminal in the [video tutorial](https://www.youtube.com/watch?v=FuNsWg_VzeQ). You can keep the terminal in your dock for this class.
+</details>
+
+<details>
+  <summary markdown="span">Linux</summary>
+The default shell is usually Bash, and there is usually no need to install anything. To see if your default shell is Bash type, echo $SHELL in a terminal and press Enter. If the message printed does not end with `/bash`, then your default is something else, and you can run Bash by typing `bash`.
+</details>
+<br>
+
 If you are accessing the shell from your laptop, you need to log in using the `ssh` command (ssh stands for Secure Shell), your username and the address of the machine you are logging into.
-~~~
+
+```
 $ ssh bhurwitz@hpc.arizona.edu
-~~~
+```
 
 When you are prompted to type the password, and use duo mobile for 2-factor authentication. Take into account that while you are typing a password no characters will appear on the screen, trust that they are being typed and press enter. 
 
@@ -86,7 +131,7 @@ Type "shell" to access the job submission hosts for all environments
 
 ~~~
 
-This provides a lot of information about the remote server that you're logging in to. In this case, we are logging into the gatekeeper node. This is the node that is the "gateway" to the clusters at UA. In our case, we want to go the the ocelote cluster (our teaching cluster). To do this, we use the "shell" command and then "ocelote" to go to the ocelote cluster.
+This provides a lot of information about the remote server that you're logging in to. In this case, we are logging into the gatekeeper node. This is the node that is the "gateway" to the clusters at UA. In our case, we want to go the the ocelote cluster (our teaching cluster). To do this, we use the "shell" command and then type "ocelote" on the command line to go to the ocelote cluster.
 
 ~~~
 [bhurwitz@gatekeeper ~]$ shell
@@ -114,23 +159,11 @@ Once you login, the system will send you to your home directory. In my case, thi
 
 ## Navigating your file system
 
-The part of the operating system responsible for managing files and directoriesis called the **file system**.
+The part of the operating system responsible for managing files and directories is called the **file system**.
 It organizes our data into files, which hold information,
 and directories (also called "folders"), which hold files or other directories.
 
 Several commands are frequently used to create, inspect, rename, and delete files and directories.
-
-> ## Preparation Magic
->
-> If you type the command:
-> `PS1='\W\$ '`
-> into your shell, followed by pressing the <kbd>Enter</kbd> key,
-> your window should look like this:    
-> `~\$ `   
-> That only shows the ultimate directory where you ar standing. In this case
-> it is the home directory. The symbol `~` is an abbreviation of the home directory. 
-> This isn't necessary to follow along (in fact, your prompt may have
-> other helpful information you want to know about).  This is up to you!  
 
 The dollar sign is a **prompt**, which shows us that the shell is waiting for input;
 your shell may use a different character as a prompt and may add information before the prompt. When typing commands, either from these lessons or from other sources, do not type the prompt, only the commands that follow it. In this lesson we will use the dollar sign to indicate the prompt. 
@@ -170,12 +203,12 @@ ondemand  scripts  teaching
 
 `ls` prints the names of the files and directories in the current directory in alphabetical order, arranged neatly into columns. 
 
-But, because our metagenomics files are large, we are going to be working in the `/xdisk/bhurwitz/bh_class/<your_netid>` directory. We'll be working within the `bh_class` subdirectory, and creating new subdirectories, throughout this class.  
+Your home directory has a limited amount of space. And because our metagenomics files are large, we are going to be working in the `/xdisk/bhurwitz/bh_class/<your_netid>` directory, where you will create new subdirectories throughout this class.  
 
 The command to change locations in our file system is `cd` followed by a directory name to change our working directory.
 `cd` stands for "change directory".
 
-Let's say we want to navigate to the `bh_class/<your_netid>` directory we saw above (where you swap out <your_netid> with your own netid).  We can use the following command to get there:
+Let's say we want to navigate to the `/xdisk/bhurwitz/bh_class/<your_netid>` directory we saw above (where you swap out <your_netid> with your own netid).  We can use the following command to get there:
 
 ~~~
 $ cd /xdisk/bhurwitz/bh_class/<your_netid>
@@ -191,8 +224,7 @@ $ ls
 assignments exercises
 ~~~
 
-We can make the `ls` output more comprehensible by using the **flag** `-F`,
-which tells `ls` to add a trailing `/` to the names of directories, or other symbols to identify the type of elements in the directory:
+We can make the `ls` output more comprehensible by using the **flag** `-F`, which tells `ls` to add a trailing `/` to the names of directories, or other symbols to identify the type of elements in the directory:
 
 ~~~
 $ ls -F
@@ -204,14 +236,13 @@ assignments/  exercises/
 
 Anything with a "/" after it is a directory. Things with a "*" after them are programs. If there are no decorations, it's a file.
 
-To understand a little better how to move between folders, let's see the following image:
+To understand a little better how to move between folders, let's look at the following image:
 
 <a href="../fig/directory_structure.png">
   <img src="../fig/directory_structure.png" width="870" height="631" alt="Folder organization diagram showing a parent directory called dc_workshop, with tree subdirectories called data, mags, and taxonomy. Insida data there is another one called untrimmed_fastq, and inside taxonomy there is another one called mags_taxonomy."/>
 </a>
 
-Here we can see a diagram of how the folders are arranged one inside another. In this way, if we think about moving,
-from your directory to the assignments folder, the path must go as they are ordered: `cd <your_net_id>/assignments`
+Here we can see a diagram of how the folders are arranged one inside another. In this way, if we think about moving from your directory to the assignments folder, the path must go as they are ordered: `cd <your_net_id>/exercises`
 
 `ls` has lots of other options. To find out what they are, we can type:
 
@@ -229,141 +260,135 @@ your keyboard's down arrow or use the <kbd>Space</kbd> key to go forward one pag
 >
 <details>
   <summary markdown="span">Solution</summary>
-  <ul>
+
 ~~~
 $ ls -l
 ~~~
 
 ~~~
-total 12
-drwxr-xr-x 3 dcuser dcuser 4096 Jun  3 17:59 data
-drwxrwxr-x 2 dcuser dcuser 4096 Jun  3 18:02 mags
-drwxrwxr-x 3 dcuser dcuser 4096 Jun  3 18:25 taxonomy
+drwxrwsr-x. 2 bhurwitz bh_class 0 Aug 21 20:47 01_intro_unix
+drwxrwsr-x. 2 bhurwitz bh_class 0 Aug 21 20:47 02_bash_scripting
+drwxrwsr-x. 2 bhurwitz bh_class 0 Aug 21 20:47 03_intro_hpc
+drwxrwsr-x. 2 bhurwitz bh_class 0 Aug 21 20:47 04_project_setup
+drwxrwsr-x. 2 bhurwitz bh_class 0 Aug 21 20:47 05_getting_data
+drwxrwsr-x. 2 bhurwitz bh_class 0 Aug 21 20:47 06_qc_trimming
+drwxrwsr-x. 2 bhurwitz bh_class 0 Aug 21 20:47 07_contam_removal
+drwxrwsr-x. 2 bhurwitz bh_class 0 Aug 21 20:47 08_assembly
+drwxrwsr-x. 2 bhurwitz bh_class 0 Aug 21 20:47 09_assembly_qc
+drwxrwsr-x. 2 bhurwitz bh_class 0 Aug 21 20:47 10_metag_binning
+drwxrwsr-x. 2 bhurwitz bh_class 0 Aug 21 20:47 11_taxonomy
+drwxrwsr-x. 2 bhurwitz bh_class 0 Aug 21 20:47 12_phyloseq
+drwxrwsr-x. 2 bhurwitz bh_class 0 Aug 21 20:47 13_microviz
+drwxrwsr-x. 2 bhurwitz bh_class 0 Aug 21 20:47 14_alpha_diversity
+drwxrwsr-x. 2 bhurwitz bh_class 0 Aug 21 20:47 15_beta_diversity_1
+drwxrwsr-x. 2 bhurwitz bh_class 0 Aug 21 20:47 16_beta_diversity_2
+drwxrwsr-x. 2 bhurwitz bh_class 0 Aug 21 20:47 17_ordination
+drwxrwsr-x. 2 bhurwitz bh_class 0 Aug 21 20:47 18_abundance_trans
+drwxrwsr-x. 2 bhurwitz bh_class 0 Aug 21 20:47 19_pca_taxon_stats
+drwxrwsr-x. 2 bhurwitz bh_class 0 Aug 21 20:47 20_kmer_comparisons
+drwxrwsr-x. 2 bhurwitz bh_class 0 Aug 21 20:47 21_functional_annot
 ~~~
 
 The additional information given includes the name of the owner of the file, when the file was last modified, and whether the current user has permission to read and write to the file.
 
 </details>
 
-No one can possibly learn all of these arguments, that's why the manual page
-is for. You can (and should) refer to the manual page or other help files
-as needed.
+<br>
 
-Let's go into the `data/untrimmed_fastq` directory and see what is in there.
+No one can possibly learn all of these arguments, that's why the manual page is for. You can (and should) refer to the manual page or other help files as needed.
+
+OK, let's get started with working with some real data. Make sure you have a shell open, and then let's go into the `/xdisk/bhurwitz/bh_class/**your_netid**/exercises/data/untrimmed_fastq` directory and see what is in there. Be sure to replace **your_netid** below.
 
 ~~~
-$ cd data/untrimmed_fastq
+$ cd /xdisk/bhurwitz/bh_class/**your_netid**/exercises/data/untrimmed_fastq
 $ ls
 ~~~
-{: .bash}
 
 ~~~
 JC1A_R1.fastq.gz  JC1A_R2.fastq.gz  JP4D_R1.fastq.gz  JP4D_R2.fastq.gz  TruSeq3-PE.fa
 ~~~
-{: .output}
 
-This directory contains a file `TruSeq3-PE.fa`, that we will use in a later lesson and four files with `.fastq.gz` extensions. FASTQ is a format
-for storing information about sequencing reads and their quality. GZ is an archive file compressed.
-We will be learning more about FASTQ files in a later lesson. These data comes in a compressed format, 
-which is why there is a `.gz` at the end of the files. 
-This makes it faster to transfer, and allows it to take up less space on our computer. 
-Let's use `gunzip` to decompress the files so that we can look at the FASTQ format.
+This directory contains a file `TruSeq3-PE.fa`, that we will use in a later lesson and four files with `.fastq.gz` extensions. FASTQ is a format for storing information about sequencing reads and their quality. GZ is an archive file compressed. We will be learning more about FASTQ files in a later lesson. These data come in a compressed format, which is why there is a `.gz` at the end of the files. 
+This makes it faster to transfer, and allows it to take up less space on our computer.
+
+Let's copy these files into 
+
+Let's use `gunzip` to decompress the files in your data directory so we can look at the FASTQ format. Notice that I can unzip all of the fastq files at once using the '*' character to indicate the pattern. 
 ~~~
-$ gunzip JC1A_R1.fastq.gz  JC1A_R2.fastq.gz  JP4D_R1.fastq.gz  JP4D_R2.fastq.gz
+$ gzip *fastq.gz
 $ ls
 ~~~
-{: .bash}
 
 ~~~
 JC1A_R1.fastq  JC1A_R2.fastq  JP4D_R1.fastq  JP4D_R2.fastq  TruSeq3-PE.fa
 ~~~
-{: .output}
 
 ### Shortcut: Tab Completion
 
 Usually the key Tab is located on the left side of the keyboard just above the "Shift" key or "Caps lock" key. 
 
-Typing out file or directory names can waste a
-lot of time and it's easy to make typing mistakes. Instead we can use tab complete 
-as a shortcut. When you start typing out the name of a directory or file, then
-hit the <kbd>Tab</kbd> key, the shell will try to fill in the rest of the
-directory or file name.
+Typing out file or directory names can waste a lot of time and it's easy to make typing mistakes. Instead we can use tab complete 
+as a shortcut. When you start typing out the name of a directory or file, then hit the <kbd>Tab</kbd> key, the shell will try to fill in the rest of the directory or file name for you.
 
-Return to your home directory:
+Let's try. Go back one directory
 
 ~~~
-$ cd
+$ cd ..
 ~~~
-{: .bash}
 
 then enter:
 
 ~~~
-$ cd dc<tab>
+$ cd da<tab>
 ~~~
-{: .bash}
 
 The shell will fill in the rest of the directory name for
-`dc_workshop`.
+`data`.
 
-Now change directories to `dc_workshop`
+Now change directories to `data`
 
 ~~~
-$ cd dc_workshop
+$ cd data
 ~~~
-{: .bash}
 
-Using tab complete can be very helpful. However, it will only autocomplete
-a file or directory name if you've typed enough characters to provide
-a unique identifier for the file or directory you are trying to access.
+Using tab complete can be very helpful. However, it will only autocomplete a file or directory name if you've typed enough characters to provide a unique identifier for the file or directory you are trying to access.
 
-If we navigate to our `data` directory and try to access one of our sample files:
+After going to our `data` directory, we can try to access one of our sample files:
 
 ~~~
 $ cd data/untrimmed_fastq
 $ ls JC<tab>
 ~~~
-{: .bash}
 
-The shell auto-completes your command to `JC1A_R`, because there is another file name in 
-the directory begin with this prefix. When you hit
+The shell auto-completes your command to `JC1A_R`, because there is another file name in the directory begin with this prefix. When you hit
 <kbd>Tab</kbd> again, the shell will list the possible choices.
 
 ~~~
 $ ls JC1A_R<tab><tab>
 ~~~
-{: .bash}
 
 ~~~
 JC1A_R1.fastq  JC1A_R2.fastq
 ~~~
-{: .output}
 
-Tab completion can also fill in the names of programs, which can be useful if you
-remember the beginning of a program name.
+Tab completion can also fill in the names of programs, which can be useful if you remember the beginning of a program name.
 
 ~~~
 $ pw<tab><tab>
 ~~~
-{: .bash}
 
 ~~~
 pwd   pwdx
 ~~~
-{: .output}
 
 Displays the name of every program that starts with `pw`. 
 
 ## Summary
 
 We now know how to move around our file system using the command line.
-This gives us an advantage over interacting with the file system through
-a Graphical User Interface (GUI) as it allows us to work on a remote server, carry out the same set of operations 
-on a large number of files quickly, and opens up many opportunities for using 
-bioinformatics software that is only available in command line versions. 
+This gives us an advantage over interacting with the file system through a Graphical User Interface (GUI) as it allows us to work on a remote server, carry out the same set of operations on a large number of files quickly, and opens up many opportunities for using bioinformatics software that is only available in command line versions. 
 
-In the next few episodes, we'll be expanding on these skills and seeing how 
-using the command line shell enables us to make our workflow more efficient and reproducible.
+In the next few exercises, we'll be expanding on these skills and seeing how using the command line shell enables us to make our workflow more efficient and reproducible.
 
 ## Key Points
 - "The shell gives you the ability to work more efficiently by using keyboard commands rather than a GUI."

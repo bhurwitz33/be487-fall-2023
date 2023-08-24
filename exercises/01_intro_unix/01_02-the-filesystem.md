@@ -1,138 +1,115 @@
----
-title: "Navigating Files and Directories"
-teaching: 30
-exercises: 20
-questions:
+# Navigating Files and Directories
+
+### Questions:
 - "How can I perform operations on files outside of my working directory?"
 - "What are some navigational shortcuts I can use to make my work more efficient?"
-objectives:
+### Objectives:
 - "Use a single command to navigate multiple steps in your directory structure, including moving backwards (one level up)."
 - "Perform operations on files in directories outside your working directory."
 - "Work with hidden directories and hidden files."
 - "Interconvert between absolute and relative paths."
 - "Employ navigational shortcuts to move around your file system."
-keypoints:
+### Keypoints:
 - "The `/`, `~`, and `..` characters represent important navigational shortcuts."
 - "Hidden files and directories start with `.` and can be viewed using `ls -a`."
 - "Relative paths specify a location starting from the current location, while absolute paths specify a location from the root of the file system."
----
+
 
 ## Moving around the file system
 
-We've learned how to use `pwd` to find our current location within our file system. 
-We've also learned how to use `cd` to change locations and `ls` to list the contents
-of a directory. Now we're going to learn some additional commands for moving around 
-within our file system.
+We've learned how to use `pwd` to find our current location within our file system. We've also learned how to use `cd` to change locations and `ls` to list the contents of a directory. Now we're going to learn some additional commands for moving around within our file system.
 
-Use the commands we've learned so far to navigate to the `dc_workshop/data/untrimmed_fastq` directory, if you're not already there. 
+Use the commands we've learned so far to navigate to the `exercises/data/untrimmed_fastq` directory, if you're not already there. 
 
 ~~~
-$ cd
-$ cd dc_workshop
+$ cd /xdisk/bhurwitz/bh_class/**your_netid**
+$ cd exercises
 $ cd data
 $ cd untrimmed_fastq
 ~~~
-{: .bash}
 
-What if we want to move back up and out of this directory and to our top level 
-directory? Can we type `cd dc_workshop`? Try it and see what happens.
+What if we want to move back up and out of this directory and to our top level directory? Can we type `cd dc_workshop`? Try it and see what happens.
 
 ~~~
-$ cd dc_workshop
+$ cd exercises
 ~~~
-{: .bash}
 
 ~~~
--bash: cd: dc_workshop: No such file or directory
+-bash: cd: exercises: No such file or directory
 ~~~
-{: .output}
 
-Your computer looked for a directory or file called `dc_workshop` within the 
-directory you were already in. It didn't know you wanted to look at a directory level
-above the one you were located in. 
+
+Your computer looked for a directory or file called `exercises` within the directory you were already in. It didn't know you wanted to look at a directory level above the one you were located in. 
 
 We have a special command to tell the computer to move us back or up one directory level. 
 
 ~~~
 $ cd ..
 ~~~
-{: .bash}
 
-
-Now we can use `pwd` to make sure that we are in the directory we intended to navigate
-to, and `ls` to check that the contents of the directory are correct.
+Now we can use `pwd` to make sure that we are in the directory we intended to navigate to, and `ls` to check that the contents of the directory are correct.
 
 ~~~
 $ pwd
 ~~~
-{: .bash}
 
 ~~~
-/home/dcuser/dc_workshop/data
+/xdisk/bhurwitz/bh_class/**your_netid**/exercises/data
 ~~~
-{: .output}
 
 From this output, we can see that `..` did indeed took us back one level in our file system. 
 
 You can chain these together to move several levels:
 
 ~~~
-$ cd ../../..
+$ cd ../..
 ~~~
-{: .bash}
+
+Where are you now?
 
 > ## Excercise 1: Finding hidden directories
 >
-> First navigate to the `dc_workshop` directory. There is a hidden directory within this directory. Explore the options for `ls` to 
-> find out how to see hidden directories. List the contents of the directory and 
-> identify the name of the text file in that directory.
+> First navigate to the `bh_class` directory. There is a hidden directory within this directory. Explore the options for `ls` to 
+> find out how to see hidden directories. List the contents of the directory and identify the name of the text file in that directory.
 > 
 > Hint: hidden files and folders in Unix start with `.`, for example `.my_hidden_directory`
 >
-> > ## Solution
-> > 
-> > First use the `man` command to look at the options for `ls`. 
-> > ~~~
-> > $ man ls
-> > ~~~
-> > {: .bash}
-> > 
-> > The `-a` option is short for `all` and says that it causes `ls` to "not ignore
-> > entries starting with ." This is the option we want. 
-> > 
-> > ~~~
-> > $ ls -a
-> > ~~~
-> > {: .bash}
-> > 
-> > ~~~
-> >.  ..  data  .hidden  mags  taxonomy
-> > ~~~
-> > {: .output}
-> > 
-> > The name of the hidden directory is `.hidden`. We can navigate to that directory
-> > using `cd`. 
-> > 
-> > ~~~
-> > $ cd .hidden
-> > ~~~
-> > {: .bash}
-> > 
-> > And then list the contents of the directory using `ls`. 
-> > 
-> > ~~~
-> > $ ls
-> > ~~~
-> > {: .bash}
-> > 
-> > ~~~
-> > youfoundit.txt
-> > ~~~
-> > {: .output}
-> > 
-> > The name of the text file is `youfoundit.txt`.
-> {: .solution}
-{: .challenge}
+<details>
+  <summary markdown="span">Solution</summary>
+
+First use the `man` command to look at the options for `ls`. 
+~~~
+$ man ls
+~~~
+
+The `-a` option is short for `all` and says that it causes `ls` to "not ignore entries starting with ." This is the option we want. 
+
+ ~~~
+$ ls -a
+~~~
+
+~~~
+.  ..  data  .hidden  mags  taxonomy
+~~~
+
+The name of the hidden directory is `.hidden`. We can navigate to that directory using `cd`. 
+
+~~~
+$ cd .hidden
+~~~
+
+And then list the contents of the directory using `ls`. 
+
+~~~
+$ ls
+~~~
+
+~~~
+youfoundit.txt
+~~~
+
+The name of the text file is `youfoundit.txt`.
+</details>
 
 ### File permissions
 
@@ -143,13 +120,11 @@ View the current permissions on a file using the `-l` (long) flag for the `ls` c
 ~~~
 $ ls -l
 ~~~
-{: .bash}
 
 ~~~
-total 0
--rw-rw-r-- 1 dcuser dcuser 0 May 27 23:16 youfoundit.txt
+total 4
+-rw-rw-r--. 1 bhurwitz bhurwitz 47 Aug 24 10:05 youfoundit.txt
 ~~~
-{: .output}
 
 The first part of the output for the `-l` flag gives you information about the file's current permissions. There are ten slots in the
 permissions list. The first character in this list is related to file type, not permissions, so we'll ignore it for now. The next three
