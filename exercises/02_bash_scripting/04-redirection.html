@@ -1,0 +1,614 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>04-redirection.md</title>
+<meta http-equiv="Content-type" content="text/html;charset=UTF-8">
+
+<style>
+/* https://github.com/microsoft/vscode/blob/master/extensions/markdown-language-features/media/markdown.css */
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
+body {
+	font-family: var(--vscode-markdown-font-family, -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif);
+	font-size: var(--vscode-markdown-font-size, 14px);
+	padding: 0 26px;
+	line-height: var(--vscode-markdown-line-height, 22px);
+	word-wrap: break-word;
+}
+
+#code-csp-warning {
+	position: fixed;
+	top: 0;
+	right: 0;
+	color: white;
+	margin: 16px;
+	text-align: center;
+	font-size: 12px;
+	font-family: sans-serif;
+	background-color:#444444;
+	cursor: pointer;
+	padding: 6px;
+	box-shadow: 1px 1px 1px rgba(0,0,0,.25);
+}
+
+#code-csp-warning:hover {
+	text-decoration: none;
+	background-color:#007acc;
+	box-shadow: 2px 2px 2px rgba(0,0,0,.25);
+}
+
+body.scrollBeyondLastLine {
+	margin-bottom: calc(100vh - 22px);
+}
+
+body.showEditorSelection .code-line {
+	position: relative;
+}
+
+body.showEditorSelection .code-active-line:before,
+body.showEditorSelection .code-line:hover:before {
+	content: "";
+	display: block;
+	position: absolute;
+	top: 0;
+	left: -12px;
+	height: 100%;
+}
+
+body.showEditorSelection li.code-active-line:before,
+body.showEditorSelection li.code-line:hover:before {
+	left: -30px;
+}
+
+.vscode-light.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.15);
+}
+
+.vscode-light.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.40);
+}
+
+.vscode-light.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+.vscode-dark.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.4);
+}
+
+.vscode-dark.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.60);
+}
+
+.vscode-dark.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+.vscode-high-contrast.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 160, 0, 0.7);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 160, 0, 1);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+img {
+	max-width: 100%;
+	max-height: 100%;
+}
+
+a {
+	text-decoration: none;
+}
+
+a:hover {
+	text-decoration: underline;
+}
+
+a:focus,
+input:focus,
+select:focus,
+textarea:focus {
+	outline: 1px solid -webkit-focus-ring-color;
+	outline-offset: -1px;
+}
+
+hr {
+	border: 0;
+	height: 2px;
+	border-bottom: 2px solid;
+}
+
+h1 {
+	padding-bottom: 0.3em;
+	line-height: 1.2;
+	border-bottom-width: 1px;
+	border-bottom-style: solid;
+}
+
+h1, h2, h3 {
+	font-weight: normal;
+}
+
+table {
+	border-collapse: collapse;
+}
+
+table > thead > tr > th {
+	text-align: left;
+	border-bottom: 1px solid;
+}
+
+table > thead > tr > th,
+table > thead > tr > td,
+table > tbody > tr > th,
+table > tbody > tr > td {
+	padding: 5px 10px;
+}
+
+table > tbody > tr + tr > td {
+	border-top: 1px solid;
+}
+
+blockquote {
+	margin: 0 7px 0 5px;
+	padding: 0 16px 0 10px;
+	border-left-width: 5px;
+	border-left-style: solid;
+}
+
+code {
+	font-family: Menlo, Monaco, Consolas, "Droid Sans Mono", "Courier New", monospace, "Droid Sans Fallback";
+	font-size: 1em;
+	line-height: 1.357em;
+}
+
+body.wordWrap pre {
+	white-space: pre-wrap;
+}
+
+pre:not(.hljs),
+pre.hljs code > div {
+	padding: 16px;
+	border-radius: 3px;
+	overflow: auto;
+}
+
+pre code {
+	color: var(--vscode-editor-foreground);
+	tab-size: 4;
+}
+
+/** Theming */
+
+.vscode-light pre {
+	background-color: rgba(220, 220, 220, 0.4);
+}
+
+.vscode-dark pre {
+	background-color: rgba(10, 10, 10, 0.4);
+}
+
+.vscode-high-contrast pre {
+	background-color: rgb(0, 0, 0);
+}
+
+.vscode-high-contrast h1 {
+	border-color: rgb(0, 0, 0);
+}
+
+.vscode-light table > thead > tr > th {
+	border-color: rgba(0, 0, 0, 0.69);
+}
+
+.vscode-dark table > thead > tr > th {
+	border-color: rgba(255, 255, 255, 0.69);
+}
+
+.vscode-light h1,
+.vscode-light hr,
+.vscode-light table > tbody > tr + tr > td {
+	border-color: rgba(0, 0, 0, 0.18);
+}
+
+.vscode-dark h1,
+.vscode-dark hr,
+.vscode-dark table > tbody > tr + tr > td {
+	border-color: rgba(255, 255, 255, 0.18);
+}
+
+</style>
+
+<style>
+/* Tomorrow Theme */
+/* http://jmblog.github.com/color-themes-for-google-code-highlightjs */
+/* Original theme - https://github.com/chriskempson/tomorrow-theme */
+
+/* Tomorrow Comment */
+.hljs-comment,
+.hljs-quote {
+	color: #8e908c;
+}
+
+/* Tomorrow Red */
+.hljs-variable,
+.hljs-template-variable,
+.hljs-tag,
+.hljs-name,
+.hljs-selector-id,
+.hljs-selector-class,
+.hljs-regexp,
+.hljs-deletion {
+	color: #c82829;
+}
+
+/* Tomorrow Orange */
+.hljs-number,
+.hljs-built_in,
+.hljs-builtin-name,
+.hljs-literal,
+.hljs-type,
+.hljs-params,
+.hljs-meta,
+.hljs-link {
+	color: #f5871f;
+}
+
+/* Tomorrow Yellow */
+.hljs-attribute {
+	color: #eab700;
+}
+
+/* Tomorrow Green */
+.hljs-string,
+.hljs-symbol,
+.hljs-bullet,
+.hljs-addition {
+	color: #718c00;
+}
+
+/* Tomorrow Blue */
+.hljs-title,
+.hljs-section {
+	color: #4271ae;
+}
+
+/* Tomorrow Purple */
+.hljs-keyword,
+.hljs-selector-tag {
+	color: #8959a8;
+}
+
+.hljs {
+	display: block;
+	overflow-x: auto;
+	color: #4d4d4c;
+	padding: 0.5em;
+}
+
+.hljs-emphasis {
+	font-style: italic;
+}
+
+.hljs-strong {
+	font-weight: bold;
+}
+</style>
+
+<style>
+/*
+ * Markdown PDF CSS
+ */
+
+ body {
+	font-family: -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif, "Meiryo";
+	padding: 0 12px;
+}
+
+pre {
+	background-color: #f8f8f8;
+	border: 1px solid #cccccc;
+	border-radius: 3px;
+	overflow-x: auto;
+	white-space: pre-wrap;
+	overflow-wrap: break-word;
+}
+
+pre:not(.hljs) {
+	padding: 23px;
+	line-height: 19px;
+}
+
+blockquote {
+	background: rgba(127, 127, 127, 0.1);
+	border-color: rgba(0, 122, 204, 0.5);
+}
+
+.emoji {
+	height: 1.4em;
+}
+
+code {
+	font-size: 14px;
+	line-height: 19px;
+}
+
+/* for inline code */
+:not(pre):not(.hljs) > code {
+	color: #C9AE75; /* Change the old color so it seems less like an error */
+	font-size: inherit;
+}
+
+/* Page Break : use <div class="page"/> to insert page break
+-------------------------------------------------------- */
+.page {
+	page-break-after: always;
+}
+
+</style>
+
+<script src="https://unpkg.com/mermaid/dist/mermaid.min.js"></script>
+</head>
+<body>
+  <script>
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: document.body.classList.contains('vscode-dark') || document.body.classList.contains('vscode-high-contrast')
+          ? 'dark'
+          : 'default'
+    });
+  </script>
+<h1 id="redirection">Redirection</h1>
+<h3 id="questions">Questions:</h3>
+<ul>
+<li>&quot;How can I search within files?&quot;</li>
+<li>&quot;How can I combine existing commands to do new things?&quot;</li>
+</ul>
+<h3 id="objectives">Objectives:</h3>
+<ul>
+<li>&quot;Employ the <code>grep</code> command to search for information within files.&quot;</li>
+<li>&quot;Print the results of a command to a file.&quot;</li>
+<li>&quot;Construct command pipelines with two or more stages.&quot;</li>
+</ul>
+<h3 id="keypoints">Keypoints:</h3>
+<ul>
+<li>&quot;<code>grep</code> is a powerful search tool with many options for customization.&quot;</li>
+<li>&quot;<code>&gt;</code>, <code>&gt;&gt;</code>, and <code>|</code> are different ways of redirecting output.&quot;</li>
+<li>&quot;<code>command &gt; file</code> redirects a command's output to a file.&quot;</li>
+<li>&quot;<code>command &gt;&gt; file</code> redirects a command's output to a file without overwriting the existing contents of the file.&quot;</li>
+<li>&quot;<code>command_1 | command_2</code> redirects the output of the first command as input to the second command.&quot;</li>
+<li>&quot;for loops are used for iteration&quot;</li>
+<li>&quot;<code>basename</code> gets rid of repetitive parts of names&quot;</li>
+</ul>
+<h2 id="searching-files">Searching files</h2>
+<p>We discussed in a previous exercise how to search within a file using <code>less</code>. We can also search within files without even opening them, using <code>grep</code>. <code>grep</code> is a command-line utility for searching plain-text files for lines matching a specific set of characters (sometimes called a string) or a particular pattern
+(which can be specified using something called regular expressions). We're not going to work with regular expressions in this lesson, and are instead going to specify the strings we are searching for.
+Let's give it a try!</p>
+<blockquote>
+<h2 id="nucleotide-abbreviations">Nucleotide abbreviations</h2>
+<p>The four nucleotides that appear in DNA are abbreviated <code>A</code>, <code>C</code>, <code>T</code> and <code>G</code>.
+Unknown nucleotides are represented with the letter <code>N</code>. An <code>N</code> appearing
+in a sequencing file represents a position where the sequencing machine was not able to
+confidently determine the nucleotide in that position. You can think of an <code>N</code> as being aNy
+nucleotide at that position in the DNA sequence.</p>
+</blockquote>
+<p>We'll search for strings inside of our fastq files. Let's first make sure we are in the correct directory.</p>
+<pre class="hljs"><code><div>$ cd /xdisk/bhurwitz/bh_class/your_netid/exercises/data/untrimmed_fastq
+$ ls  
+</div></code></pre>
+<pre class="hljs"><code><div>JC1A_R1.fastq   JC1A_R2.fastq     JP4D_R1.fastq     JP4D_R2.fastq  TruSeq3-PE.fa
+</div></code></pre>
+<p>Suppose we want to see how many reads in our file have really bad segments containing 10 consecutive unknown nucleotides (Ns).</p>
+<blockquote>
+<h2 id="determining-quality">Determining quality</h2>
+<p>In this lesson, we're going to be manually searching for strings of <code>N</code>s within our sequence
+results to illustrate some principles of file searching. It can be really useful to do this
+type of searching to get a feel for the quality of your sequencing results, however, in your
+research you will most likely use a bioinformatics tool that has a built-in program for
+filtering out low-quality reads. You'll learn how to use one such tool in a later lesson when we look at read quality.</p>
+</blockquote>
+<p>Let's search for the string NNNNNNNNNN in the JC1A_R2.fastq file.</p>
+<pre class="hljs"><code><div>$ grep NNNNNNNNNN JC1A_R2.fastq
+</div></code></pre>
+<p>This command returns a lot of output to the terminal. Every single line in the JC1A_R2.fastq file that contains at least 10 consecutive Ns is printed to the terminal, regardless of how long or short the file is. We may be interested not only in the actual sequence which contains this string, but in the name (or identifier) of that sequence. We discussed in a previous lesson that the identifier line immediately precedes the nucleotide sequence for each read
+in a FASTQ file. We may also want to inspect the quality scores associated with each of these reads. To get all of this information, we will return the line immediately before each match and the two lines immediately after each match.</p>
+<p>We can use the <code>-B</code> argument for grep to return a specific number of lines before each match. The <code>-A</code> argument returns a specific number of lines after each matching line. Here we want the line <em>before</em> and the two lines <em>after</em> each matching line, so we add <code>-B1 -A2</code> to our grep command.</p>
+<pre class="hljs"><code><div>$ grep -B1 -A2 NNNNNNNNNN JC1A_R2.fastq
+</div></code></pre>
+<p>One of the sets of lines returned by this command is:</p>
+<pre class="hljs"><code><div>@MISEQ-LAB244-W7:91:000000000-A5C7L:1:2111:5300:24013 2:N:0:TCGAAG
+NNNNNNNNNNNCNANNANNNNNCGCCGGTGTTCTNCTGGGGNACGGANACCGAGTAGATCGGAACAGCGTCGTGGAGNGAAAGAGTGTAGATCCCGGTGGGCGGCGTATCATTAAAAAAAAAACCTGCTGGTCCTTGTCTC
++
+AAA11BB3333BGG1GGEC1E?0E0B0BFDGFHD2FBH110A1BEE?A/BAFBDGH///&gt;FEGGG&gt;&lt;@/#//?#?/#//????########################################################################################################################################################################
+</div></code></pre>
+<blockquote>
+<h2 id="exercise-1-using-grep">Exercise 1: Using grep</h2>
+<ol>
+<li>
+<p>Search for the sequence <code>GATCGAGAGGGGATAGGCG</code> in the <code>JC1A_R2.fastq</code> file.
+Have your search return all matching lines and the name (or identifier) for each sequence
+that contains a match.</p>
+</li>
+<li>
+<p>Search for the sequence <code>AAGTT</code> in all FASTQ files.
+Have your search return all matching lines and the name (or identifier) for each sequence
+that contains a match.</p>
+</li>
+</ol>
+</blockquote>
+<details>
+  <summary markdown="span">Solution</summary>
+<li>1.To search for the GATCGAGAGGGGATAGGCG sequence in the file JC1A_R2.fastq: </li>
+<pre class="hljs"><code><div>$ grep -B1 GATCGAGAGGGGATAGGCG JC1A_R2.fastq
+</div></code></pre>
+<p>The output shows all of the lines that contain the sequence GATCGAGAGGGGATAGGCG. As the flag -B1 is used, it also shows the previous line to each occurence. In a FastQ file the identifier of each sequence is one line avobe the sequence itself, therefore in this example you can see the names and the sequences that match your query.&lt;</p>
+<li>2.To search for a sequence in all of the FastQ files you could use the asterisk `*` wildcard before the file extension `.fastq` :</li>
+<pre class="hljs"><code><div>$ grep -B1 AAGTT *.fastq
+</div></code></pre>
+<p>In this case, the lines with the sequence AAGTT are shown for all of the files that end with '.fastq' in the current directory. The output shows the name of the file followed by semicolon to differentiate what file each line comes from.</p>
+</details>
+<h2 id="finding-what-you-need">Finding what you need!</h2>
+<p><code>grep</code> allowed us to identify sequences in our FASTQ files that match a particular pattern. All of these sequences were printed to our terminal screen, but in order to work with these sequences and perform other operations on them, we will need to capture that output in some
+way.</p>
+<p>We can do this with something called &quot;redirection&quot;. The idea is that
+we are taking what would ordinarily be printed to the terminal screen and redirecting it to another location. In our case, we want to print this information to a file so that we can look at it later and
+use other commands to analyze this data.</p>
+<p>The command for redirecting output to a file is <code>&gt;</code>.</p>
+<p>Let's try out this command and copy all the records (including all four lines of each record) in our FASTQ files that contain
+'NNNNNNNNNN' to another file called <code>bad_reads.txt</code>.</p>
+<pre class="hljs"><code><div>$ grep -B1 -A2 NNNNNNNNNN JC1A_R2.fastq &gt; bad_reads.txt
+</div></code></pre>
+<p>The prompt should sit there a little bit, and then it should look like nothing happened. But type <code>ls</code>. You should see a new file called <code>bad_reads.txt</code>.</p>
+<p>We can check the number of lines in our new file using a command called <code>wc</code>. <code>wc</code> stands for <strong>word count</strong>. This command counts the number of words, lines, and characters in a file.</p>
+<pre class="hljs"><code><div>$ wc bad_reads.txt
+</div></code></pre>
+<pre class="hljs"><code><div>  402 489 50076 bad_reads.txt
+</div></code></pre>
+<p>This will tell us the number of lines, words and characters in the file. If we want only the number of lines, we can use the <code>-l</code> flag for <code>lines</code>.</p>
+<pre class="hljs"><code><div>$ wc -l bad_reads.txt
+</div></code></pre>
+<pre class="hljs"><code><div>402 bad_reads.txt
+</div></code></pre>
+<p>Because we asked <code>grep</code> for all four lines of each FASTQ record, we need to divide the output by four to get the number of sequences that match our search pattern.</p>
+<blockquote>
+<h2 id="exercise-2-using-wc">Exercise 2: Using <code>wc</code></h2>
+<p>How many sequences in <code>JC1A_R2.fastq</code> contain at least 3 consecutive Ns?</p>
+</blockquote>
+<details>
+  <summary markdown="span">Solution</summary>
+~~~
+$ grep NNN JC1A_R2.fastq > bad_reads.txt
+$ wc -l bad_reads.txt
+~~~
+<pre class="hljs"><code><div>596 bad_reads.txt
+</div></code></pre>
+</details>
+<br>
+<h2 id="redirecting-output">Redirecting output</h2>
+<p>We might want to search multiple FASTQ files for sequences that match our search pattern. However, we need to be careful, because each time we use the <code>&gt;</code> command to redirect output to a file, the new output will replace the output that was already present in the file.
+This is called &quot;overwriting&quot; and, just like you don't want to overwrite your video recording of your kid's first birthday party, you also want to avoid overwriting your data files.</p>
+<pre class="hljs"><code><div>$ grep -B1 -A2 NNNNNNNNNN JC1A_R1.fastq &gt; bad_reads.txt
+$ wc -l bad_reads.txt
+</div></code></pre>
+<pre class="hljs"><code><div>24 bad_reads.txt
+</div></code></pre>
+<p>The old <code>bad_reads.txt</code> that counts bad quality reads from file <code>JC1A_R2.fastq</code> with 402 lines has been erased.
+Instead a new <code>bad_reads.txt</code> that contain 24 lines from bad reads from <code>JC1A_R1.fastq</code> has been created. We can avoid overwriting our files by using the command <code>&gt;&gt;</code>. <code>&gt;&gt;</code> is known as the &quot;append redirect&quot; and will append new output to the end of a file, rather than overwriting it.</p>
+<pre class="hljs"><code><div>$ grep -B1 -A2 NNNNNNNNNN JC1A_R2.fastq &gt; bad_reads.txt
+$ wc -l bad_reads.txt
+</div></code></pre>
+<pre class="hljs"><code><div>402 bad_reads.txt
+</div></code></pre>
+<pre class="hljs"><code><div>$ grep -B1 -A2 NNNNNNNNNN JC1A_R1.fastq &gt;&gt; bad_reads.txt
+$ wc -l bad_reads.txt
+</div></code></pre>
+<pre class="hljs"><code><div>426 bad_reads.txt
+</div></code></pre>
+<p>The output of our second call to <code>wc</code> shows that we have not overwritten our original data. The final number of 426 lines results from the adition of 402 reads from <code>JC1A_R2.fastq</code> file + 24 reads from  <code>JC1A_R1.fastq</code> file. We can also do this for more files with a single line of code by using a wildcard.</p>
+<pre class="hljs"><code><div>$ rm bad_reads.txt
+</div></code></pre>
+<pre class="hljs"><code><div>$ grep -B1 -A2 NNNNNNNNNN *.fastq &gt;&gt; bad_reads.txt
+$ wc -l bad_reads.txt
+</div></code></pre>
+<pre class="hljs"><code><div>427 bad_reads.txt
+</div></code></pre>
+<h2 id="pipes">Pipes</h2>
+<p>Since we might have multiple different criteria we want to search for,
+creating a new output file each time has the potential to clutter up our workspace. We also so far haven't been interested in the actual contents of those files, only in the number of reads that we've found. We created the files to store the reads and then counted the lines in
+the file to see how many reads matched our criteria. There's a way to do this, however, that doesn't require us to create these intermediate files - the pipe command (<code>|</code>).</p>
+<p>This is probably not a key on your keyboard you use very much, so let's all take a minute to find that key. What <code>|</code> does is take the output that is scrolling by on the terminal and uses that output as input to another command.
+When our output was scrolling by, we might have wished we could slow it down and look at it, like we can with <code>less</code>. Well it turns out that we can! We can redirect our output from our <code>grep</code> call through the <code>less</code> command.</p>
+<pre class="hljs"><code><div>$ grep -B1 -A2 NNNNNNNNNN JC1A_R2.fastq | less
+</div></code></pre>
+<p>We can now see the output from our <code>grep</code> call within the <code>less</code> interface. We can use the up and down arrows to scroll through the output and use <code>q</code> to exit <code>less</code>.</p>
+<p>Redirecting output is often not intuitive, and can take some time to get used to. Once you're comfortable with redirection, however, you'll be able to combine any number of commands to do all sorts of exciting things with your data!</p>
+<p>None of the command line programs we've been learning do anything all that impressive on their own, but when you start chaining them together, you can do some really powerful things very efficiently.</p>
+<h2 id="writing-%22for-loops%22">Writing &quot;for loops&quot;</h2>
+<p>Loops are key to productivity improvements through automation as they allow us to execute commands repeatedly. Similar to wildcards and tab completion, using loops also reduces the amount of typing (and typing mistakes).
+<br></p>
+<p>Loops are helpful when performing operations on groups of sequencing files, such as unzipping or trimming multiple files. We will use loops for these purposes in subsequent analyses, but will cover the basics of them for now.</p>
+<p>When the shell sees the keyword <code>for</code>, it knows to repeat a command (or group of commands) once for each item in a list. Each time the loop runs (called an iteration), an item in the list is assigned in sequence to the <strong>variable</strong>, and the commands inside the loop are executed, before moving on to  the next item in the list. Inside the loop, we call for the variable's value by putting <code>$</code> in front of it. The <code>$</code> tells the shell interpreter to treat the <strong>variable</strong>
+as a variable name and substitute its value in its place, rather than treat it as text or an external command. In shell programming, this is usually called &quot;expanding&quot; the variable.</p>
+<pre class="hljs"><code><div>$ cd ../untrimmed_fastq/
+</div></code></pre>
+<p>Let's write a for loop to show us the first two lines of the fastq files we downloaded earlier. You will notice shell prompt changes from <code>$</code> to <code>&gt;</code> and back again as we were typing in our loop. The second prompt, <code>&gt;</code>, is different to remind us that we haven’t finished typing a complete command yet. A semicolon, <code>;</code>, can be used to separate two commands written on a single line.</p>
+<pre class="hljs"><code><div>$ for filename in *.fastq
+&gt; do
+&gt; head -n 2 ${filename} &gt;&gt; seq_info.txt
+&gt; done
+</div></code></pre>
+<p>To see the content of the little file we just made it is useful to use the <code>cat</code> command.</p>
+<pre class="hljs"><code><div>cat seq_info.txt
+</div></code></pre>
+<pre class="hljs"><code><div>@MISEQ-LAB244-W7:91:000000000-A5C7L:1:1101:13417:1998 1:N:0:TCGNAG
+CTACGGCGCCATCGGCGNCCCCGGACGGTAGGAGACGGCGATGCTGGCCCTCGGCGCGGTCGCGTTCCTGAACCCCTGGCTGCTGGCGGCGCTCGCGGCGCTGCCGGTGCTCTGGGTGCTGCTGCGGGCGACGCCGCCGAGCCCGCGGCGGGTCGGATTCCCCGGCGTGCGCCCCCCGCTCCGGCTCGAGGACGCCGCACCGACGCCCCACCCCCCCCCCCGGTGGCTCCTCCTGCCGCCCTGCCTGATCC
+@MISEQ-LAB244-W7:91:000000000-A5C7L:1:1101:13417:1998 2:N:0:TCGNAG
+CGCGATCAGCAGCGGCCCGGAACCGGTCAGCCGCGCCNTGGGGTTCAGCACCGGCNNGGCGAAGGCCGCGATCGCGGCGGCGGCGATCAGGCAGCGCAGCAGCAGGAGCCACCAGGGCGTGCGGTCGGGCGTCCGTTCGGCGTCCTCGCGCCCCAGCAGCAGGCGCACGCCAGGGAATCCGACCCGCCGCCGGCTCGGCCGCGTCNCCCGCNCCCGCCCCCCGAGCACCCGNAGCCNCNCCACCGCCGCCC
+@MISEQ-LAB244-W7:156:000000000-A80CV:1:1101:12622:2006 1:N:0:CTCAGA
+CCCGTTCCTCGGGCGTGCAGTCGGGCTTGCGGTCTGCCATGTCGTGTTCGGCGTCGGTGGTGCCGATCAGGGTGAAATCCGTCTCGTAGGGGATCGCGAAGATGATCCGCCCGTCCGTGCCCTGAAAGAAATAGCACTTGTCAGATCGGAAGAGCACACGTCTGAACTCCAGTCACCTCAGAATCTCGTATGCCGTCTTCTGCTTGAAAAAAAAAAAAGCAAACCTCTCACTCCCTCTACTCTACTCCCTT
+@MISEQ-LAB244-W7:156:000000000-A80CV:1:1101:12622:2006 2:N:0:CTCAGA
+GACAAGTGCTATTTCTTTCAGGGCACGGACGGGCGGATCATCTTCGCGATCCCCTACGAGACGGATTTCACCCTGATCGGCACCACCGACGCCGAACACGACATGGCAGACCGCAAGCCCGACTGCACGCCCGAGGAACGGGAGATCGGAAGAGCGTCGTGTAGGAAAGAGTGTAGATCTCGGTGGTCGCCGTATCATTAAAAAAAAAAAGCGATCAACTCGACCGACCTGTCTTATTATATCTCACGTAA
+</div></code></pre>
+<p>The for loop begins with the formula <code>for &lt;variable&gt; in &lt;group to iterate over&gt;</code>. In this case, the word <code>filename</code> is designated
+as the variable to be used over each iteration. In our case <code>JC1A_R1.fastq</code> and <code>JC1A_R2.fastq</code> will be substituted for <code>filename</code>
+because they fit the pattern of ending with .fastq in directory we've specified. The next line of the for loop is <code>do</code>. The next line is
+the code that we want to execute. We are telling the loop to print the first two lines of each variable we iterate over and save the information to a file. Finally, the word <code>done</code> ends the loop.</p>
+<p>Note that we are using <code>&gt;&gt;</code> to append the text to our <code>seq_info.txt</code> file. If we used <code>&gt;</code>, the <code>seq_info.txt</code> file would be rewritten
+every time the loop iterates, so it would only have text from the last variable used. Instead, <code>&gt;&gt;</code> adds to the end of the file.</p>
+<h2 id="using-basename-in-for-loops">Using Basename in for loops</h2>
+<p>Basename is a function in UNIX that is helpful for removing a uniform part of a name from a list of files. In this case, we will use basename to remove the <code>.fastq</code> extension from the files that we’ve been working with.</p>
+<pre class="hljs"><code><div>$ basename JC1A_R2.fastq .fastq
+</div></code></pre>
+<p>We see that this returns just the SRR accession, and no longer has the .fastq file extension on it.</p>
+<pre class="hljs"><code><div>JC1A_R2
+</div></code></pre>
+<p>If we try the same thing but use <code>.fasta</code> as the file extension instead, nothing happens. This is because basename only works when it exactly matches a string in the file.</p>
+<pre class="hljs"><code><div>$ basename JC1A_R2.fastq .fasta
+</div></code></pre>
+<pre class="hljs"><code><div>JC1A_R2.fastq
+</div></code></pre>
+<p>Basename is really powerful when used in a for loop. It allows to access just the file prefix, which you can use to name things. Let's try this.</p>
+<p>Inside our for loop, we create a new name variable. We call the basename function inside the parenthesis, then give our variable name from the for loop, in this case <code>${filename}</code>, and finally state that <code>.fastq</code> should be removed from the file name. It’s important to note that we’re not changing the actual files, we’re creating a new variable called name. The line &gt; echo $name will print to the terminal the variable name each time the for loop runs. Because we are iterating over two files, we expect to see two lines of output.</p>
+<pre class="hljs"><code><div>$ for filename in *.fastq
+&gt; do
+&gt; name=$(basename ${filename} .fastq)
+&gt; echo ${name}
+&gt; done
+</div></code></pre>
+<pre class="hljs"><code><div>JC1A_R1
+JC1A_R2
+JP4D_R1
+JP4D_R2
+</div></code></pre>
+<blockquote>
+<h2 id="exercise-3-using-basename">Exercise 3: Using <code>basename</code></h2>
+<p>Print the file prefix of all of the <code>.txt</code> files in our current directory.</p>
+</blockquote>
+<details>
+  <summary markdown="span">Solution</summary>
+  <ul>
+<pre class="hljs"><code><div>$ for filename in *.txt
+&gt; do
+&gt; name=$(basename ${filename} .txt)
+&gt; echo ${name}
+&gt; done
+</div></code></pre>
+</details>
+<br>
+<p>One way this is really useful is to move files. Let's rename all of our .txt files using <code>mv</code> so that they have the years on them, which will document when we created them.</p>
+<pre class="hljs"><code><div>$ for filename in *.txt
+&gt; do
+&gt; name=$(basename ${filename} .txt)
+&gt; mv ${filename}  ${name}_2019.txt
+&gt; done
+</div></code></pre>
+
+</body>
+</html>

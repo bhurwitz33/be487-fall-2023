@@ -315,7 +315,7 @@ Let's copy these files into
 
 Let's use `gunzip` to decompress the files in your data directory so we can look at the FASTQ format. Notice that I can unzip all of the fastq files at once using the '*' character to indicate the pattern. 
 ~~~
-$ gzip *fastq.gz
+$ gunzip *fastq.gz
 $ ls
 ~~~
 

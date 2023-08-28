@@ -109,26 +109,35 @@
     "\n",
     "## Step 1: Go to the assignment directory and get the contig file\n",
     "\n",
-    "Remember, our notebooks work in the current working directory -- and when you login to the HPC this automatically is your home directory. You will need to move to the project directory `/xdisk/bhurwitz/bh_class/your_netid`. The next two cells define what that project directory is (be sure to replace your_netid with your actual netid) and then move into that directory for our exercise."
+    "Remember, our notebooks work in the current working directory -- and when you login to the HPC this automatically is your home directory. You will need to move to the project directory `/xdisk/bhurwitz/your_netid`. The next two cells define what that project directory is (be sure to replace your_netid with your actual netid) and then move into that directory for our exercise."
    ]
   },
   {
    "cell_type": "code",
-   "execution_count": null,
+   "execution_count": 3,
    "metadata": {
     "scrolled": true,
     "vscode": {
      "languageId": "shellscript"
     }
    },
-   "outputs": [],
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "/xdisk/bhurwitz/bhurwitz\n"
+     ]
+    }
+   ],
    "source": [
     "# Ctrl + Enter will run the selected cell, after running a cell you'll see the terminal's output.\n",
     "# In this case, we're printing the work directory for the assignments and changing into that directory.\n",
     "# note the ipython uses a % in front of the change directory command\n",
-    "# change to your home directory and copy the assignment\n",
     "netid = \"your_netid\"\n",
-    "%cd /xdisk/bhurwitz/bh_class/$netid/assignments"
+    "workdir = \"/xdisk/bhurwitz/\" + netid + '/assignments'\n",
+    "print(workdir)\n",
+    "%cd workdir"
    ]
   },
   {
@@ -847,22 +856,6 @@
    "source": [
     "Now we see all of our wanted substitutions have been placed into this final_clean_ids file for futher use."
    ]
-  },
-  {
-   "cell_type": "markdown",
-   "metadata": {},
-   "source": [
-    "Last step, copy your completed Jupyter notebook into your assignments directory. Be sure to save your notebook first."
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "!cp ~/01_intro_unix.ipynb  /xdisk/bhurwitz/bh_class/your_netid/assignments/01_intro_unix"
-   ]
   }
  ],
  "metadata": {
@@ -881,7 +874,7 @@
    "name": "python",
    "nbconvert_exporter": "python",
    "pygments_lexer": "ipython3",
-   "version": "3.8.12"
+   "version": "3.9.6"
   },
   "vscode": {
    "interpreter": {

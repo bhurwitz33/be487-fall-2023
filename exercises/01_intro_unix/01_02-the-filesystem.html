@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>01_02-the-filesystem.md</title>
+<meta http-equiv="Content-type" content="text/html;charset=UTF-8">
+
+<style>
+/* https://github.com/microsoft/vscode/blob/master/extensions/markdown-language-features/media/markdown.css */
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
+body {
+	font-family: var(--vscode-markdown-font-family, -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif);
+	font-size: var(--vscode-markdown-font-size, 14px);
+	padding: 0 26px;
+	line-height: var(--vscode-markdown-line-height, 22px);
+	word-wrap: break-word;
+}
+
+#code-csp-warning {
+	position: fixed;
+	top: 0;
+	right: 0;
+	color: white;
+	margin: 16px;
+	text-align: center;
+	font-size: 12px;
+	font-family: sans-serif;
+	background-color:#444444;
+	cursor: pointer;
+	padding: 6px;
+	box-shadow: 1px 1px 1px rgba(0,0,0,.25);
+}
+
+#code-csp-warning:hover {
+	text-decoration: none;
+	background-color:#007acc;
+	box-shadow: 2px 2px 2px rgba(0,0,0,.25);
+}
+
+body.scrollBeyondLastLine {
+	margin-bottom: calc(100vh - 22px);
+}
+
+body.showEditorSelection .code-line {
+	position: relative;
+}
+
+body.showEditorSelection .code-active-line:before,
+body.showEditorSelection .code-line:hover:before {
+	content: "";
+	display: block;
+	position: absolute;
+	top: 0;
+	left: -12px;
+	height: 100%;
+}
+
+body.showEditorSelection li.code-active-line:before,
+body.showEditorSelection li.code-line:hover:before {
+	left: -30px;
+}
+
+.vscode-light.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.15);
+}
+
+.vscode-light.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.40);
+}
+
+.vscode-light.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+.vscode-dark.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.4);
+}
+
+.vscode-dark.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.60);
+}
+
+.vscode-dark.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+.vscode-high-contrast.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 160, 0, 0.7);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 160, 0, 1);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+img {
+	max-width: 100%;
+	max-height: 100%;
+}
+
+a {
+	text-decoration: none;
+}
+
+a:hover {
+	text-decoration: underline;
+}
+
+a:focus,
+input:focus,
+select:focus,
+textarea:focus {
+	outline: 1px solid -webkit-focus-ring-color;
+	outline-offset: -1px;
+}
+
+hr {
+	border: 0;
+	height: 2px;
+	border-bottom: 2px solid;
+}
+
+h1 {
+	padding-bottom: 0.3em;
+	line-height: 1.2;
+	border-bottom-width: 1px;
+	border-bottom-style: solid;
+}
+
+h1, h2, h3 {
+	font-weight: normal;
+}
+
+table {
+	border-collapse: collapse;
+}
+
+table > thead > tr > th {
+	text-align: left;
+	border-bottom: 1px solid;
+}
+
+table > thead > tr > th,
+table > thead > tr > td,
+table > tbody > tr > th,
+table > tbody > tr > td {
+	padding: 5px 10px;
+}
+
+table > tbody > tr + tr > td {
+	border-top: 1px solid;
+}
+
+blockquote {
+	margin: 0 7px 0 5px;
+	padding: 0 16px 0 10px;
+	border-left-width: 5px;
+	border-left-style: solid;
+}
+
+code {
+	font-family: Menlo, Monaco, Consolas, "Droid Sans Mono", "Courier New", monospace, "Droid Sans Fallback";
+	font-size: 1em;
+	line-height: 1.357em;
+}
+
+body.wordWrap pre {
+	white-space: pre-wrap;
+}
+
+pre:not(.hljs),
+pre.hljs code > div {
+	padding: 16px;
+	border-radius: 3px;
+	overflow: auto;
+}
+
+pre code {
+	color: var(--vscode-editor-foreground);
+	tab-size: 4;
+}
+
+/** Theming */
+
+.vscode-light pre {
+	background-color: rgba(220, 220, 220, 0.4);
+}
+
+.vscode-dark pre {
+	background-color: rgba(10, 10, 10, 0.4);
+}
+
+.vscode-high-contrast pre {
+	background-color: rgb(0, 0, 0);
+}
+
+.vscode-high-contrast h1 {
+	border-color: rgb(0, 0, 0);
+}
+
+.vscode-light table > thead > tr > th {
+	border-color: rgba(0, 0, 0, 0.69);
+}
+
+.vscode-dark table > thead > tr > th {
+	border-color: rgba(255, 255, 255, 0.69);
+}
+
+.vscode-light h1,
+.vscode-light hr,
+.vscode-light table > tbody > tr + tr > td {
+	border-color: rgba(0, 0, 0, 0.18);
+}
+
+.vscode-dark h1,
+.vscode-dark hr,
+.vscode-dark table > tbody > tr + tr > td {
+	border-color: rgba(255, 255, 255, 0.18);
+}
+
+</style>
+
+<style>
+/* Tomorrow Theme */
+/* http://jmblog.github.com/color-themes-for-google-code-highlightjs */
+/* Original theme - https://github.com/chriskempson/tomorrow-theme */
+
+/* Tomorrow Comment */
+.hljs-comment,
+.hljs-quote {
+	color: #8e908c;
+}
+
+/* Tomorrow Red */
+.hljs-variable,
+.hljs-template-variable,
+.hljs-tag,
+.hljs-name,
+.hljs-selector-id,
+.hljs-selector-class,
+.hljs-regexp,
+.hljs-deletion {
+	color: #c82829;
+}
+
+/* Tomorrow Orange */
+.hljs-number,
+.hljs-built_in,
+.hljs-builtin-name,
+.hljs-literal,
+.hljs-type,
+.hljs-params,
+.hljs-meta,
+.hljs-link {
+	color: #f5871f;
+}
+
+/* Tomorrow Yellow */
+.hljs-attribute {
+	color: #eab700;
+}
+
+/* Tomorrow Green */
+.hljs-string,
+.hljs-symbol,
+.hljs-bullet,
+.hljs-addition {
+	color: #718c00;
+}
+
+/* Tomorrow Blue */
+.hljs-title,
+.hljs-section {
+	color: #4271ae;
+}
+
+/* Tomorrow Purple */
+.hljs-keyword,
+.hljs-selector-tag {
+	color: #8959a8;
+}
+
+.hljs {
+	display: block;
+	overflow-x: auto;
+	color: #4d4d4c;
+	padding: 0.5em;
+}
+
+.hljs-emphasis {
+	font-style: italic;
+}
+
+.hljs-strong {
+	font-weight: bold;
+}
+</style>
+
+<style>
+/*
+ * Markdown PDF CSS
+ */
+
+ body {
+	font-family: -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif, "Meiryo";
+	padding: 0 12px;
+}
+
+pre {
+	background-color: #f8f8f8;
+	border: 1px solid #cccccc;
+	border-radius: 3px;
+	overflow-x: auto;
+	white-space: pre-wrap;
+	overflow-wrap: break-word;
+}
+
+pre:not(.hljs) {
+	padding: 23px;
+	line-height: 19px;
+}
+
+blockquote {
+	background: rgba(127, 127, 127, 0.1);
+	border-color: rgba(0, 122, 204, 0.5);
+}
+
+.emoji {
+	height: 1.4em;
+}
+
+code {
+	font-size: 14px;
+	line-height: 19px;
+}
+
+/* for inline code */
+:not(pre):not(.hljs) > code {
+	color: #C9AE75; /* Change the old color so it seems less like an error */
+	font-size: inherit;
+}
+
+/* Page Break : use <div class="page"/> to insert page break
+-------------------------------------------------------- */
+.page {
+	page-break-after: always;
+}
+
+</style>
+
+<script src="https://unpkg.com/mermaid/dist/mermaid.min.js"></script>
+</head>
+<body>
+  <script>
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: document.body.classList.contains('vscode-dark') || document.body.classList.contains('vscode-high-contrast')
+          ? 'dark'
+          : 'default'
+    });
+  </script>
+<h1 id="navigating-files-and-directories">Navigating Files and Directories</h1>
+<h3 id="questions">Questions:</h3>
+<ul>
+<li>&quot;How can I perform operations on files outside of my working directory?&quot;</li>
+<li>&quot;What are some navigational shortcuts I can use to make my work more efficient?&quot;</li>
+</ul>
+<h3 id="objectives">Objectives:</h3>
+<ul>
+<li>&quot;Use a single command to navigate multiple steps in your directory structure, including moving backwards (one level up).&quot;</li>
+<li>&quot;Perform operations on files in directories outside your working directory.&quot;</li>
+<li>&quot;Work with hidden directories and hidden files.&quot;</li>
+<li>&quot;Interconvert between absolute and relative paths.&quot;</li>
+<li>&quot;Employ navigational shortcuts to move around your file system.&quot;</li>
+</ul>
+<h3 id="keypoints">Keypoints:</h3>
+<ul>
+<li>&quot;The <code>/</code>, <code>~</code>, and <code>..</code> characters represent important navigational shortcuts.&quot;</li>
+<li>&quot;Hidden files and directories start with <code>.</code> and can be viewed using <code>ls -a</code>.&quot;</li>
+<li>&quot;Relative paths specify a location starting from the current location, while absolute paths specify a location from the root of the file system.&quot;</li>
+</ul>
+<h2 id="moving-around-the-file-system">Moving around the file system</h2>
+<p>We've learned how to use <code>pwd</code> to find our current location within our file system. We've also learned how to use <code>cd</code> to change locations and <code>ls</code> to list the contents of a directory. Now we're going to learn some additional commands for moving around within our file system.</p>
+<p>Use the commands we've learned so far to navigate to the <code>exercises/data/untrimmed_fastq</code> directory, if you're not already there.</p>
+<pre class="hljs"><code><div>$ cd /xdisk/bhurwitz/bh_class/**your_netid**
+$ cd exercises
+$ cd data
+$ cd untrimmed_fastq
+</div></code></pre>
+<p>What if we want to move back up and out of this directory and to our top level directory? Can we type <code>cd exercises</code>? Try it and see what happens.</p>
+<pre class="hljs"><code><div>$ cd exercises
+</div></code></pre>
+<pre class="hljs"><code><div>-bash: cd: exercises: No such file or directory
+</div></code></pre>
+<p>Your computer looked for a directory or file called <code>exercises</code> within the directory you were already in. It didn't know you wanted to look at a directory level above the one you were located in.</p>
+<p>We have a special command to tell the computer to move us back or up one directory level.</p>
+<pre class="hljs"><code><div>$ cd ..
+</div></code></pre>
+<p>Now we can use <code>pwd</code> to make sure that we are in the directory we intended to navigate to, and <code>ls</code> to check that the contents of the directory are correct.</p>
+<pre class="hljs"><code><div>$ pwd
+</div></code></pre>
+<pre class="hljs"><code><div>/xdisk/bhurwitz/bh_class/**your_netid**/exercises/data
+</div></code></pre>
+<p>From this output, we can see that <code>..</code> did indeed took us back one level in our file system.</p>
+<p>You can chain these together to move several levels:</p>
+<pre class="hljs"><code><div>$ cd ../..
+</div></code></pre>
+<p>Where are you now?</p>
+<blockquote>
+<h2 id="excercise-1-finding-hidden-directories">Excercise 1: Finding hidden directories</h2>
+<p>First navigate to the <code>bh_class</code> directory. Remember how to get there? You can always use <code>pwd</code> to see the current directory you are in. There is a hidden directory within the <code>bh_class</code> directory. Explore the options for <code>ls</code> to find out how to see hidden directories. List the contents of the directory and identify the name of the text file in that directory.</p>
+<p>Hint: hidden files and folders in Unix start with <code>.</code>, for example <code>.my_hidden_directory</code></p>
+</blockquote>
+<details>
+  <summary markdown="span">Solution</summary>
+<p>First use the <code>man</code> command to look at the options for <code>ls</code>.</p>
+<pre class="hljs"><code><div>$ man ls
+</div></code></pre>
+<p>The <code>-a</code> option is short for <code>all</code> and says that it causes <code>ls</code> to &quot;not ignore entries starting with .&quot; This is the option we want.</p>
+<pre class="hljs"><code><div>$ ls -a
+</div></code></pre>
+<pre class="hljs"><code><div>.  ..  admin [class netid directories] .hidden
+</div></code></pre>
+<p>The name of the hidden directory is <code>.hidden</code>. We can navigate to that directory using <code>cd</code>.</p>
+<pre class="hljs"><code><div>$ cd .hidden
+</div></code></pre>
+<p>And then list the contents of the directory using <code>ls</code>.</p>
+<pre class="hljs"><code><div>$ ls
+</div></code></pre>
+<pre class="hljs"><code><div>youfoundit.txt
+</div></code></pre>
+<p>The name of the text file is <code>youfoundit.txt</code>.</p>
+</details>
+<h3 id="file-permissions">File permissions</h3>
+<p>Another option that the <code>ls</code> command has, is to check the permissions of a file. If we are organized and we have a folder with the backup of all our files, we can rescue files that we have accidentally deleted. But just because we have two copies doesn't make us safe! We can still accidentally delete or overwrite both copies. To make sure we can't accidentally mess up a file, we're going to change the permissions on the file so that we're only allowed to read (i.e. view) the file, not write to it (i.e. make new changes).</p>
+<p>View the current permissions on a file using the <code>-l</code> (long) flag for the <code>ls</code> command.</p>
+<pre class="hljs"><code><div>$ ls -l
+</div></code></pre>
+<pre class="hljs"><code><div>total 4
+-rw-r--r--. 1 bhurwitz bhurwitz 47 Aug 24 10:05 youfoundit.txt
+</div></code></pre>
+<p>The first part of the output for the <code>-l</code> flag gives you information about the file's current permissions. There are ten slots in the
+permissions list. The first character in this list is related to file type, not permissions, so we'll ignore it for now. The next three
+characters relate to the permissions that the file owner has, the next three relate to the permissions for group members, and the final
+three characters specify what other users outside of your group can do with the file. We're going to concentrate on the three positions
+that deal with your permissions (as the file owner).</p>
+<img src="../fig/02-02-01.svg" alt="File permission parameters" />
+<a href="../fig/02-02-01.svg">
+  <img src="../fig/02-02-01.svg" width="870" height="631" alt="The file permission parameters described in the text (-rw-rw-r--) showing which of the slots correspond to who has permissions, and a legend showing the meaning of the letters."/>
+</a>
+Here the three positions that relate to the file owner are `rw-`. The `r` means that you have permission to read the file, the `w` 
+indicates that you have permission to write to (i.e. make changes to) the file, and the third position is a `-`, indicating that you 
+don't have permission to carry out the ability encoded by that space (this is the space where `x` or executable ability is stored, we'll 
+talk more about this in [a later lesson](https://carpentries-lab.github.io/metagenomics-shell/05-writing-scripts/index.html)).
+<p>Our goal for now is to change permissions on this file so that you no longer have <code>w</code> or write permissions. We can do this using the <code>chmod</code> (change mode) command and subtracting (<code>-</code>) the write permission <code>-w</code>.</p>
+<p>But, before we can do that, we need to make a copy of the file in your user directory. I currently own the file (bhurwitz).</p>
+<pre class="hljs"><code><div>$ cp youfoundit.txt ../*your_netid**
+$ cd ../*your_netid**
+$ chmod -w youfoundit.txt 
+$ ls -l 
+</div></code></pre>
+<pre class="hljs"><code><div>total 0
+drwxrwsr-x. 3 your_netid bh_class 512 Aug 22 16:20 assignments
+drwxrwsr-x. 2 your_netid bh_class 512 Aug 22 16:20 exercises
+-r--r--r-- 1  your_netid bh_class 47 Aug 22 16:20 youfoundit.txt
+</div></code></pre>
+<h2 id="absolute-vs-relative-paths">Absolute vs. relative paths</h2>
+<p>The <code>cd</code> command takes an argument which is a directory
+name. Directories can be specified using either a <em>relative</em> path or a
+full <em>absolute</em> path. The directories on the computer are arranged into a hierarchy. The full path tells you where a directory is in that
+hierarchy. You should be in your class directory, emter the <code>pwd</code>
+command to find out.</p>
+<pre class="hljs"><code><div>$ pwd  
+</div></code></pre>
+<p>You will see:</p>
+<pre class="hljs"><code><div>/xdisk/bhurwitz/bh_class/your_netid
+</div></code></pre>
+<p>This is the full name of your class directory. This tells you that you
+are in a directory called <code>your_netid</code>, which sits inside a directory called <code>bh_class</code> which sits inside the <code>/xdisk/bhurwitz</code> directory. The very top of the hierarchy is a directory called <code>/</code> which is usually referred to as the <em>root directory</em>.</p>
+<p>Let's make a .hidden directory and move the youfoundit.txt file into that directory.</p>
+<pre class="hljs"><code><div>$ mkdir .hidden
+$ mv youfoundit.txt .hidden
+$ cd /xdisk/bhurwitz/bh_class/your_netid/.hidden
+</div></code></pre>
+<p>This jumps you to the <code>.hidden</code> directory.
+Now go back to the bh_class directory.</p>
+<pre class="hljs"><code><div>$ cd /xdisk/bhurwitz/bh_class
+</div></code></pre>
+<p>And then</p>
+<pre class="hljs"><code><div>$ cd your_netid/.hidden
+</div></code></pre>
+<p>These two commands have the same effect, they both take us to the <code>.hidden</code> directory. The first one uses the absolute path, giving the full address from the home directory. The second uses a relative path, giving only the address from the working directory. A full path always starts with a <code>/</code>. A relative path does not.</p>
+<p>A relative path is like getting directions from someone on the street. They tell you to &quot;go right at the stop sign, and then turn left on Main Street&quot;. That works great if you're standing there together, but not so well if you're trying to tell someone how to get there from another country. A full path is like GPS coordinates. It tells you exactly where something is no matter where you are right now.</p>
+<p>You can usually use either a full path or a relative path depending on what is most convenient. If we are in the home directory, it is more convenient to enter the relative path since it involves less typing.</p>
+<p>Over time, it will become easier for you to keep a mental note of the
+structure of the directories that you are using and how to quickly
+navigate between them.</p>
+<blockquote>
+<h2 id="excercise-2-relative-path-resolution">Excercise 2: Relative path resolution</h2>
+<p>Using the filesystem diagram below, if <code>pwd</code> displays <code>/Users/thing</code>,
+Which one of the following will <code>ls ../backup</code> display?</p>
+<ol>
+<li><code>../backup: No such file or directory</code></li>
+<li><code>2012-12-01 2013-01-08 2013-01-27</code></li>
+<li><code>2012-12-01/ 2013-01-08/ 2013-01-27/</code></li>
+<li><code>original pnas_final pnas_sub</code></li>
+</ol>
+<img src="../fig/filesystem-challenge.svg" alt="Filesystem diagram with folders: Users/thing/backup/2012-12-02, Users/thing/backup/2012-01-08, Users/thing/backup/2013-01-27, Users/backup/original, Users/backup/pnas_final, and Users/backup/pnas_sub" />
+</blockquote>
+<details>
+  <summary markdown="span">Solution</summary>
+  <ut> Solution
+<li>1. No: there *is* a directory `backup` in `/Users`.</li>
+<li>2. No: this is the content of `Users/thing/backup`, but with `..` we asked for one level further up.</li>
+<li>3. No: see previous explanation. Also, we did not specify `-F` to display `/` at the end of the directory names.</li>
+<li>4. Yes: `../backup` refers to `/Users/backup`.</li>
+</details>
+<br>
+<p>The commands <code>cd</code>, and <code>cd ~</code> are very useful for quickly navigating back to your home directory. You usually see the <code>~</code> character to specify your home directory. In this class, we will be using the /xdisk/bhurwitz/bh_class directory given our need for space!</p>
+
+</body>
+</html>
