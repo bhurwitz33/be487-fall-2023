@@ -25,32 +25,32 @@ start working with **our sequencing files**. We did a sequencing experiment and 
 
 Navigate to your `untrimmed_fastq` directory.
 
-~~~
+```
 $ cd /xdisk/bhurwitz/bh_class/your_netid/exercises/data/untrimmed_fastq
-~~~
+```
 
 We are interested in looking at the FASTQ files in this directory. We can list all files with the `.fastq` extension using the command:
 
-~~~
+```
 $ ls *.fastq
-~~~
+```
 
-~~~
+```
 JC1A_R1.fastq JC1A_R2.fastq JP4D_R1.fastq JP4D_R2.fastq
-~~~
+```
 
 The `*` character is a special type of character called a wildcard, which can be used to represent any number of any type of character. 
 Thus, `*.fastq` matches every file that ends with `.fastq`. 
 
 This command: 
 
-~~~
+```
 $ ls *R1.fastq
-~~~
+```
 
-~~~
+```
 JC1A_R1.fastq JP4D_R1.fastq
-~~~
+```
 
 lists only the file that ends with `R1.fastq`.
 
@@ -68,25 +68,25 @@ is very useful.
 
 You can also review your recent commands with the `history` command, by entering:
 
-~~~
+```
 $ history
-~~~
+```
 
 to see a numbered list of recent commands. You can reuse one of these commands directly by referring to the number of that command.
 
 For example, if your history looked like this:
 
-~~~
+```
 259  ls *
 260  ls /usr/bin/*.sh
 261  ls *R1*fastq
-~~~
+```
 
 then you could repeat command #260 by entering:
 
-~~~
+```
 $ !260
-~~~
+```
 
 Type `!` (exclamation point) and then the number of the command from your history. You will be glad you learned this when you need to re-run very complicated commands.
 
@@ -96,9 +96,9 @@ We now know how to switch directories, and look at the contents of directories, 
 
 One way to examine a file is to print out on the screen all of the
 contents using the program `cat`.
-~~~
+```
 $ cat JC1A_R2.fastq
-~~~
+```
 
 `cat` is a terrific program, but, as you just saw if your ran the command, when the file is really big (as the files we have), it can
 be annoying to use. You can always use Ctrl+C to stop the command.  
@@ -109,9 +109,9 @@ are identical to the `man` program.
 
 Enter the following command:
 
-~~~
+```
 $ less JC1A_R2.fastq
-~~~
+```
 
 Some navigation commands in `less`
 
@@ -144,11 +144,11 @@ to see the beginning or end of the file, or see how it's formatted.
 The commands are `head` and `tail` and they let you look at
 the beginning and end of a file, respectively.
 
-~~~
+```
 $ head JC1A_R2.fastq
-~~~
+```
 
-~~~
+```
 @MISEQ-LAB244-W7:91:000000000-A5C7L:1:1101:13417:1998 2:N:0:TCGNAG
 CGCGATCAGCAGCGGCCCGGAACCGGTCAGCCGCGCCNTGGGGTTCAGCACCGGCNNGGCGAAGGCCGCGATCGCGGCGGCGGCGATCAGGCAGCGCAGCAGCAGGAGCCACCAGGGCGTGCGGTCGGGCGTCCGTTCGGCGTCCTCGCGCCCCAGCAGCAGGCGCACGCCAGGGAATCCGACCCGCCGCCGGCTCGGCCGCGTCNCCCGCNCCCGCCCCCCGAGCACCCGNAGCCNCNCCACCGCCGCCC
 +
@@ -160,13 +160,13 @@ BBBBBBBBDBFFGGFFEEGEFG2FHGFEGCA?EEGCE@EFEEE/EEE@EDCFDCAC2G2CG?CC/CFG?C?DHFCGCGFD
 @MISEQ-LAB244-W7:91:000000000-A5C7L:1:1101:11745:2196 2:N:0:NCGAAG
 CGAAAAGCCGCGCGCCGACCTGGGCGTCGAGCGCCGCGCCGCTCCAACGAACGCCAGGCGATCCGAGCGCGGCGGCGATGGCACCCGGATCGAGCCCGGTAAAGTCGGCCCGTAGGTCGAGGCCGCCGCCGCCAGGCGCCACTTCGAGCCGTGGGAGATGCAACGTTAGCGGCGCCGCCCCGTCGGCCGTCTCGAGCAAAATGCGCGTGTCGGTGAGCCGCCGGTGCTCCGGCAACCGCATCCTGCGCCAG
 
-~~~
+```
 
-~~~
+```
 $ tail JC1A_R2.fastq
-~~~
+```
 
-~~~
+```
 +SRR098026.247 HWUSI-EAS1599_1:2:1:2:1311 length=35
 #!##!#################!!!!!!!######
 @SRR098026.248 HWUSI-EAS1599_1:2:1:2:118 length=35
@@ -177,26 +177,26 @@ B!;?!A=5922:##########!!!!!!!######
 CNCTNTATGCGTACGGCAGTGANNNNNNNGGAGAT
 +SRR098026.249 HWUSI-EAS1599_1:2:1:2:1057 length=35
 A!@B!BBB@ABAB#########!!!!!!!######
-~~~
+```
 
 The `-n` option to either of these commands can be used to print the
 first or last `n` lines of a file. 
 
-~~~
+```
 $ head -n 1 JC1A_R2.fastq
-~~~
+```
 
-~~~
+```
 @MISEQ-LAB244-W7:91:000000000-A5C7L:1:1101:13417:1998 2:N:0:TCGNAG
-~~~
+```
 
-~~~
+```
 $ tail -n 1 JC1A_R2.fastq
-~~~
+```
 
-~~~
+```
 AAA#>>A#1>AAGGGGGGGG#ABFEFGGHGEFGEGGGEGFHHHGGGGGGGGEEEEEGCG?EGHHHG@CC#??#???FFG############################################################################################################################################################################
-~~~
+```
 
 > ## Details on the FASTQ format
 > Since we are learning while using FASTQ files, let's understand what they are. Although it looks complicated (and it is), it's easy to understand the [fastq](https://en.wikipedia.org/wiki/FASTQ_format) format with a little decoding. Some rules about the format
@@ -212,44 +212,44 @@ AAA#>>A#1>AAGGGGGGGG#ABFEFGGHGEFGEGGGEGFHHHGGGGGGGGEEEEEGCG?EGHHHG@CC#??#???FFG#
 > We can view the first complete read in one of the files our dataset by using `head` to look at
 > the first four lines.
 > 
-> ~~~
+> ```
 > $ head -n 4 JC1A_R2.fastq
-> ~~~
+> ```
 > 
-> ~~~
+> ```
 > @MISEQ-LAB244-W7:91:000000000-A5C7L:1:1101:13417:1998 2:N:0:TCGNAG
 > CGCGATCAGCAGCGGCCCGGAACCGGTCAGCCGCGCCNTGGGGTTCAGCACCGGCNNGGCGAAGGCCGCGATCGCGGCGGCGGCGATCAGGCAGCGCAGCAGCAGGAGCCACCAGGGCGTGCGGTCGGGCGTCCGTTCGGCGTCCTCGCGCCCCAGCAGCAGGCGCACGCCAGGGAATCCGACCCGCCGCCGGCTCGGCCGCGTCNCCCGCNCCCGCCCCCCGAGCACCCGNAGCCNCNCCACCGCCGCCC
 > +
 > 1>AAADAAFFF1G11AA0000AAFE/AAE0FBAEGGG#B/>EF/EGHHHHHHG?C##???/FE/ECHCE?C<FGGGGCCCGGGG@?AE.BFFEAB-9@@@FFFFFEEEEFBFF--99A-;@B=@A@@?@@>-@@--/B--@--@@-F----;@--:F---9-AB9=-@-9E-99A-;:BF-9-@@-;@-@#############################################################
-> ~~~
+> ```
 > 
 > Most of the nucleotides are correct, although we have some unknown bases (N). This is actually a good sequence read!
 > 
 > Line 4 shows the quality for each nucleotide in the read. Quality is interpreted as the probability of an incorrect base call (e.g. 1 in 10) or, equivalently, the base call accuracy (e.g. 90%). To make it possible to line up each individual nucleotide with its quality
 > score, the numerical score is converted into a code where each individual character represents the numerical quality score for an individual nucleotide. For example, in the line above, the quality score line is: 
 > 
-> ~~~
+> ```
 > !!!!!!!!!!!!!!!!#!!!!!!!!!!!!!!!!!!
-> ~~~
+> ```
 > 
 > The `#` character and each of the `!` characters represent the encoded quality for an individual nucleotide. The numerical value assigned to each of these characters depends on the sequencing platform that generated the reads. The sequencing machine used to generate our data uses the standard Sanger quality PHRED score encoding, Illumina version 1.8 onwards. Each character is assigned a quality score between 0 and 42 as shown in the chart below.
 > 
-> ~~~
+> ```
 > Quality encoding: !"#$%&'()\*+,-./0123456789:;<=>?@ABCDEFGHIJK
 >                   |         |         |         |         |
 > Quality score:    0........10........20........30........40..                          
-> ~~~
+> ```
 > 
 > Each quality score represents the probability that the corresponding nucleotide call is incorrect. This quality score is logarithmically based, so a quality score of 10 reflects a base call accuracy of 90%, but a quality score of 20 reflects a base call accuracy of 99%. These probability values are the results from the base calling algorithm and dependent on how much signal was captured for the base incorporation. 
 > 
 > Looking back at our read: 
 > 
-> ~~~
+> ```
 > @MISEQ-LAB244-W7:91:000000000-A5C7L:1:1101:13417:1998 2:N:0:TCGNAG
 > CGCGATCAGCAGCGGCCCGGAACCGGTCAGCCGCGCCNT
 > +
 > 1>AAADAAFFF1G11AA0000AAFE/AAE0FBAEGGG#B
-> ~~~
+> ```
 > 
 > We can now see that the quality of each of the `N`s is 0 and the quality of the only nucleotide call (`C`) is also very poor (`#` = a quality score of 2). This is indeed a very bad read. 
 
@@ -271,15 +271,15 @@ First, let's make a copy of one of our FASTQ files using the `cp` command.
 
 Navigate to the `/xdisk/bhurwitz/bh_class/your_netid/exercises/data/untrimmed_fastq` directory and enter:
 
-~~~
+```
 $ cp JC1A_R2.fastq JC1A_R2-copy.fastq
 $ ls -F
-~~~
+```
 
 
-~~~
+```
 JC1A_R1.fastq  JC1A_R2-copy.fastq  JC1A_R2.fastq  JP4D_R1.fastq  JP4D_R2.fastq  TruSeq3-PE.fa
-~~~
+```
 
 
 We now have two copies of the `JC1A_R2.fastq` file, one of them named `JC1A_R2-copy.fastq`. We'll move this file to a new directory
@@ -290,45 +290,45 @@ called `backup` where we'll store our backup data files.
 The `mkdir` command is used to make a directory. Enter `mkdir`
 followed by a space, then the directory name you want to create.
 
-~~~
+```
 $ mkdir backup
-~~~
+```
 
 ### Moving / Renaming 
 
 We can now move our backup file to this backup directory. We can
 move files around using the command `mv`. 
 
-~~~
+```
 $ mv JC1A_R2-copy.fastq backup
 $ ls backup
-~~~
+```
  
-~~~
+```
 JC1A_R2-copy.fastq
-~~~
+```
 
 The `mv` command is also how you rename files. Let's rename this file to make it clear that this is a backup.
 
-~~~
+```
 $ cd backup
 $ mv JC1A_R2-copy.fastq JC1A_R2-backup.fastq
 $ ls
-~~~
+```
 
-~~~
+```
 JC1A_R2-backup.fastq
-~~~
+```
 
 ### Removing
 
 When we want to remove a file or a directory we use the `rm` command. By default, `rm` will not delete directories. You can tell `rm` to delete a directory using the `-r` (recursive) option. Or, you can `rmdir` if the directory is empty. 
 
 Let's delete the backup directory we just made. 
-~~~
+```
 $ cd ..
 $ rm -r backup
-~~~
+```
 
 This will delete not only the directory, but all files within the directory. If you have write-protected files in the directory, 
 you will be asked whether you want to override your permission settings. 
@@ -336,9 +336,9 @@ you will be asked whether you want to override your permission settings.
 If we want to modifiy a file without all the permissions you'll be asked if you want to override your file permissions.
 for example:
 
-~~~
+```
 rm: remove write-protected regular file ‘example.fastq’? 
-~~~
+```
 
 If you enter `n` (for no), the file will not be deleted. If you enter `y`, you will delete the file. This gives us an extra measure of security, as there is one more step between us and deleting our data files.
 
@@ -362,10 +362,10 @@ If you enter `n` (for no), the file will not be deleted. If you enter `y`, you w
 <br>
 It's always a good idea to check your work with `ls -l backup`. You should see something like: 
  
-~~~
+```
 -r--r--r-- 1 dcuser dcuser  24203913 Jun 17 23:08 JC1A_R1-backup.fastq
- -r--r--r-- 1 dcuser dcuser  24917444 Jun 17 23:10 JC1A_R2-backup.fastq
- -r--r--r-- 1 dcuser dcuser 186962503 Jun 17 23:10 JP4D_R1-backup.fastq
- -r--r--r-- 1 dcuser dcuser 212161034 Jun 17 23:10 JP4D_R2-backup.fastq
- ~~~
+-r--r--r-- 1 dcuser dcuser  24917444 Jun 17 23:10 JC1A_R2-backup.fastq
+-r--r--r-- 1 dcuser dcuser 186962503 Jun 17 23:10 JP4D_R1-backup.fastq
+-r--r--r-- 1 dcuser dcuser 212161034 Jun 17 23:10 JP4D_R2-backup.fastq
+```
 </details>

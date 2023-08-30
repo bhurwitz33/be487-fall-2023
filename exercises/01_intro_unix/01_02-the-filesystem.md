@@ -21,49 +21,49 @@ We've learned how to use `pwd` to find our current location within our file syst
 
 Use the commands we've learned so far to navigate to the `exercises/data/untrimmed_fastq` directory, if you're not already there. 
 
-~~~
+```
 $ cd /xdisk/bhurwitz/bh_class/**your_netid**
 $ cd exercises
 $ cd data
 $ cd untrimmed_fastq
-~~~
+```
 
 What if we want to move back up and out of this directory and to our top level directory? Can we type `cd exercises`? Try it and see what happens.
 
-~~~
+```
 $ cd exercises
-~~~
+```
 
-~~~
+```
 -bash: cd: exercises: No such file or directory
-~~~
+```
 
 
 Your computer looked for a directory or file called `exercises` within the directory you were already in. It didn't know you wanted to look at a directory level above the one you were located in. 
 
 We have a special command to tell the computer to move us back or up one directory level. 
 
-~~~
+```
 $ cd ..
-~~~
+```
 
 Now we can use `pwd` to make sure that we are in the directory we intended to navigate to, and `ls` to check that the contents of the directory are correct.
 
-~~~
+```
 $ pwd
-~~~
+```
 
-~~~
+```
 /xdisk/bhurwitz/bh_class/**your_netid**/exercises/data
-~~~
+```
 
 From this output, we can see that `..` did indeed took us back one level in our file system. 
 
 You can chain these together to move several levels:
 
-~~~
+```
 $ cd ../..
-~~~
+```
 
 Where are you now?
 
@@ -77,35 +77,35 @@ Where are you now?
   <summary markdown="span">Solution</summary>
 
 First use the `man` command to look at the options for `ls`. 
-~~~
+```
 $ man ls
-~~~
+```
 
 The `-a` option is short for `all` and says that it causes `ls` to "not ignore entries starting with ." This is the option we want. 
 
- ~~~
+ ```
 $ ls -a
-~~~
+```
 
-~~~
+```
 .  ..  admin [class netid directories] .hidden
-~~~
+```
 
 The name of the hidden directory is `.hidden`. We can navigate to that directory using `cd`. 
 
-~~~
+```
 $ cd .hidden
-~~~
+```
 
 And then list the contents of the directory using `ls`. 
 
-~~~
+```
 $ ls
-~~~
+```
 
-~~~
+```
 youfoundit.txt
-~~~
+```
 
 The name of the text file is `youfoundit.txt`.
 </details>
@@ -116,14 +116,14 @@ Another option that the `ls` command has, is to check the permissions of a file.
 
 View the current permissions on a file using the `-l` (long) flag for the `ls` command. 
 
-~~~
+```
 $ ls -l
-~~~
+```
 
-~~~
+```
 total 4
 -rw-r--r--. 1 bhurwitz bhurwitz 47 Aug 24 10:05 youfoundit.txt
-~~~
+```
 
 The first part of the output for the `-l` flag gives you information about the file's current permissions. There are ten slots in the
 permissions list. The first character in this list is related to file type, not permissions, so we'll ignore it for now. The next three
@@ -131,7 +131,6 @@ characters relate to the permissions that the file owner has, the next three rel
 three characters specify what other users outside of your group can do with the file. We're going to concentrate on the three positions
 that deal with your permissions (as the file owner). 
 
-<img src="../fig/02-02-01.svg" alt="File permission parameters" />
 <a href="../fig/02-02-01.svg">
   <img src="../fig/02-02-01.svg" width="870" height="631" alt="The file permission parameters described in the text (-rw-rw-r--) showing which of the slots correspond to who has permissions, and a legend showing the meaning of the letters."/>
 </a>
@@ -144,19 +143,19 @@ Our goal for now is to change permissions on this file so that you no longer hav
 
 But, before we can do that, we need to make a copy of the file in your user directory. I currently own the file (bhurwitz).
 
-~~~
+```
 $ cp youfoundit.txt ../*your_netid**
 $ cd ../*your_netid**
 $ chmod -w youfoundit.txt 
 $ ls -l 
-~~~
+```
 
-~~~
+```
 total 0
 drwxrwsr-x. 3 your_netid bh_class 512 Aug 22 16:20 assignments
 drwxrwsr-x. 2 your_netid bh_class 512 Aug 22 16:20 exercises
 -r--r--r-- 1  your_netid bh_class 47 Aug 22 16:20 youfoundit.txt
-~~~
+```
 
 ## Absolute vs. relative paths
 
@@ -166,38 +165,38 @@ full *absolute* path. The directories on the computer are arranged into a hierar
 hierarchy. You should be in your class directory, emter the `pwd`
 command to find out.
 
-~~~
+```
 $ pwd  
-~~~
+```
 
 You will see: 
 
-~~~
+```
 /xdisk/bhurwitz/bh_class/your_netid
-~~~
+```
 
 This is the full name of your class directory. This tells you that you
 are in a directory called `your_netid`, which sits inside a directory called `bh_class` which sits inside the `/xdisk/bhurwitz` directory. The very top of the hierarchy is a directory called `/` which is usually referred to as the *root directory*. 
 
 Let's make a .hidden directory and move the youfoundit.txt file into that directory.  
 
-~~~
+```
 $ mkdir .hidden
 $ mv youfoundit.txt .hidden
 $ cd /xdisk/bhurwitz/bh_class/your_netid/.hidden
-~~~
+```
 
 This jumps you to the `.hidden` directory. 
 Now go back to the bh_class directory. 
 
-~~~
+```
 $ cd /xdisk/bhurwitz/bh_class
-~~~
+```
 
 And then
-~~~
+```
 $ cd your_netid/.hidden
-~~~
+```
 
 These two commands have the same effect, they both take us to the `.hidden` directory. The first one uses the absolute path, giving the full address from the home directory. The second uses a relative path, giving only the address from the working directory. A full path always starts with a `/`. A relative path does not.
 

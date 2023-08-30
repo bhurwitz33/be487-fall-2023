@@ -120,7 +120,7 @@ When you are prompted to type the password, and use duo mobile for 2-factor auth
 
 After logging in, you will see a screen showing something like this: 
 
-~~~
+```
 Last login: Fri Aug 18 13:36:52 2023 from c-71-226-40-183.hsd1.az.comcast.net
 This is a bastion host used to access the rest of the RT/HPC environment.
 
@@ -129,11 +129,11 @@ Type "shell" to access the job submission hosts for all environments
 
 [bhurwitz@gatekeeper ~]$ 
 
-~~~
+```
 
 This provides a lot of information about the remote server that you're logging in to. In this case, we are logging into the gatekeeper node. This is the node that is the "gateway" to the clusters at UA. In our case, we want to go the the ocelote cluster (our teaching cluster). To do this, we use the "shell" command and then type "ocelote" on the command line to go to the ocelote cluster.
 
-~~~
+```
 [bhurwitz@gatekeeper ~]$ shell
 Last login: Fri Aug 18 11:24:47 2023 from ood.hpc.arizona.edu
 ***
@@ -153,7 +153,7 @@ $ elgato
 -----------------------------------------
 
 (puma) [junonia@/home/u20/bhurwitz]$ ocelote
-~~~
+```
 
 Once you login, the system will send you to your home directory. In my case, this is "/home/u20/bhurwitz". 
 
@@ -168,9 +168,9 @@ Several commands are frequently used to create, inspect, rename, and delete file
 The dollar sign is a **prompt**, which shows us that the shell is waiting for input;
 your shell may use a different character as a prompt and may add information before the prompt. When typing commands, either from these lessons or from other sources, do not type the prompt, only the commands that follow it. In this lesson we will use the dollar sign to indicate the prompt. 
 
-~~~
+```
 $
-~~~
+```
 
 Let's find out where we are by running a command called `pwd`
 (which stands for "print working directory").
@@ -182,24 +182,24 @@ unless we explicitly specify something else.
 Here, the computer's response is `/home/u20/bhurwitz`,
 which is my home directory.
 
-~~~
+```
 $ pwd
-~~~
+```
 
-~~~
+```
 /home/u20/bhurwitz
-~~~
+```
 
 Let's look at how our file system is organized. We can see what files and subdirectories are in this directory by running `ls`,
 which stands for "listing":
 
-~~~
+```
 $ ls
-~~~
+```
 
-~~~
+```
 ondemand  scripts  teaching
-~~~
+```
 
 `ls` prints the names of the files and directories in the current directory in alphabetical order, arranged neatly into columns. 
 
@@ -210,29 +210,29 @@ The command to change locations in our file system is `cd` followed by a directo
 
 Let's say we want to navigate to the `/xdisk/bhurwitz/bh_class/<your_netid>` directory we saw above (where you swap out <your_netid> with your own netid).  We can use the following command to get there:
 
-~~~
+```
 $ cd /xdisk/bhurwitz/bh_class/<your_netid>
-~~~
+```
 
 Let's look at what is in this directory:
 
-~~~
+```
 $ ls
-~~~
+```
 
-~~~
+```
 assignments exercises
-~~~
+```
 
 We can make the `ls` output more comprehensible by using the **flag** `-F`, which tells `ls` to add a trailing `/` to the names of directories, or other symbols to identify the type of elements in the directory:
 
-~~~
+```
 $ ls -F
-~~~
+```
 
-~~~
+```
 assignments/  exercises/
-~~~
+```
 
 Anything with a "/" after it is a directory. Things with a "*" after them are programs. If there are no decorations, it's a file.
 
@@ -246,9 +246,9 @@ Here we can see a diagram of how the folders are arranged one inside another. In
 
 `ls` has lots of other options. To find out what they are, we can type:
 
-~~~
+```
 $ man ls
-~~~
+```
 
 Some manual files are very long. You can scroll through the file using
 your keyboard's down arrow or use the <kbd>Space</kbd> key to go forward one page and the <kbd>b</kbd> key to go backwards one page. When you are done reading, hit <kbd>q</kbd> to quit.
@@ -261,11 +261,11 @@ your keyboard's down arrow or use the <kbd>Space</kbd> key to go forward one pag
 <details>
   <summary markdown="span">Solution</summary>
 
-~~~
+```
 $ ls -l
-~~~
+```
 
-~~~
+```
 drwxrwsr-x. 2 bhurwitz bh_class 0 Aug 21 20:47 01_intro_unix
 drwxrwsr-x. 2 bhurwitz bh_class 0 Aug 21 20:47 02_bash_scripting
 drwxrwsr-x. 2 bhurwitz bh_class 0 Aug 21 20:47 03_intro_hpc
@@ -287,7 +287,7 @@ drwxrwsr-x. 2 bhurwitz bh_class 0 Aug 21 20:47 18_abundance_trans
 drwxrwsr-x. 2 bhurwitz bh_class 0 Aug 21 20:47 19_pca_taxon_stats
 drwxrwsr-x. 2 bhurwitz bh_class 0 Aug 21 20:47 20_kmer_comparisons
 drwxrwsr-x. 2 bhurwitz bh_class 0 Aug 21 20:47 21_functional_annot
-~~~
+```
 
 The additional information given includes the name of the owner of the file, when the file was last modified, and whether the current user has permission to read and write to the file.
 
@@ -299,14 +299,14 @@ No one can possibly learn all of these arguments, that's why the manual page is 
 
 OK, let's get started with working with some real data. Make sure you have a shell open, and then let's go into the `/xdisk/bhurwitz/bh_class/**your_netid**/exercises/data/untrimmed_fastq` directory and see what is in there. Be sure to replace **your_netid** below.
 
-~~~
+```
 $ cd /xdisk/bhurwitz/bh_class/**your_netid**/exercises/data/untrimmed_fastq
 $ ls
-~~~
+```
 
-~~~
+```
 JC1A_R1.fastq.gz  JC1A_R2.fastq.gz  JP4D_R1.fastq.gz  JP4D_R2.fastq.gz  TruSeq3-PE.fa
-~~~
+```
 
 This directory contains a file `TruSeq3-PE.fa`, that we will use in a later lesson and four files with `.fastq.gz` extensions. FASTQ is a format for storing information about sequencing reads and their quality. GZ is an archive file compressed. We will be learning more about FASTQ files in a later lesson. These data come in a compressed format, which is why there is a `.gz` at the end of the files. 
 This makes it faster to transfer, and allows it to take up less space on our computer.
@@ -314,14 +314,14 @@ This makes it faster to transfer, and allows it to take up less space on our com
 Let's copy these files into 
 
 Let's use `gunzip` to decompress the files in your data directory so we can look at the FASTQ format. Notice that I can unzip all of the fastq files at once using the '*' character to indicate the pattern. 
-~~~
+```
 $ gunzip *fastq.gz
 $ ls
-~~~
+```
 
-~~~
+```
 JC1A_R1.fastq  JC1A_R2.fastq  JP4D_R1.fastq  JP4D_R2.fastq  TruSeq3-PE.fa
-~~~
+```
 
 ### Shortcut: Tab Completion
 
@@ -332,54 +332,54 @@ as a shortcut. When you start typing out the name of a directory or file, then h
 
 Let's try. Go back one directory
 
-~~~
-$ cd ..
-~~~
+```
+$ cd ../..
+```
 
 then enter:
 
-~~~
+```
 $ cd da<tab>
-~~~
+```
 
 The shell will fill in the rest of the directory name for
 `data`.
 
 Now change directories to `data`
 
-~~~
+```
 $ cd data
-~~~
+```
 
 Using tab complete can be very helpful. However, it will only autocomplete a file or directory name if you've typed enough characters to provide a unique identifier for the file or directory you are trying to access.
 
 After going to our `data` directory, we can try to access one of our sample files:
 
-~~~
-$ cd data/untrimmed_fastq
+```
+$ cd untrimmed_fastq
 $ ls JC<tab>
-~~~
+```
 
 The shell auto-completes your command to `JC1A_R`, because there is another file name in the directory begin with this prefix. When you hit
 <kbd>Tab</kbd> again, the shell will list the possible choices.
 
-~~~
+```
 $ ls JC1A_R<tab><tab>
-~~~
+```
 
-~~~
+```
 JC1A_R1.fastq  JC1A_R2.fastq
-~~~
+```
 
 Tab completion can also fill in the names of programs, which can be useful if you remember the beginning of a program name.
 
-~~~
+```
 $ pw<tab><tab>
-~~~
+```
 
-~~~
+```
 pwd   pwdx
-~~~
+```
 
 Displays the name of every program that starts with `pw`. 
 

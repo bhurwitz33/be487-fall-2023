@@ -624,7 +624,7 @@ $ ls
 <p>Typing out file or directory names can waste a lot of time and it's easy to make typing mistakes. Instead we can use tab complete
 as a shortcut. When you start typing out the name of a directory or file, then hit the <kbd>Tab</kbd> key, the shell will try to fill in the rest of the directory or file name for you.</p>
 <p>Let's try. Go back one directory</p>
-<pre class="hljs"><code><div>$ cd ..
+<pre class="hljs"><code><div>$ cd ../..
 </div></code></pre>
 <p>then enter:</p>
 <pre class="hljs"><code><div>$ cd da&lt;tab&gt;
@@ -636,7 +636,7 @@ as a shortcut. When you start typing out the name of a directory or file, then h
 </div></code></pre>
 <p>Using tab complete can be very helpful. However, it will only autocomplete a file or directory name if you've typed enough characters to provide a unique identifier for the file or directory you are trying to access.</p>
 <p>After going to our <code>data</code> directory, we can try to access one of our sample files:</p>
-<pre class="hljs"><code><div>$ cd data/untrimmed_fastq
+<pre class="hljs"><code><div>$ cd untrimmed_fastq
 $ ls JC&lt;tab&gt;
 </div></code></pre>
 <p>The shell auto-completes your command to <code>JC1A_R</code>, because there is another file name in the directory begin with this prefix. When you hit
