@@ -4,6 +4,7 @@
 ### Questions:
 - "How can I search within files?"
 - "How can I combine existing commands to do new things?"
+
 ### Objectives:
 - "Employ the `grep` command to search for information within files."
 - "Print the results of a command to a file."
@@ -20,29 +21,26 @@
 
 ## Searching files
 
-We discussed in a previous exercise how to search within a file using `less`. We can also search within files without even opening them, using `grep`. `grep` is a command-line utility for searching plain-text files for lines matching a specific set of characters (sometimes called a string) or a particular pattern 
-(which can be specified using something called regular expressions). We're not going to work with regular expressions in this lesson, and are instead going to specify the strings we are searching for.
-Let's give it a try!
+We discussed in a previous exercise how to search within a file using `less`. We can also search within files without even opening them, using `grep`. `grep` is a command-line utility for searching plain-text files for lines matching a specific set of characters (sometimes called a string) or a particular pattern (which can be specified using something called regular expressions). We're not going to work with regular expressions in this lesson, and are instead going to specify the strings we are searching for. Let's give it a try!
 
 > ## Nucleotide abbreviations
 > 
 > The four nucleotides that appear in DNA are abbreviated `A`, `C`, `T` and `G`. 
 > Unknown nucleotides are represented with the letter `N`. An `N` appearing
 > in a sequencing file represents a position where the sequencing machine was not able to 
-> confidently determine the nucleotide in that position. You can think of an `N` as being aNy 
-> nucleotide at that position in the DNA sequence. 
+> confidently determine the nucleotide in that position. You can think of an `N` as being any nucleotide at that position in the DNA sequence. 
 > 
 
 We'll search for strings inside of our fastq files. Let's first make sure we are in the correct directory.
 
-~~~
+```
 $ cd /xdisk/bhurwitz/bh_class/your_netid/exercises/data/untrimmed_fastq
 $ ls  
-~~~
+```
 
-~~~
+```
 JC1A_R1.fastq   JC1A_R2.fastq     JP4D_R1.fastq     JP4D_R2.fastq  TruSeq3-PE.fa
-~~~
+```
 
 Suppose we want to see how many reads in our file have really bad segments containing 10 consecutive unknown nucleotides (Ns).
 
@@ -56,27 +54,27 @@ Suppose we want to see how many reads in our file have really bad segments conta
 > 
 
 Let's search for the string NNNNNNNNNN in the JC1A_R2.fastq file.
-~~~
+```
 $ grep NNNNNNNNNN JC1A_R2.fastq
-~~~
+```
 
 This command returns a lot of output to the terminal. Every single line in the JC1A_R2.fastq file that contains at least 10 consecutive Ns is printed to the terminal, regardless of how long or short the file is. We may be interested not only in the actual sequence which contains this string, but in the name (or identifier) of that sequence. We discussed in a previous lesson that the identifier line immediately precedes the nucleotide sequence for each read
 in a FASTQ file. We may also want to inspect the quality scores associated with each of these reads. To get all of this information, we will return the line immediately before each match and the two lines immediately after each match.
 
 We can use the `-B` argument for grep to return a specific number of lines before each match. The `-A` argument returns a specific number of lines after each matching line. Here we want the line *before* and the two lines *after* each matching line, so we add `-B1 -A2` to our grep command.
 
-~~~
+```
 $ grep -B1 -A2 NNNNNNNNNN JC1A_R2.fastq
-~~~
+```
 
 One of the sets of lines returned by this command is: 
 
-~~~
+```
 @MISEQ-LAB244-W7:91:000000000-A5C7L:1:2111:5300:24013 2:N:0:TCGAAG
 NNNNNNNNNNNCNANNANNNNNCGCCGGTGTTCTNCTGGGGNACGGANACCGAGTAGATCGGAACAGCGTCGTGGAGNGAAAGAGTGTAGATCCCGGTGGGCGGCGTATCATTAAAAAAAAAACCTGCTGGTCCTTGTCTC
 +
 AAA11BB3333BGG1GGEC1E?0E0B0BFDGFHD2FBH110A1BEE?A/BAFBDGH///>FEGGG><@/#//?#?/#//????########################################################################################################################################################################
-~~~
+```
 
 > ## Exercise 1: Using grep
 >
@@ -92,17 +90,17 @@ AAA11BB3333BGG1GGEC1E?0E0B0BFDGFHD2FBH110A1BEE?A/BAFBDGH///>FEGGG><@/#//?#?/#//?
   <summary markdown="span">Solution</summary>
 <li>1.To search for the GATCGAGAGGGGATAGGCG sequence in the file JC1A_R2.fastq: </li>
 
-~~~
+```
 $ grep -B1 GATCGAGAGGGGATAGGCG JC1A_R2.fastq
-~~~
+```
 
 The output shows all of the lines that contain the sequence GATCGAGAGGGGATAGGCG. As the flag -B1 is used, it also shows the previous line to each occurence. In a FastQ file the identifier of each sequence is one line avobe the sequence itself, therefore in this example you can see the names and the sequences that match your query.<
 
 <li>2.To search for a sequence in all of the FastQ files you could use the asterisk `*` wildcard before the file extension `.fastq` :</li>
 
-~~~
+```
 $ grep -B1 AAGTT *.fastq
-~~~ 
+``` 
 
 In this case, the lines with the sequence AAGTT are shown for all of the files that end with '.fastq' in the current directory. The output shows the name of the file followed by semicolon to differentiate what file each line comes from.
 
@@ -122,33 +120,33 @@ The command for redirecting output to a file is `>`.
 Let's try out this command and copy all the records (including all four lines of each record) in our FASTQ files that contain 
 'NNNNNNNNNN' to another file called `bad_reads.txt`.
 
-~~~
+```
 $ grep -B1 -A2 NNNNNNNNNN JC1A_R2.fastq > bad_reads.txt
-~~~
+```
   
 
 The prompt should sit there a little bit, and then it should look like nothing happened. But type `ls`. You should see a new file called `bad_reads.txt`. 
 
 We can check the number of lines in our new file using a command called `wc`. `wc` stands for **word count**. This command counts the number of words, lines, and characters in a file. 
 
-~~~
+```
 $ wc bad_reads.txt
-~~~
+```
 
-~~~
+```
   402 489 50076 bad_reads.txt
-~~~
+```
 
 
 This will tell us the number of lines, words and characters in the file. If we want only the number of lines, we can use the `-l` flag for `lines`.
 
-~~~
+```
 $ wc -l bad_reads.txt
-~~~
+```
 
-~~~
+```
 402 bad_reads.txt
-~~~
+```
 
 Because we asked `grep` for all four lines of each FASTQ record, we need to divide the output by four to get the number of sequences that match our search pattern.
 
@@ -158,14 +156,15 @@ Because we asked `grep` for all four lines of each FASTQ record, we need to divi
 >
 <details>
   <summary markdown="span">Solution</summary>
-~~~
+
+```
 $ grep NNN JC1A_R2.fastq > bad_reads.txt
 $ wc -l bad_reads.txt
-~~~
+```
 
-~~~
+```
 596 bad_reads.txt
-~~~
+```
 </details>
 
 <br>
@@ -175,50 +174,50 @@ $ wc -l bad_reads.txt
 We might want to search multiple FASTQ files for sequences that match our search pattern. However, we need to be careful, because each time we use the `>` command to redirect output to a file, the new output will replace the output that was already present in the file. 
 This is called "overwriting" and, just like you don't want to overwrite your video recording of your kid's first birthday party, you also want to avoid overwriting your data files.
 
-~~~
+```
 $ grep -B1 -A2 NNNNNNNNNN JC1A_R1.fastq > bad_reads.txt
 $ wc -l bad_reads.txt
-~~~
+```
 
-~~~
+```
 24 bad_reads.txt
-~~~
+```
 
 The old `bad_reads.txt` that counts bad quality reads from file `JC1A_R2.fastq` with 402 lines has been erased.
 Instead a new `bad_reads.txt` that contain 24 lines from bad reads from `JC1A_R1.fastq` has been created. We can avoid overwriting our files by using the command `>>`. `>>` is known as the "append redirect" and will append new output to the end of a file, rather than overwriting it.
 
-~~~
+```
 $ grep -B1 -A2 NNNNNNNNNN JC1A_R2.fastq > bad_reads.txt
 $ wc -l bad_reads.txt
-~~~
+```
 
-~~~
+```
 402 bad_reads.txt
-~~~
+```
 
-~~~
+```
 $ grep -B1 -A2 NNNNNNNNNN JC1A_R1.fastq >> bad_reads.txt
 $ wc -l bad_reads.txt
-~~~
+```
 
-~~~
+```
 426 bad_reads.txt
-~~~
+```
 
 The output of our second call to `wc` shows that we have not overwritten our original data. The final number of 426 lines results from the adition of 402 reads from `JC1A_R2.fastq` file + 24 reads from  `JC1A_R1.fastq` file. We can also do this for more files with a single line of code by using a wildcard. 
 
-~~~
+```
 $ rm bad_reads.txt
-~~~
+```
 
-~~~
+```
 $ grep -B1 -A2 NNNNNNNNNN *.fastq >> bad_reads.txt
 $ wc -l bad_reads.txt
-~~~
+```
 
-~~~
+```
 427 bad_reads.txt
-~~~   
+```   
 
 ## Pipes
 
@@ -229,9 +228,9 @@ the file to see how many reads matched our criteria. There's a way to do this, h
 This is probably not a key on your keyboard you use very much, so let's all take a minute to find that key. What `|` does is take the output that is scrolling by on the terminal and uses that output as input to another command. 
 When our output was scrolling by, we might have wished we could slow it down and look at it, like we can with `less`. Well it turns out that we can! We can redirect our output from our `grep` call through the `less` command.
 
-~~~
+```
 $ grep -B1 -A2 NNNNNNNNNN JC1A_R2.fastq | less
-~~~
+```
 
 We can now see the output from our `grep` call within the `less` interface. We can use the up and down arrows to scroll through the output and use `q` to exit `less`.
 
@@ -249,26 +248,23 @@ Loops are helpful when performing operations on groups of sequencing files, such
 When the shell sees the keyword `for`, it knows to repeat a command (or group of commands) once for each item in a list. Each time the loop runs (called an iteration), an item in the list is assigned in sequence to the **variable**, and the commands inside the loop are executed, before moving on to  the next item in the list. Inside the loop, we call for the variable's value by putting `$` in front of it. The `$` tells the shell interpreter to treat the **variable**
 as a variable name and substitute its value in its place, rather than treat it as text or an external command. In shell programming, this is usually called "expanding" the variable.
 
-~~~
-$ cd ../untrimmed_fastq/
-~~~
+Let's write a for loop to show us the first two lines of the fastq files in the untrimmed_fastq directory. You will notice shell prompt changes from `$` to `>` and back again as we were typing in our loop. The second prompt, `>`, is different to remind us that we haven’t finished typing a complete command yet. A semicolon, `;`, can be used to separate two commands written on a single line.
 
-Let's write a for loop to show us the first two lines of the fastq files we downloaded earlier. You will notice shell prompt changes from `$` to `>` and back again as we were typing in our loop. The second prompt, `>`, is different to remind us that we haven’t finished typing a complete command yet. A semicolon, `;`, can be used to separate two commands written on a single line.
-
-~~~
+```
 $ for filename in *.fastq
 > do
 > head -n 2 ${filename} >> seq_info.txt
 > done
-~~~
+```
 
 
 To see the content of the little file we just made it is useful to use the `cat` command.
-~~~
-cat seq_info.txt
-~~~
 
-~~~
+```
+cat seq_info.txt
+```
+
+```
 @MISEQ-LAB244-W7:91:000000000-A5C7L:1:1101:13417:1998 1:N:0:TCGNAG
 CTACGGCGCCATCGGCGNCCCCGGACGGTAGGAGACGGCGATGCTGGCCCTCGGCGCGGTCGCGTTCCTGAACCCCTGGCTGCTGGCGGCGCTCGCGGCGCTGCCGGTGCTCTGGGTGCTGCTGCGGGCGACGCCGCCGAGCCCGCGGCGGGTCGGATTCCCCGGCGTGCGCCCCCCGCTCCGGCTCGAGGACGCCGCACCGACGCCCCACCCCCCCCCCCGGTGGCTCCTCCTGCCGCCCTGCCTGATCC
 @MISEQ-LAB244-W7:91:000000000-A5C7L:1:1101:13417:1998 2:N:0:TCGNAG
@@ -277,7 +273,7 @@ CGCGATCAGCAGCGGCCCGGAACCGGTCAGCCGCGCCNTGGGGTTCAGCACCGGCNNGGCGAAGGCCGCGATCGCGGCGG
 CCCGTTCCTCGGGCGTGCAGTCGGGCTTGCGGTCTGCCATGTCGTGTTCGGCGTCGGTGGTGCCGATCAGGGTGAAATCCGTCTCGTAGGGGATCGCGAAGATGATCCGCCCGTCCGTGCCCTGAAAGAAATAGCACTTGTCAGATCGGAAGAGCACACGTCTGAACTCCAGTCACCTCAGAATCTCGTATGCCGTCTTCTGCTTGAAAAAAAAAAAAGCAAACCTCTCACTCCCTCTACTCTACTCCCTT
 @MISEQ-LAB244-W7:156:000000000-A80CV:1:1101:12622:2006 2:N:0:CTCAGA
 GACAAGTGCTATTTCTTTCAGGGCACGGACGGGCGGATCATCTTCGCGATCCCCTACGAGACGGATTTCACCCTGATCGGCACCACCGACGCCGAACACGACATGGCAGACCGCAAGCCCGACTGCACGCCCGAGGAACGGGAGATCGGAAGAGCGTCGTGTAGGAAAGAGTGTAGATCTCGGTGGTCGCCGTATCATTAAAAAAAAAAAGCGATCAACTCGACCGACCTGTCTTATTATATCTCACGTAA
-~~~
+```
 
 The for loop begins with the formula `for <variable> in <group to iterate over>`. In this case, the word `filename` is designated 
 as the variable to be used over each iteration. In our case `JC1A_R1.fastq` and `JC1A_R2.fastq` will be substituted for `filename` 
@@ -290,48 +286,48 @@ every time the loop iterates, so it would only have text from the last variable 
 ## Using Basename in for loops
 Basename is a function in UNIX that is helpful for removing a uniform part of a name from a list of files. In this case, we will use basename to remove the `.fastq` extension from the files that we’ve been working with. 
 
-~~~
+```
 $ basename JC1A_R2.fastq .fastq
-~~~
+```
 
 
 We see that this returns just the SRR accession, and no longer has the .fastq file extension on it.
 
-~~~
+```
 JC1A_R2
-~~~
+```
 
 
 If we try the same thing but use `.fasta` as the file extension instead, nothing happens. This is because basename only works when it exactly matches a string in the file.
 
-~~~
+```
 $ basename JC1A_R2.fastq .fasta
-~~~
+```
 
 
-~~~
+```
 JC1A_R2.fastq
-~~~
+```
 
 
 Basename is really powerful when used in a for loop. It allows to access just the file prefix, which you can use to name things. Let's try this.
 
-Inside our for loop, we create a new name variable. We call the basename function inside the parenthesis, then give our variable name from the for loop, in this case `${filename}`, and finally state that `.fastq` should be removed from the file name. It’s important to note that we’re not changing the actual files, we’re creating a new variable called name. The line > echo $name will print to the terminal the variable name each time the for loop runs. Because we are iterating over two files, we expect to see two lines of output.
+Inside our for loop, we create a new name variable. We call the basename function inside the parenthesis, then give our variable name from the for loop, in this case `${filename}`, and finally state that `.fastq` should be removed from the file name. It’s important to note that we’re not changing the actual files, we’re creating a new variable called name. The line "> echo $name" will print to the terminal the variable name each time the for loop runs. Because we are iterating over two files, we expect to see two lines of output.
 
-~~~
+```
 $ for filename in *.fastq
 > do
 > name=$(basename ${filename} .fastq)
 > echo ${name}
 > done
-~~~
+```
 
-~~~
+```
 JC1A_R1
 JC1A_R2
 JP4D_R1
 JP4D_R2
-~~~
+```
 
 > ## Exercise 3: Using `basename`
 >
@@ -341,13 +337,13 @@ JP4D_R2
   <summary markdown="span">Solution</summary>
   <ul>
 
-~~~
+```
 $ for filename in *.txt
 > do
 > name=$(basename ${filename} .txt)
 > echo ${name}
 > done
-~~~
+```
 
 </details>
 
@@ -355,10 +351,10 @@ $ for filename in *.txt
 
 One way this is really useful is to move files. Let's rename all of our .txt files using `mv` so that they have the years on them, which will document when we created them. 
 
-~~~
+```
 $ for filename in *.txt
 > do
 > name=$(basename ${filename} .txt)
-> mv ${filename}  ${name}_2019.txt
+> mv ${filename}  ${name}_2023.txt
 > done
-~~~
+```

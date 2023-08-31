@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>04-redirection.md</title>
+<title>02_01-redirection.md</title>
 <meta http-equiv="Content-type" content="text/html;charset=UTF-8">
 
 <style>
@@ -388,16 +388,13 @@ code {
 <li>&quot;<code>basename</code> gets rid of repetitive parts of names&quot;</li>
 </ul>
 <h2 id="searching-files">Searching files</h2>
-<p>We discussed in a previous exercise how to search within a file using <code>less</code>. We can also search within files without even opening them, using <code>grep</code>. <code>grep</code> is a command-line utility for searching plain-text files for lines matching a specific set of characters (sometimes called a string) or a particular pattern
-(which can be specified using something called regular expressions). We're not going to work with regular expressions in this lesson, and are instead going to specify the strings we are searching for.
-Let's give it a try!</p>
+<p>We discussed in a previous exercise how to search within a file using <code>less</code>. We can also search within files without even opening them, using <code>grep</code>. <code>grep</code> is a command-line utility for searching plain-text files for lines matching a specific set of characters (sometimes called a string) or a particular pattern (which can be specified using something called regular expressions). We're not going to work with regular expressions in this lesson, and are instead going to specify the strings we are searching for. Let's give it a try!</p>
 <blockquote>
 <h2 id="nucleotide-abbreviations">Nucleotide abbreviations</h2>
 <p>The four nucleotides that appear in DNA are abbreviated <code>A</code>, <code>C</code>, <code>T</code> and <code>G</code>.
 Unknown nucleotides are represented with the letter <code>N</code>. An <code>N</code> appearing
 in a sequencing file represents a position where the sequencing machine was not able to
-confidently determine the nucleotide in that position. You can think of an <code>N</code> as being aNy
-nucleotide at that position in the DNA sequence.</p>
+confidently determine the nucleotide in that position. You can think of an <code>N</code> as being any nucleotide at that position in the DNA sequence.</p>
 </blockquote>
 <p>We'll search for strings inside of our fastq files. Let's first make sure we are in the correct directory.</p>
 <pre class="hljs"><code><div>$ cd /xdisk/bhurwitz/bh_class/your_netid/exercises/data/untrimmed_fastq
@@ -483,10 +480,9 @@ use other commands to analyze this data.</p>
 </blockquote>
 <details>
   <summary markdown="span">Solution</summary>
-~~~
-$ grep NNN JC1A_R2.fastq > bad_reads.txt
+<pre class="hljs"><code><div>$ grep NNN JC1A_R2.fastq &gt; bad_reads.txt
 $ wc -l bad_reads.txt
-~~~
+</div></code></pre>
 <pre class="hljs"><code><div>596 bad_reads.txt
 </div></code></pre>
 </details>
@@ -536,9 +532,7 @@ When our output was scrolling by, we might have wished we could slow it down and
 <p>Loops are helpful when performing operations on groups of sequencing files, such as unzipping or trimming multiple files. We will use loops for these purposes in subsequent analyses, but will cover the basics of them for now.</p>
 <p>When the shell sees the keyword <code>for</code>, it knows to repeat a command (or group of commands) once for each item in a list. Each time the loop runs (called an iteration), an item in the list is assigned in sequence to the <strong>variable</strong>, and the commands inside the loop are executed, before moving on to  the next item in the list. Inside the loop, we call for the variable's value by putting <code>$</code> in front of it. The <code>$</code> tells the shell interpreter to treat the <strong>variable</strong>
 as a variable name and substitute its value in its place, rather than treat it as text or an external command. In shell programming, this is usually called &quot;expanding&quot; the variable.</p>
-<pre class="hljs"><code><div>$ cd ../untrimmed_fastq/
-</div></code></pre>
-<p>Let's write a for loop to show us the first two lines of the fastq files we downloaded earlier. You will notice shell prompt changes from <code>$</code> to <code>&gt;</code> and back again as we were typing in our loop. The second prompt, <code>&gt;</code>, is different to remind us that we haven’t finished typing a complete command yet. A semicolon, <code>;</code>, can be used to separate two commands written on a single line.</p>
+<p>Let's write a for loop to show us the first two lines of the fastq files in the untrimmed_fastq directory. You will notice shell prompt changes from <code>$</code> to <code>&gt;</code> and back again as we were typing in our loop. The second prompt, <code>&gt;</code>, is different to remind us that we haven’t finished typing a complete command yet. A semicolon, <code>;</code>, can be used to separate two commands written on a single line.</p>
 <pre class="hljs"><code><div>$ for filename in *.fastq
 &gt; do
 &gt; head -n 2 ${filename} &gt;&gt; seq_info.txt
@@ -575,7 +569,7 @@ every time the loop iterates, so it would only have text from the last variable 
 <pre class="hljs"><code><div>JC1A_R2.fastq
 </div></code></pre>
 <p>Basename is really powerful when used in a for loop. It allows to access just the file prefix, which you can use to name things. Let's try this.</p>
-<p>Inside our for loop, we create a new name variable. We call the basename function inside the parenthesis, then give our variable name from the for loop, in this case <code>${filename}</code>, and finally state that <code>.fastq</code> should be removed from the file name. It’s important to note that we’re not changing the actual files, we’re creating a new variable called name. The line &gt; echo $name will print to the terminal the variable name each time the for loop runs. Because we are iterating over two files, we expect to see two lines of output.</p>
+<p>Inside our for loop, we create a new name variable. We call the basename function inside the parenthesis, then give our variable name from the for loop, in this case <code>${filename}</code>, and finally state that <code>.fastq</code> should be removed from the file name. It’s important to note that we’re not changing the actual files, we’re creating a new variable called name. The line &quot;&gt; echo $name&quot; will print to the terminal the variable name each time the for loop runs. Because we are iterating over two files, we expect to see two lines of output.</p>
 <pre class="hljs"><code><div>$ for filename in *.fastq
 &gt; do
 &gt; name=$(basename ${filename} .fastq)
@@ -606,7 +600,7 @@ JP4D_R2
 <pre class="hljs"><code><div>$ for filename in *.txt
 &gt; do
 &gt; name=$(basename ${filename} .txt)
-&gt; mv ${filename}  ${name}_2019.txt
+&gt; mv ${filename}  ${name}_2023.txt
 &gt; done
 </div></code></pre>
 

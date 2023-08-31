@@ -1,65 +1,43 @@
----
-title: "Writing Scripts and Working with Data"
-teaching: 20
-exercises: 20
-questions:
+# Writing Scripts and Working with Data
+
+### Questions:
 - How can we automate a commonly used set of commands?
 - How can we transfer files between local and remote computers?
-objectives:
+
+### Objectives:
 - Use the `nano` text editor to modify text files.
 - Write a basic shell script.
 - Use the `bash` command to execute a shell script.
 - Use `chmod` to make a script an executable program.
-keypoints:
+
+### Keypoints:
 - Scripts are a collection of commands executed together.
 - Scripts are executable text files.
 - Nano is a text editor.
 - In a terminal, `scp` transfers information to and from virtual and local computers.
-- R studio remote interface allows the transfer of information between virtual and local computers.
----
-
-<script language="javascript" type="text/javascript">
-function set_page_view_defaults() {
-    document.getElementById('div_win').style.display = 'block';
-    document.getElementById('div_unix').style.display = 'none';
-};
-
-function change_content_by_platform(form_control){
-    if (!form_control || document.getElementById(form_control).value == 'win') {
-        set_page_view_defaults();
-    } else if (document.getElementById(form_control).value == 'unix') {
-        document.getElementById('div_win').style.display = 'none';
-        document.getElementById('div_unix').style.display = 'block';
-    } else {
-        alert("Error: Missing platform value for 'change_content_by_platform()' script!");
-    }
-}
-
-window.onload = set_page_view_defaults;
-</script>
+- R studio remote interface allows the transfer of information between 
 
 
 ## Writing files
 
 We have been able to do much work with existing files, but what if we want to write our own files? We are not going to type in a FASTA file, but we will see as we go through other tutorials; there are many reasons we will want to write a file or edit an existing file.
 
-We will use a text editor called Nano to add text to files. We are going to create a file to take notes about what we have been doing with the data files in `~/dc_workshopd/data/untrimmed_fastq`.
+We will use a text editor called Nano to add text to files. We are going to create a file to take notes about what we have been doing with the data files in `/xdisk/bhurwitz/bh_class/your_netid/exercises/data/untrimmed_fastq`.
 
 Taking notes is good practice when working in bioinformatics. We can create a file called a `README.txt` that describes the data files in the directory or documents how the files in that directory were generated. As the name suggests, it is a file that others should read to understand the information in that directory.
 
 Let's change our working directory to `~/dc_workshop/data/untrimmed_fastq` using `cd`,
 then run `nano` to create a file called `README.txt`:
 
-~~~
-$ cd ~/dc_workshop/data/untrimmed_fastq
+```
+$ cd /xdisk/bhurwitz/bh_class/your_netid/exercises/data/untrimmed_fastq
 $ nano README.txt
-~~~
-{: .bash}
+```
 
 You should see something like this: 
 
-<a href="{{ page.root }}/fig/02-05-01.png">
-  <img src="{{ page.root }}/fig/02-05-01.png" alt="nano screen with the name of the file in the top bar, a blank screen to write in the middle, and a bottom bar with the shortcuts for the available nano instructions." />
+<a href="../fig/02-05-01.png">
+  <img src="../fig/02-05-01.png" alt="nano screen with the name of the file in the top bar, a blank screen to write in the middle, and a bottom bar with the shortcuts for the available nano instructions." />
 </a>
 <em> Figure 1. GNU Nano Text Editor Menu. <em/>
 
@@ -72,7 +50,7 @@ The text at the bottom of the screen shows the keyboard shortcuts for performing
 > human-friendly media. We use it in examples because it is one of the 
 > least complex text editors. However, because of this trait, it may 
 > not be powerful enough or flexible enough for the work you need to do
-> after this workshop. On Unix systems (such as Linux and Mac OS X),
+> after this class. On Unix systems (such as Linux and Mac OS X),
 > many programmers use [Emacs](http://www.gnu.org/software/emacs/) or
 > [Vim](http://www.vim.org/) (both of which require more time to learn), 
 > or a graphical editor such as
@@ -87,11 +65,11 @@ The text at the bottom of the screen shows the keyboard shortcuts for performing
 > your computer's start menu, it may want to save files in your desktop or
 > documents directory instead. You can change this by navigating to
 > another directory the first time you "Save As..."
-{: .callout}
+
 
 Let us type in a few lines of text. Describe the files in this directory or what you have been doing with them.
-    <a href="{{ page.root }}/fig/02-05-02.png">
-  <img src="{{ page.root }}/fig/02-05-02.png" alt="The same screen as before but now it has text in the middle part." />
+    <a href="../fig/02-05-02.png">
+  <img src="../fig/02-05-02.png" alt="The same screen as before but now it has text in the middle part." />
 </a>
 <em> Figure 2. For example, the README file is written in nano. <em/>
     
@@ -119,7 +97,6 @@ return to the shell.
 > In `nano`, along the bottom of the screen, you will see `^G Get Help ^O WriteOut`.
 > This means that you can use <kbd>Ctrl</kbd>-<kbd>G</kbd> to get help and <kbd>Ctrl</kbd>-<kbd>O</kbd> to save your
 > file.
-{: .callout}
 
 Now you have written a file. You can look at it with `less` or `cat`, or open it up again and edit it with `nano`.
 
@@ -127,16 +104,15 @@ Now you have written a file. You can look at it with `less` or `cat`, or open it
 >
 > Open `README.txt`, add the date to the top of the file, and save the file. 
 >
-> > ## Solution
-> > 
-> > ~~~
-> > Use `nano README.txt` to open the file.  
-> > Add today's date and then use <kbd>Ctrl</kbd>-<kbd>X</kbd> to exit and `y` to save.
-> >
-> > ~~~
-> > {: .bash}
-> {: .solution}
-{: .challenge}
+<details>
+  <summary markdown="span">Solution</summary>
+  <ul>
+
+```
+Use `nano README.txt` to open the file.  
+Add today's date and then use <kbd>Ctrl</kbd>-<kbd>X</kbd> to exit and `y` to save.
+```
+</details>
 
 ## Writing scripts
 
@@ -146,26 +122,23 @@ One thing we will commonly want to do with sequencing results is pull out bad re
 
 Bad reads have a lot of N's, so we are going to look for  `NNNNNNNNNN` with `grep`. We want the whole FASTQ record, so we are also going to get the one line above the sequence and the two lines below. We also want to look at all the files that end with `.fastq`, so we will use the `*` wildcard.
 
-~~~
+```
 grep -B1 -A2 NNNNNNNNNN *.fastq > scripted_bad_reads.txt
-~~~
-{: .bash}
+```
 
 We are going to create a new file to put this command in. We will call it `bad-reads-script.sh`. The `sh` is not required, but using that extension tells us it is a shell script.
 
-~~~
+```
 $ nano bad-reads-script.sh
-~~~
-{: .bash}
+```
 
 Type your `grep` command into the file and save it as before. Be careful not to add the `$` at the beginning of the line.
 
 Now comes the neat part. We can run this script. Type:
 
-~~~
+```
 $ bash bad-reads-script.sh
-~~~
-{: .bash}
+```
 
 It will look like nothing happened, but now if you look at `scripted_bad_reads.txt`, you can see that there are now reads in the file.
 
@@ -174,75 +147,72 @@ It will look like nothing happened, but now if you look at `scripted_bad_reads.t
 >
 > We want the script to tell us when it is done.  
 > 
-> > ## Solution
-> > 
-> > ~~~
-> >1. Open `bad-reads-script.sh` and add the line `echo "Script finished!"` after the `grep` command and save the file.  
-> >2. Run the updated script.
-> > ~~~
-> > {: .bash}
-> {: .solution}
-{: .challenge}
+<details>
+  <summary markdown="span">Solution</summary>
+  <ul>
+
+```
+1. Open `bad-reads-script.sh` and add the line `echo "Script finished!"` after the `grep` command and save the file.  
+2. Run the updated script.
+```
+
+</details>
 
 ## Making the script into a program
 
-We had to type `bash` because we needed to tell the computer what program to use to run this script. Instead, we can turn this script into its own program. We need to tell it that it is a program by making it executable. We can do this by changing the file permissions. We talked about permissions in [an earlier episode](https://carpentries-incubator.github.io/shell-metagenomics/02-the-filesystem/index.html).
+We had to type `bash` because we needed to tell the computer what program to use to run this script. Instead, we can turn this script into its own program. We need to tell it that it is a program by making it executable. We can do this by changing the file permissions. We talked about permissions in an earlier class.
 
 First, let us look at the current permissions.
 
-~~~
+```
 $ ls -l bad-reads-script.sh
-~~~
-{: .bash}
+```
 
-~~~
--rw-rw-r-- 1 dcuser dcuser 0 Oct 25 21:46 bad-reads-script.sh
-~~~
-{: .output}
+```
+-rw-rw-r-- 1 user user 0 Aug 25 21:46 bad-reads-script.sh
+```
+
 
 We see that it says `-rw-r--r--`. This combination shows that the file can be read by any user and written to by the file owner (you). We want to change these permissions so the file can be executed as a program. We use the command `chmod` as we did earlier when we removed write permissions. Here we are adding (`+`) executable permissions (`+x`).
 
-~~~
+```
 $ chmod +x bad-reads-script.sh
-~~~
-{: .bash}
+```
 
 Now let us look at the permissions again.
 
-~~~
+```
 $ ls -l bad-reads-script.sh
-~~~
-{: .bash}
+```
 
-~~~
+```
 -rwxrwxr-x 1 dcuser dcuser 0 Oct 25 21:46 bad-reads-script.sh
-~~~
-{: .output}
+```
 
 Now we see that it says `-rwxr-xr-x`. The `x`'s there now tell us we can run it as a program. So, let us try it! We will need to put `./` at the beginning, so the computer knows to look here in this directory for the program.
 
-~~~
+```
 $ ./bad-reads-script.sh
-~~~
+```
 {: .bash}
 
 The script should run the same way as before, but now we have created our own computer program!
 
 It is good practice to keep any large files compressed while not using them. In this way, you save storage space; you will see that you will appreciate it when you advance your analysis. So, since we will not use the FASTQ files for now, let us compress them. Moreover, run `ls -lh` to confirm that they are compressed. 
 
-~~~
+```
 $ gzip ~/dc_workshop/data/untrimmed_fastq/*.fastq
 $ ls -lh  ~/dc_workshop/data/untrimmed_fastq/*.fastq.gz
-~~~
+```
 {: .bash}
 
-~~~
+```
 total 428M
 -rw-r--r-- 1 dcuser dcuser  24M Nov 26 12:36 JC1A_R1.fastq.gz
 -rw-r--r-- 1 dcuser dcuser  24M Nov 26 12:37 JC1A_R2.fastq.gz
 -rw-r--r-- 1 dcuser dcuser 179M Nov 26 12:44 JP4D_R1.fastq.gz
 -rw-r--r-- 1 dcuser dcuser 203M Nov 26 12:51 JP4D_R2.fastq.gz
-~~~
+```
 {: .output}
 
 ## Moving and downloading data
@@ -272,10 +242,10 @@ Before starting our download, we need to know whether we are using ``curl`` or `
 
 To see which program you have, type:
  
-~~~
+```
 $ which curl
 $ which wget
-~~~
+```
 {: .bash}
 
 ``which`` is a BASH program that looks through everything you have
@@ -285,24 +255,24 @@ results.
 
 On Mac OSX, you will likely get the following output:
 
-~~~
+```
 $ which curl
-~~~
+```
 {: .bash}
 
-~~~
+```
 /usr/bin/curl
-~~~
+```
 {: .output}
 
-~~~
+```
 $ which wget
-~~~
+```
 {: .bash}
 
-~~~
+```
 $
-~~~
+```
 {: .output}
 
 This output means that you have ``curl`` installed but not ``wget``.
@@ -310,18 +280,18 @@ This output means that you have ``curl`` installed but not ``wget``.
 Once you know whether you have ``curl`` or ``wget`` use one of the
 following commands to download the file:
 
-~~~
+```
 $ cd
 $ wget ftp://ftp.ensemblgenomes.org/pub/release-37/bacteria/species_EnsemblBacteria.txt
-~~~
+```
 {: .bash}
 
 or
 
-~~~
+```
 $ cd
 $ curl -O ftp://ftp.ensemblgenomes.org/pub/release-37/bacteria/species_EnsemblBacteria.txt
-~~~
+```
 {: .bash}
 
 Since we wanted to *download* the file rather than view it, we used ``wget`` without
@@ -440,9 +410,9 @@ between computers. The simplest way to use `scp` is to run it in your local term
 and use it to copy a single file. While `scp <local-file-path> <AWS instance path>` will upload a local file into your AWS instance, 
 `scp <AWS-instance-path> <local-file-path>` will move your file from your remote AWS instance into
 your local computer. The general form of the `scp` command is the following:  
-~~~
+```
 $ scp <file you want to move, local or remote> <path to where I want to move it, local or remote>
-~~~
+```
 {: .bash}
 
     
@@ -450,14 +420,14 @@ $ scp <file you want to move, local or remote> <path to where I want to move it,
 > Let us download the text file  `~/data/untrimmed_fastq/scripted_bad_reads.txt` from the remote machine to your local computer.
 > Which of the following commands would download the file?  
 > A)  
-> ~~~
+> ```
 > $  scp local_file.txt dcuser@ip.address:/home/dcuser/
-> ~~~
+> ```
 > {: .bash}
 > B)  
-> ~~~
+> ```
 > $ scp dcuser@ip.address:/home/dcuser/dc_workshop/data/untrimmed_fastq/scripted_bad_reads.txt. ~/Downloads
-> ~~~
+> ```
 > {: .bash}
 >
 > > ## Solution
