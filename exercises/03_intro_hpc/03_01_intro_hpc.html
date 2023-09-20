@@ -1,0 +1,599 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>03_01_intro_hpc.md</title>
+<meta http-equiv="Content-type" content="text/html;charset=UTF-8">
+
+<style>
+/* https://github.com/microsoft/vscode/blob/master/extensions/markdown-language-features/media/markdown.css */
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
+body {
+	font-family: var(--vscode-markdown-font-family, -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif);
+	font-size: var(--vscode-markdown-font-size, 14px);
+	padding: 0 26px;
+	line-height: var(--vscode-markdown-line-height, 22px);
+	word-wrap: break-word;
+}
+
+#code-csp-warning {
+	position: fixed;
+	top: 0;
+	right: 0;
+	color: white;
+	margin: 16px;
+	text-align: center;
+	font-size: 12px;
+	font-family: sans-serif;
+	background-color:#444444;
+	cursor: pointer;
+	padding: 6px;
+	box-shadow: 1px 1px 1px rgba(0,0,0,.25);
+}
+
+#code-csp-warning:hover {
+	text-decoration: none;
+	background-color:#007acc;
+	box-shadow: 2px 2px 2px rgba(0,0,0,.25);
+}
+
+body.scrollBeyondLastLine {
+	margin-bottom: calc(100vh - 22px);
+}
+
+body.showEditorSelection .code-line {
+	position: relative;
+}
+
+body.showEditorSelection .code-active-line:before,
+body.showEditorSelection .code-line:hover:before {
+	content: "";
+	display: block;
+	position: absolute;
+	top: 0;
+	left: -12px;
+	height: 100%;
+}
+
+body.showEditorSelection li.code-active-line:before,
+body.showEditorSelection li.code-line:hover:before {
+	left: -30px;
+}
+
+.vscode-light.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.15);
+}
+
+.vscode-light.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.40);
+}
+
+.vscode-light.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+.vscode-dark.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.4);
+}
+
+.vscode-dark.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.60);
+}
+
+.vscode-dark.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+.vscode-high-contrast.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 160, 0, 0.7);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 160, 0, 1);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+img {
+	max-width: 100%;
+	max-height: 100%;
+}
+
+a {
+	text-decoration: none;
+}
+
+a:hover {
+	text-decoration: underline;
+}
+
+a:focus,
+input:focus,
+select:focus,
+textarea:focus {
+	outline: 1px solid -webkit-focus-ring-color;
+	outline-offset: -1px;
+}
+
+hr {
+	border: 0;
+	height: 2px;
+	border-bottom: 2px solid;
+}
+
+h1 {
+	padding-bottom: 0.3em;
+	line-height: 1.2;
+	border-bottom-width: 1px;
+	border-bottom-style: solid;
+}
+
+h1, h2, h3 {
+	font-weight: normal;
+}
+
+table {
+	border-collapse: collapse;
+}
+
+table > thead > tr > th {
+	text-align: left;
+	border-bottom: 1px solid;
+}
+
+table > thead > tr > th,
+table > thead > tr > td,
+table > tbody > tr > th,
+table > tbody > tr > td {
+	padding: 5px 10px;
+}
+
+table > tbody > tr + tr > td {
+	border-top: 1px solid;
+}
+
+blockquote {
+	margin: 0 7px 0 5px;
+	padding: 0 16px 0 10px;
+	border-left-width: 5px;
+	border-left-style: solid;
+}
+
+code {
+	font-family: Menlo, Monaco, Consolas, "Droid Sans Mono", "Courier New", monospace, "Droid Sans Fallback";
+	font-size: 1em;
+	line-height: 1.357em;
+}
+
+body.wordWrap pre {
+	white-space: pre-wrap;
+}
+
+pre:not(.hljs),
+pre.hljs code > div {
+	padding: 16px;
+	border-radius: 3px;
+	overflow: auto;
+}
+
+pre code {
+	color: var(--vscode-editor-foreground);
+	tab-size: 4;
+}
+
+/** Theming */
+
+.vscode-light pre {
+	background-color: rgba(220, 220, 220, 0.4);
+}
+
+.vscode-dark pre {
+	background-color: rgba(10, 10, 10, 0.4);
+}
+
+.vscode-high-contrast pre {
+	background-color: rgb(0, 0, 0);
+}
+
+.vscode-high-contrast h1 {
+	border-color: rgb(0, 0, 0);
+}
+
+.vscode-light table > thead > tr > th {
+	border-color: rgba(0, 0, 0, 0.69);
+}
+
+.vscode-dark table > thead > tr > th {
+	border-color: rgba(255, 255, 255, 0.69);
+}
+
+.vscode-light h1,
+.vscode-light hr,
+.vscode-light table > tbody > tr + tr > td {
+	border-color: rgba(0, 0, 0, 0.18);
+}
+
+.vscode-dark h1,
+.vscode-dark hr,
+.vscode-dark table > tbody > tr + tr > td {
+	border-color: rgba(255, 255, 255, 0.18);
+}
+
+</style>
+
+<style>
+/* Tomorrow Theme */
+/* http://jmblog.github.com/color-themes-for-google-code-highlightjs */
+/* Original theme - https://github.com/chriskempson/tomorrow-theme */
+
+/* Tomorrow Comment */
+.hljs-comment,
+.hljs-quote {
+	color: #8e908c;
+}
+
+/* Tomorrow Red */
+.hljs-variable,
+.hljs-template-variable,
+.hljs-tag,
+.hljs-name,
+.hljs-selector-id,
+.hljs-selector-class,
+.hljs-regexp,
+.hljs-deletion {
+	color: #c82829;
+}
+
+/* Tomorrow Orange */
+.hljs-number,
+.hljs-built_in,
+.hljs-builtin-name,
+.hljs-literal,
+.hljs-type,
+.hljs-params,
+.hljs-meta,
+.hljs-link {
+	color: #f5871f;
+}
+
+/* Tomorrow Yellow */
+.hljs-attribute {
+	color: #eab700;
+}
+
+/* Tomorrow Green */
+.hljs-string,
+.hljs-symbol,
+.hljs-bullet,
+.hljs-addition {
+	color: #718c00;
+}
+
+/* Tomorrow Blue */
+.hljs-title,
+.hljs-section {
+	color: #4271ae;
+}
+
+/* Tomorrow Purple */
+.hljs-keyword,
+.hljs-selector-tag {
+	color: #8959a8;
+}
+
+.hljs {
+	display: block;
+	overflow-x: auto;
+	color: #4d4d4c;
+	padding: 0.5em;
+}
+
+.hljs-emphasis {
+	font-style: italic;
+}
+
+.hljs-strong {
+	font-weight: bold;
+}
+</style>
+
+<style>
+/*
+ * Markdown PDF CSS
+ */
+
+ body {
+	font-family: -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif, "Meiryo";
+	padding: 0 12px;
+}
+
+pre {
+	background-color: #f8f8f8;
+	border: 1px solid #cccccc;
+	border-radius: 3px;
+	overflow-x: auto;
+	white-space: pre-wrap;
+	overflow-wrap: break-word;
+}
+
+pre:not(.hljs) {
+	padding: 23px;
+	line-height: 19px;
+}
+
+blockquote {
+	background: rgba(127, 127, 127, 0.1);
+	border-color: rgba(0, 122, 204, 0.5);
+}
+
+.emoji {
+	height: 1.4em;
+}
+
+code {
+	font-size: 14px;
+	line-height: 19px;
+}
+
+/* for inline code */
+:not(pre):not(.hljs) > code {
+	color: #C9AE75; /* Change the old color so it seems less like an error */
+	font-size: inherit;
+}
+
+/* Page Break : use <div class="page"/> to insert page break
+-------------------------------------------------------- */
+.page {
+	page-break-after: always;
+}
+
+</style>
+
+<script src="https://unpkg.com/mermaid/dist/mermaid.min.js"></script>
+</head>
+<body>
+  <script>
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: document.body.classList.contains('vscode-dark') || document.body.classList.contains('vscode-high-contrast')
+          ? 'dark'
+          : 'default'
+    });
+  </script>
+<h1 id="whats-a-supercomputer">What's a supercomputer?</h1>
+<p>A supercomputer is a collection, or cluster, of a large number of regular computers (referred to as compute nodes) connected over a network. Each of the computers is like a local workstation though typically much more capable. For example, a standard laptop might have 4 CPUs and 8gb of RAM. Compare this with a standard compute node on Puma which has a whopping 94 CPUs and 470gb of RAM!</p>
+<br>
+Another thing that differentiates supercomputers from your personal workstation is a supercomputer is a shared resource. This means there may be hundreds or even thousands of simultaneous users. Without some sort of coordination, you can imagine it would be a logistical nightmare to figure out who can run their code, what resources they can use, and where they should run it. That's why supercomputers use login nodes and job schedulers (we use one called SLURM).
+<br>
+<a href="../fig/HPCDiagram_FileTransfers.png">
+  <img src="../fig/HPCDiagram_FileTransfers.png" alt="Cluster Overview."/>
+</a>
+<h2 id="logging-into-the-hpc">Logging into the HPC.</h2>
+<p>In past exercises, you have learned how to login to the HPC and have eveither used the <a href="https://ood.hpc.arizona.edu/pun/sys/dashboard">ondemand web portal</a>, or you have logged in directory via a shell program from your laptop. If you login from the HPC ondemand portal using the Clusters -&gt; Shell from the menu, you will be directed to the Bastion host, where you will get to choose which cluster you would like to login to.</p>
+<h2 id="what-is-a-bastion-host">What is a Bastion host?</h2>
+<p>After a successful login, you will be connected to the bastion host. This is a single computer that provides a gateway to our three clusters. This is the only function the bastion host serves. It is not for storing files, running programs, or accessing software. The hostname of this machine is gatekeeper. The Bastion host allows you to connect to different login nodes for each of the clusters we have at UA. You can select from puma, ocelote, or elgato. In our class, we will use ocelote, our teaching cluster.</p>
+<h2 id="what-is-a-login-node">What is a login node?</h2>
+<p>When you first log into a supercomputer from the Bastion host, you're connected to something called a login node. This is a single computer that's connected to the cluster of compute nodes and is where you write and submit your jobs using a job scheduler. A login node itself is not used for performing any analyses.</p>
+<h2 id="what-is-a-job-scheduler">What is a job scheduler?</h2>
+<p>A job scheduler is software used to coordinate user jobs. The job scheduler we use is called SLURM. You can use it by writing a special script that requests compute resources (e.g., CPUs, RAM, GPUs) and includes instructions for running your code. You submit this script to the job scheduler using a special command called <code>sbatch</code> and it does the work of finding the required space on the supercomputer for you. It then runs your code and returns the results to your account in a text file.</p>
+<h2 id="lets-look-at-an-analogy">Let's look at an analogy.</h2>
+<p>One way you might think of a supercomputer setup is as a post office and factory. Imagine you have something you need built in a factory and have a list of instructions and materials for how to do it. To achieve this, you put your instructions (code) in an addressed envelope (SLURM script), take it to a post office (login node), have postal worker (job scheduler) deliver the instructions to the factory (compute node), and then you can go home (log off). After waiting for a period of time, your completed project is delivered to you (as a text file).</p>
+<h2 id="what-is-a-node">What is a node?</h2>
+<p>Here is one of the computers, or compute nodes, in Ocelote. They have the same components as a PC or workstation: there are two processor modules, memory DIMMs, an internal disk and networking ports. The power supplies are in the chassis that the compute nodes plug into. Some of the compute nodes have GPUs like the ones in your Xbox or gaming laptop that you use for Minecraft but are much more capable.</p>
+<a href="../fig/ocelote_compute_node.png">
+  <img src="../fig/ocelote_compute_node.png" alt="A compute node on the ocelote cluster."/>
+</a>
+<h2 id="why-should-i-use-an-hpc">Why should I use an HPC?</h2>
+<p>There are lots of reasons to use a supercomputer! For example, say you have analyses that require a tremendous amount of memory or storage space. It's not feasible (or very expensive) to use 3TB of memory or 10TB of disk space on a local workstation, but on our systems it's very possible (and free). This is how you scale up from the workstation under your desk.</p>
+<br>
+Another possibility is you may have thousands of metagenomes to run through quality control. This may take an unreasonable amount of time and be a serious bottleneck for your research if you're running them in serial locally. However, on a supercomputer you can run hundreds of jobs at the same time using thousands of CPUs. This means you may wind up getting results in hours instead of months. This how you scale out your work.
+<br>
+You may also have experience with being frustrated with a job's runtime. What happens if it takes a week or longer to complete one of your analyses? On a local workstation, keeping your computer awake for the duration of the run may be difficult, inconvenient, or impossible. On a supercomputer, the process of running jobs can be fully automated. Once you have a special script written with all the necessary instructions, you can submit it to the scheduler and it does the rest. This means you can log out and close your computer without any worry about interrupting your work. Your results are returned to you as a text file in your account in real time so you can always log in and check your progress. You can even request email notifications to keep track of your job's status, though you'll want to be careful not to mail bomb yourself if you're running thousands of jobs.
+<h2 id="where-do-i-store-my-files">Where do I store my files?</h2>
+<p>Every compute node in our supercomputers is connected to a large storage array. This storage array is where any files you <a href="https://public.confluence.arizona.edu/display/UAHPC/Transferring+Data">upload to the system</a> are saved and means that no matter where you are on the system, you'll be able to access your data. There are three locations where your files may go, each with a different size limit. Take a look at ouy hpc <a href="https://public.confluence.arizona.edu/display/UAHPC/Storage#Storage-Tier1HPCHighPerformanceStorage(Tier1)">storage page</a> for more detailed information.</p>
+<h2 id="how-do-you-actually-access-a-compute-node">How do you actually access a compute node?</h2>
+<p>To connect to a compute node, you will need to use the job scheduler. A scheduler, in our case SLURM, is software that will find and reserve resources on a cluster's compute nodes as space becomes available. Resources include things like memory, CPUs, and GPUs that you want to reserve for personal use for a specified period of time. You can use the job scheduler to request two types of jobs: interactive and batch.</p>
+<h2 id="interactive-jobs">Interactive jobs</h2>
+<p>Let's start with a basic interactive job to get a feel for things.
+Starting a session. To connect to a compute node to work interactively, use the command interactive -a your_group replacing your_group with your own group's name. In our case, we're going to use <code>bhurwitz</code>.</p>
+<pre class="hljs"><code><div>interactive -a bh_class
+</div></code></pre>
+<p>You will see the following output:</p>
+<pre class="hljs"><code><div>Run &quot;interactive -h for help customizing interactive use&quot;
+Submitting with /usr/local/bin/salloc --job-name=interactive --mem-per-cpu=4GB --nodes=1    --ntasks=1 --time=01:00:00 --account=bhurwitz --partition=standard
+
+NOTICE: Requesting an interactive session on the elgato system results in 
+significantly shorter wait times. Consider executing the elgato command before 
+using interactive.
+
+salloc: Pending job allocation 8060393
+salloc: job 8060393 queued and waiting for resources
+
+</div></code></pre>
+<p>This gives us information about what compute resources we are asking for. The information here is what you would get by default. But, you can customize this and ask for more resources. For example, maybe I want more memory per CPU. First, we need to exit out of the compute node we just went to.</p>
+<pre class="hljs"><code><div>exit
+interactive -a bh_class -mem-per-cpu=8GB
+</div></code></pre>
+<p>Check our all of your options to modify the interactive command <a href="https://public.confluence.arizona.edu/display/UAHPC/Running+Jobs+with+SLURM#RunningJobswithSLURM-interactive-jobsInteractiveJobs">here</a>.</p>
+<h3 id="lets-check-out-some-software">Let's check out some software</h3>
+<p>Software packages are <strong>not available on the login nodes</strong> but are available on the compute nodes. Now that we're connected to one, we can see what's available. Software on HPC comes installed as modules. Modules make it easy to load and unload software from your environment. This allows hundreds of packages to be available on the same system without dependency or versioning conflicts. It's always good practice to specify which version of the software you need when loading to ensure a stable environment.</p>
+<p>You can view and load software modules using the command module avail and module load, respectively.</p>
+<p>Let's try this out:</p>
+<pre class="hljs"><code><div>module avail
+</div></code></pre>
+<p>You should see a ton of output that looks like this</p>
+<pre class="hljs"><code><div>(puma) [r4u10n1@/xdisk/bhurwitz]$ module avail
+
+-------------------- /opt/ohpc/pub/moduledeps/gnu8-openmpi3 --------------------
+   abyss/2.2.4                 netcdf-fortran/4.5.2
+   castep/20.11                netcdf/4.7.1
+   cp2k-cuda/7.1.0             nufeb/3.0
+   cp2k/7.1.0                  openfoam/20.06
+   gromacs/2020.2              parflow/3.7.0
+   gromacs/2021.5       (D)    parflow/3.9.0        (D)
+   hwloc/2.2.0                 petsc-complex/3.14.2
+   hypre/2.11.2                petsc/3.13.1
+
+</div></code></pre>
+<p>You can run any of these by doing the following:</p>
+<pre class="hljs"><code><div>module load fastqc
+fastqc --help
+</div></code></pre>
+<p>You should see output from the fastqc program describing how to run the program and the flags you can use to change how the program runs.</p>
+<pre class="hljs"><code><div>(puma) [r4u10n1@/xdisk/bhurwitz]$ module load fastqc/0.11.9
+(puma) [r4u10n1@/xdisk/bhurwitz]$ fastqc --help
+
+            FastQC - A high throughput sequence QC analysis tool
+
+SYNOPSIS
+
+	fastqc seqfile1 seqfile2 .. seqfileN
+
+    fastqc [-o output dir] [--(no)extract] [-f fastq|bam|sam] 
+           [-c contaminant file] seqfile1 .. seqfileN
+...
+</div></code></pre>
+<h3 id="benefits-of-interactive-sessions">Benefits of interactive sessions</h3>
+<p>Interactive sessions are excellent development environments. When connected to a compute node, some things you can do are:</p>
+<li>Run, test, and debug your code
+<li>View, test, and use software
+<li>Install your own software
+<li>Run computationally-intensive commands that might impact others on the login nodes
+<h3 id="drawbacks-of-interactive-sessions">Drawbacks of interactive sessions</h3>
+<p>Interactive sessions are great testing and development environments, but may not be optimally suited for certain types of analyses. Some issues that may arise include:</p>
+<li>Your session may time out due to inactivity
+<li>Your internet connection may get disrupted
+<li>Your computer may get closed or turned off
+<li>You want to run more than one job at a time
+<br>
+What's a good solution to deal with these challenges? The answer: batch jobs!
+<h2 id="batch-jobs">Batch jobs</h2>
+<h3 id="the-basics">The basics:</h3>
+<p>Batch jobs are a way of submitting work to run on HPC without the need to be present. This means you can log out of the system, turn off your computer and walk away without your work being interrupted. It also means you can submit multiple (up to 1000) jobs to run simultaneously!</p>
+<p>Running these sorts of jobs requires two steps:</p>
+<p>Step 1: Create a shell script with three sections:</p>
+<ol>
+<li>The header. This is called a shebang and goes in every batch script. It tells the system which interpreter to use (i.e., which language to execute the instructions in):
+Part 1: The shebang
+#!/bin/bash</li>
+<li>Instructions that tell the job scheduler the resources you need and any other job specifications. This section will look like:
+Part 2: The SBATCH directives
+#SBATCH --option1=value1
+#SBATCH --option2=value2
+. . .</li>
+<li>A blueprint of how to run your work. This includes all the commands you would need to run in the terminal. This section might look like:
+Part 3: The blueprint
+cd /path/to/directory
+module load python/3.9
+python3 some_script.py</li>
+</ol>
+<p>Step 2.	Submit the shell script to the scheduler with the command sbatch.</p>
+<p>Let's try creating our first job now using the outline provided above.</p>
+<h3 id="creating-the-sample-shell-script">Creating the sample shell script</h3>
+<p>Let's start by creating a simple shell script that we'll run in batch.
+Create a directory and a blank file. And open it using your favorite text editor (nano, in this case)</p>
+<pre class="hljs"><code><div>$ cd /xdisk/bhurwitz/bh_class/your_netid/exercises/03_intro_hpc
+$ touch hello_world.sh
+$ nano hello_world.sh
+</div></code></pre>
+<p>Now add the following to the file, then save and exit:</p>
+<pre class="hljs"><code><div>echo &quot;Hello world! I am running on&quot;; hostname; date
+</div></code></pre>
+<p>If we run this interactively...</p>
+<pre class="hljs"><code><div>$ bash hello_world.sh
+</div></code></pre>
+<p>we'll see...</p>
+<pre class="hljs"><code><div>Hello world! I am running on
+wentletrap.hpc.arizona.edu
+Mon Sep  4 19:52:05 MST 2023
+</div></code></pre>
+<h3 id="creating-the-batch-script">Creating the batch script</h3>
+<p>Instead of running this on the login node, we can send the job out to run on the cluster. To do this, we need to create a slurm script with a few more details, that tell the scheduler what resources we need to run the job. Now, let's make a new file called hello_world.slurm, and open it with nano for writing.</p>
+<pre class="hljs"><code><div>$ touch hello_world.slurm
+$ nano hello_world.slurm
+</div></code></pre>
+<h4 id="add-the-shebang-and-sbatch-directives">Add the shebang and SBATCH directives</h4>
+<p>In this example, we're using the standard partition. A partition is a job queue and affects a job's priority and how many hours are charged.
+A comprehensive list of all the options you can specify in your batch script can be found on our <a href="https://public.confluence.arizona.edu/display/UAHPC/Running+Jobs+with+SLURM#RunningJobswithSLURM-batch-directivesBatchJobDirectives">Running Jobs with SLURM</a>.</p>
+<p>In this example, we'll stick with some of the basics:
+hello_world.slurm</p>
+<pre class="hljs"><code><div>#!/bin/bash
+
+# ------------------------------------------------
+### PART 1: Requests resources to run your job.
+# ------------------------------------------------
+### Optional. Set the job name
+#SBATCH --job-name=hello_world
+### Optional. Set the output filename. 
+### SLURM reads %x as the job name and %j as the job ID
+#SBATCH --output=%x-%j.out
+### REQUIRED. Specify the PI group for this job. Replace &lt;PI GROUP&gt; with your own group. (bhurwitz for this class)
+#SBATCH --account=&lt;PI GROUP&gt;
+### REQUIRED. Set the partition for your job. This is a job queue
+#SBATCH --partition=standard
+### REQUIRED. Set the number of nodes
+#SBATCH --nodes=1
+### REQUIRED. Set the number of CPUs that will be used for this job.  
+#SBATCH --ntasks=1 
+### REQUIRED. Set the memory required for this job. 
+#SBATCH --mem-per-cpu=5gb
+### REQUIRED. Specify the time required for this job, hhh:mm:ss
+#SBATCH --time=00:01:00 
+
+# --------------------------------------------------
+### PART 2: Executes bash commands to run your job
+# ---------------------------------------------------
+
+### change to your script’s directory
+### be sure to change to your netid 
+cd /xdisk/bhurwitz/bh_class/your_netid/exercises/03_intro_hpc
+
+### Run your bash commands directly
+### echo &quot;Hello world! I am running on&quot;; hostname; date
+### sleep 10
+
+# Or you can run the bash script you just wrote
+bash hello_world.sh
+
+# or you can run script!
+# just make sure to load what you need, for example:
+# module load python/3.9
+# python3 hello_world.py
+
+</div></code></pre>
+<p>Now save and exit.</p>
+<h3 id="submitting-the-job">Submitting the job</h3>
+<p>In this tutorial, we are submitting our job from an interactive session on a compute node. You may also submit jobs from a login node. The only exception is an array job (that we weill use later) that can only be submitted from a login node.</p>
+<p>The next step is to submit your job request to the scheduler. To do this, you’ll use the command sbatch. This will place your job in line for execution and will return a job ID. This job ID can be used to check your job’s status with squeue, cancel your job with scancel, and get your job’s history with job-history.
+<br></p>
+<p>Let’s run our script and check its status (substitute your own job ID below where relevant):</p>
+<br>
+<pre class="hljs"><code><div>$ sbatch hello_world.slurm 
+</div></code></pre>
+<pre class="hljs"><code><div>Submitted batch job 807387
+</div></code></pre>
+<p>Now, let's check where it is in queue:</p>
+<pre class="hljs"><code><div>squeue --job 807387
+</div></code></pre>
+<pre class="hljs"><code><div>JOBID PARTITION     NAME     USER ST       TIME  NODES NODELIST(REASON)
+807387  standard hello_wo    netid PD       0:06      1 gpu66
+</div></code></pre>
+<p>You can see its state is PD (for pending) which means it’s waiting to be executed by the system. Its state will go to R when it’s running and when the job has completed running, squeue will return a blank line.</p>
+<p>Let’s check the contents of our file with cat.</p>
+<pre class="hljs"><code><div>cat hello_world-807387.out 
+</div></code></pre>
+<p>If your run was successful, you should see:</p>
+<pre class="hljs"><code><div>Hello world! I am running on
+r2u07n2.puma.hpc.arizona.edu
+Tue Sep  5 09:40:03 MST 2023
+</div></code></pre>
+<p>Note that the hostname in this run is different from the hostname of the computer we're connected to. This is because it's a separate job from our interactive session and so may run on any other applicable machines on the cluster.</p>
+<p>Now you are ready to start working on the HPC!</p>
+
+</body>
+</html>

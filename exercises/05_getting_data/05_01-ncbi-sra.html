@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>05_01-ncbi-sra.md</title>
+<meta http-equiv="Content-type" content="text/html;charset=UTF-8">
+
+<style>
+/* https://github.com/microsoft/vscode/blob/master/extensions/markdown-language-features/media/markdown.css */
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
+body {
+	font-family: var(--vscode-markdown-font-family, -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif);
+	font-size: var(--vscode-markdown-font-size, 14px);
+	padding: 0 26px;
+	line-height: var(--vscode-markdown-line-height, 22px);
+	word-wrap: break-word;
+}
+
+#code-csp-warning {
+	position: fixed;
+	top: 0;
+	right: 0;
+	color: white;
+	margin: 16px;
+	text-align: center;
+	font-size: 12px;
+	font-family: sans-serif;
+	background-color:#444444;
+	cursor: pointer;
+	padding: 6px;
+	box-shadow: 1px 1px 1px rgba(0,0,0,.25);
+}
+
+#code-csp-warning:hover {
+	text-decoration: none;
+	background-color:#007acc;
+	box-shadow: 2px 2px 2px rgba(0,0,0,.25);
+}
+
+body.scrollBeyondLastLine {
+	margin-bottom: calc(100vh - 22px);
+}
+
+body.showEditorSelection .code-line {
+	position: relative;
+}
+
+body.showEditorSelection .code-active-line:before,
+body.showEditorSelection .code-line:hover:before {
+	content: "";
+	display: block;
+	position: absolute;
+	top: 0;
+	left: -12px;
+	height: 100%;
+}
+
+body.showEditorSelection li.code-active-line:before,
+body.showEditorSelection li.code-line:hover:before {
+	left: -30px;
+}
+
+.vscode-light.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.15);
+}
+
+.vscode-light.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.40);
+}
+
+.vscode-light.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+.vscode-dark.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.4);
+}
+
+.vscode-dark.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.60);
+}
+
+.vscode-dark.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+.vscode-high-contrast.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 160, 0, 0.7);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 160, 0, 1);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+img {
+	max-width: 100%;
+	max-height: 100%;
+}
+
+a {
+	text-decoration: none;
+}
+
+a:hover {
+	text-decoration: underline;
+}
+
+a:focus,
+input:focus,
+select:focus,
+textarea:focus {
+	outline: 1px solid -webkit-focus-ring-color;
+	outline-offset: -1px;
+}
+
+hr {
+	border: 0;
+	height: 2px;
+	border-bottom: 2px solid;
+}
+
+h1 {
+	padding-bottom: 0.3em;
+	line-height: 1.2;
+	border-bottom-width: 1px;
+	border-bottom-style: solid;
+}
+
+h1, h2, h3 {
+	font-weight: normal;
+}
+
+table {
+	border-collapse: collapse;
+}
+
+table > thead > tr > th {
+	text-align: left;
+	border-bottom: 1px solid;
+}
+
+table > thead > tr > th,
+table > thead > tr > td,
+table > tbody > tr > th,
+table > tbody > tr > td {
+	padding: 5px 10px;
+}
+
+table > tbody > tr + tr > td {
+	border-top: 1px solid;
+}
+
+blockquote {
+	margin: 0 7px 0 5px;
+	padding: 0 16px 0 10px;
+	border-left-width: 5px;
+	border-left-style: solid;
+}
+
+code {
+	font-family: Menlo, Monaco, Consolas, "Droid Sans Mono", "Courier New", monospace, "Droid Sans Fallback";
+	font-size: 1em;
+	line-height: 1.357em;
+}
+
+body.wordWrap pre {
+	white-space: pre-wrap;
+}
+
+pre:not(.hljs),
+pre.hljs code > div {
+	padding: 16px;
+	border-radius: 3px;
+	overflow: auto;
+}
+
+pre code {
+	color: var(--vscode-editor-foreground);
+	tab-size: 4;
+}
+
+/** Theming */
+
+.vscode-light pre {
+	background-color: rgba(220, 220, 220, 0.4);
+}
+
+.vscode-dark pre {
+	background-color: rgba(10, 10, 10, 0.4);
+}
+
+.vscode-high-contrast pre {
+	background-color: rgb(0, 0, 0);
+}
+
+.vscode-high-contrast h1 {
+	border-color: rgb(0, 0, 0);
+}
+
+.vscode-light table > thead > tr > th {
+	border-color: rgba(0, 0, 0, 0.69);
+}
+
+.vscode-dark table > thead > tr > th {
+	border-color: rgba(255, 255, 255, 0.69);
+}
+
+.vscode-light h1,
+.vscode-light hr,
+.vscode-light table > tbody > tr + tr > td {
+	border-color: rgba(0, 0, 0, 0.18);
+}
+
+.vscode-dark h1,
+.vscode-dark hr,
+.vscode-dark table > tbody > tr + tr > td {
+	border-color: rgba(255, 255, 255, 0.18);
+}
+
+</style>
+
+<style>
+/* Tomorrow Theme */
+/* http://jmblog.github.com/color-themes-for-google-code-highlightjs */
+/* Original theme - https://github.com/chriskempson/tomorrow-theme */
+
+/* Tomorrow Comment */
+.hljs-comment,
+.hljs-quote {
+	color: #8e908c;
+}
+
+/* Tomorrow Red */
+.hljs-variable,
+.hljs-template-variable,
+.hljs-tag,
+.hljs-name,
+.hljs-selector-id,
+.hljs-selector-class,
+.hljs-regexp,
+.hljs-deletion {
+	color: #c82829;
+}
+
+/* Tomorrow Orange */
+.hljs-number,
+.hljs-built_in,
+.hljs-builtin-name,
+.hljs-literal,
+.hljs-type,
+.hljs-params,
+.hljs-meta,
+.hljs-link {
+	color: #f5871f;
+}
+
+/* Tomorrow Yellow */
+.hljs-attribute {
+	color: #eab700;
+}
+
+/* Tomorrow Green */
+.hljs-string,
+.hljs-symbol,
+.hljs-bullet,
+.hljs-addition {
+	color: #718c00;
+}
+
+/* Tomorrow Blue */
+.hljs-title,
+.hljs-section {
+	color: #4271ae;
+}
+
+/* Tomorrow Purple */
+.hljs-keyword,
+.hljs-selector-tag {
+	color: #8959a8;
+}
+
+.hljs {
+	display: block;
+	overflow-x: auto;
+	color: #4d4d4c;
+	padding: 0.5em;
+}
+
+.hljs-emphasis {
+	font-style: italic;
+}
+
+.hljs-strong {
+	font-weight: bold;
+}
+</style>
+
+<style>
+/*
+ * Markdown PDF CSS
+ */
+
+ body {
+	font-family: -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif, "Meiryo";
+	padding: 0 12px;
+}
+
+pre {
+	background-color: #f8f8f8;
+	border: 1px solid #cccccc;
+	border-radius: 3px;
+	overflow-x: auto;
+	white-space: pre-wrap;
+	overflow-wrap: break-word;
+}
+
+pre:not(.hljs) {
+	padding: 23px;
+	line-height: 19px;
+}
+
+blockquote {
+	background: rgba(127, 127, 127, 0.1);
+	border-color: rgba(0, 122, 204, 0.5);
+}
+
+.emoji {
+	height: 1.4em;
+}
+
+code {
+	font-size: 14px;
+	line-height: 19px;
+}
+
+/* for inline code */
+:not(pre):not(.hljs) > code {
+	color: #C9AE75; /* Change the old color so it seems less like an error */
+	font-size: inherit;
+}
+
+/* Page Break : use <div class="page"/> to insert page break
+-------------------------------------------------------- */
+.page {
+	page-break-after: always;
+}
+
+</style>
+
+<script src="https://unpkg.com/mermaid/dist/mermaid.min.js"></script>
+</head>
+<body>
+  <script>
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: document.body.classList.contains('vscode-dark') || document.body.classList.contains('vscode-high-contrast')
+          ? 'dark'
+          : 'default'
+    });
+  </script>
+<h1 id="examining-data-on-the-ncbi-sra-database">Examining Data on the NCBI SRA Database</h1>
+<h3 id="questions">Questions:</h3>
+<ul>
+<li>&quot;How do I access public sequencing data?&quot;</li>
+</ul>
+<h3 id="objectives">Objectives:</h3>
+<ul>
+<li>&quot;Be aware that public genomic data is available.&quot;</li>
+<li>&quot;Understand how to access and download this data.&quot;</li>
+</ul>
+<h3 id="keypoints">Keypoints:</h3>
+<ul>
+<li>&quot;Public data repositories are a great source of genomic data.&quot;</li>
+<li>&quot;You are likely to put your data on a public repository.&quot;</li>
+</ul>
+<h2 id="public-data">Public data</h2>
+<p>In our experiments, we usually think about generating our sequencing data. However, almost all analyses use reference data, and you may want to use it to compare your results or annotate your data with publicly available data. You may also want to do a full project or set of analyses using publicly available data. This data is a great and essential resource for genomic data analysis.</p>
+<p>When you come to publish a paper including your sequencing data, most journals and funders require that you place your data in a public repository. It helps to prepare for this early! Sharing your data makes it more likely that your work will be re-used and cited.</p>
+<p>There are many repositories for public data. Some model organisms or fields have specific databases, and there are ones for particular data types. Two of the most comprehensive public repositories are provided by the <a href="https://www.ncbi.nlm.nih.gov">National Center for Biotechnology Information  (NCBI)</a> and the <a href="https://www.ebi.ac.uk/">European Nucleotide Archive (EMBL-EBI)</a>. The NCBI's <a href="https://trace.ncbi.nlm.nih.gov/Traces/sra/">Sequence Read Archive (SRA)</a> is the database we will be using for this lesson, but the EMBL-EBI's Nucleic Acid Archive (ENA) is also useful. The general processes are similar for any database.</p>
+<h2 id="accessing-the-original-archived-data">Accessing the original archived data</h2>
+<p>The <a href="https://doi.org/10.5281/zenodo.4285900">sequencing dataset (from Okie <em>et al.</em> 2020) adapted for this class</a> was obtained from the <a href="http://www.ncbi.nlm.nih.gov/sra">NCBI Sequence Read Archive</a>, which is a large (~27 petabasepairs/2.7 x 10^16 basepairs as of April 2019) repository for next-generation sequence data. Like many NCBI databases, it is complex, and mastering its use is greater than the scope of this lesson. The papers will often have a direct link (perhaps in the supplemental information) to where the SRA dataset can be found. We are only using a small part of the Okie <em>et al.</em> 2020 dataset, so a direct link cannot be found.</p>
+<h2 id="using-the-sra-run-selector">Using the SRA Run Selector</h2>
+<p>See the figures below to determine how the authors show the data accession within the original paper.</p>
+<p>This image shows the study's title, &quot;<em>Genomic adaptations in information processing underpin trophic strategy in a whole-ecosystem nutrient enrichment experiment</em>&quot;, as well as the authors.</p>
+<img style='border:1px solid #000000' src="../fig/01-03-01.png" width="800" alt="Screenshot of the cover page of the article named: Genomic adaptations in information processing underpin trophic strategy in a whole-ecosystem nutrient enrichment experiment"/>
+<p>The image below shows an excerpt from the paper that includes information on locating the sequence data. In this case, this text occurs just before the reference section. In the section data availability, the image says that data and metadata have been submitted to the Sequence Reading Archive (SRA) in NCBI and are accessible through the BioProject PRJEB22811. Notice that metadata registers that year was 2017, the place was Cuatro Cienegas Lagunita, the experiment was a fertilization one, and the author is The Craig Venter´s institute.</p>
+<img style='border:1px solid #000000' src="../fig/01-03-02.png" width="800" alt="Screenshot of the section of the article called Additional file. It shows the following text: Supplementary files: Source data 1. Data on the metagenomic traits and concentrations of seston chlorophyll a, phosphorus, nitrogen, and carbon in water samples from Lagunitas pond, Cuatro ciénegas, Mexico. Data availability: Raw sequence data and metadata have been submitted to the NCBI Sequence Read Archive, accessible through BioProject PRJEB228811. The following dataset was generated: Author(s): J Craig Venter Institute, Year: 2017, Dataset title: Cuatro Ciénegas Lagunita Fertilization Experiment, Database, and Identifier: NCBI BioProject, PREJB22811, Dataset URL"/>
+<p>Follow the next steps to access the data in the SRA using the information in this section.</p>
+<ol>
+<li>
+<p>The paper references &quot;PRJEB22811&quot; as a &quot;BioProject&quot; at NCBI. Go to the <a href="https://www.ncbi.nlm.nih.gov/">NCBI website</a> and search for &quot;PRJEB22811&quot;.</p>
+</li>
+<li>
+<p>You will be shown a link to the &quot;Cuatro Cienegas Lagunita Fertilization Experiment&quot; BioProject. Click on it.</p>
+</li>
+<li>
+<p>Once on the BioProject page, scroll down to the table under <strong>Project Data</strong>.</p>
+</li>
+<li>
+<p>This table says there are 40 links to the SRA Experiments of this project. Click on the number 40.</p>
+</li>
+<li>
+<p>Now, you are on the NCBI-SRA site with the 40 samples of this project. This site its NCBI’s new cloud-based SRA interface. At the top of the page is a <strong>Send to</strong> dropdown menu; click on it, select <strong>Run Selector</strong> and click <strong>Go</strong>. This click will take you to <a href="https://www.ncbi.nlm.nih.gov/Traces/study/?query_key=3&amp;WebEnv=MCID_63862368904478135adcaff4&amp;o=acc_s%3Aa">this page</a> in the SRA Run Selector. You will be presented with a page for the overall BioProject accession PRJEB22811 - this is a collection of all the experimental data.</p>
+</li>
+<li>
+<p>Notice on this page, there are three sections. “Common Fields”, “Select”, and “Found 40 Items”. The sections &quot;Select&quot; and &quot;Found 40 items&quot; are shown in the next image. Select contains information about the run size and the data and metadata table. The &quot;Found 40 items section&quot; is a table where each row contains  id numbers, an alias name, size and links to data for one sample. Within “Found 40 Items”, click on the first Run number (Column “Run”, Row “1”).
+<img style='border:1px solid #000000' src="../fig/01-03-04.png" width="800" alt="Screenshot of the sections Select and Found 40 Items"/></p>
+</li>
+<li>
+<p>This will take you to a page that is a <strong>Run Browser</strong>. Take a few minutes to examine some of the descriptions on the page. In the image we see the  SRA entry <strong>ERR2143758</strong>.  This metadata tab displays run's quality and GC content among other information.
+<img style='border:1px solid #000000' src="../fig/01-03-05.png" width="800" alt="Screenshot of details for the selected run. It shows the details of the sequence file, a quality graph, the metadata, the Biosample details, and BioProject details."/></p>
+</li>
+<li>
+<p>Use the browser’s back button to go back to the 'previous page'. As shown in the figure below, the second section of the page (“Select”) has the <strong>Total</strong> row showing you the current number of “Runs”, “Bytes”, and “Bases” in the dataset to date. On 2012-06-27, there were 40 runs, 9.86 GBytes of data, and 19.61 Gbases.
+<img style='border:1px solid #000000' src="../fig/01-03-06.png" width="800" alt="Screenshot of the section Select, with two rows with the number of runs, bytes, bases, and buttons to download the Metadata and Accession List, one row for Total and one row for Selected."/></p>
+</li>
+<li>
+<p>Click on the “Metadata” button to download the file “SraRunTable.txt” and save it on your computer.</p>
+</li>
+<li>
+<p>Review the SraRunTable in a spreadsheet program. Using your favorite spreadsheet program, open the <code>SraRunTable.txt</code> file. If prompted by the spreadsheet software, be aware that the SRA Run Selector provides a <strong>comma-separated</strong> file.</p>
+</li>
+</ol>
+<blockquote>
+<h2 id="delimiters">Delimiters</h2>
+<p>The fields in a table are separated (or delimited) usually by commas or tabs,
+so they are named with the <code>.csv</code> (comma-separated values) and
+<code>.tsv</code>(tab-separated values) extensions, respectively. But since they are both
+plain text files, you can find them with the <code>.txt</code> extension, just like in
+our <code>SraRunTable.txt</code>.</p>
+</blockquote>
+<blockquote>
+<h2 id="discussion-1">Discussion 1</h2>
+<p>Discuss with the person next to you:</p>
+<ol>
+<li>What was the sequencing platform used for this experiment?</li>
+<li>What samples in the experiment contain
+<a href="http://www.illumina.com/technology/next-generation-sequencing/paired-end-sequencing_assay.html">paired end</a>
+sequencing data?</li>
+<li>What other kind of metadata is available?</li>
+</ol>
+</blockquote>
+<details>
+  <summary markdown="span">Solution</summary>
+<ol>
+<li>The Illumina sequencing platform was used, shown in the column &quot;Platform&quot;. The column &quot;Instrument&quot;
+shows which type of Illumina sequencer was used, in this case, Illumina MiSeq.</li>
+<li>The &quot;LibraryLayout&quot; column shows that all samples contain paired-end data.</li>
+<li>Technology and instruments are good examples of the types of metadata that can exist for a sequenced biological sample.
+There is technical information, like &quot;Assay Type&quot; and &quot;DATASTORE filetype&quot;, information about the sequences
+like &quot;Bases&quot; and biological metadata like &quot;environment_(biome)&quot; and &quot;potassium_ppm&quot;.</li>
+</ol>
+</details>
+<br>
+<p>After answering the questions, you should avoid saving any changes you might have made to the SraRunTable.txt file. We don't want to make any changes. If you were to save this file, make sure you save it as a plain <code>.txt</code> file. Remember to keep raw things raw.</p>
+<blockquote>
+<h2 id="discussion-2-exploring-the-european-nucleotide-archive">Discussion 2: Exploring the European Nucleotide Archive</h2>
+<p>Navigate to the <a href="https://www.ebi.ac.uk/ena">ENA</a> and search the BioProject &quot;PRJEB22811&quot;. Explore the ENA Browser and discuss it with your
+neighbor the differences between the ENA Browser and the SRA Run Selector.</p>
+</blockquote>
+<blockquote>
+<h2 id="downloading-reads">Downloading reads</h2>
+<p>For downloading the reads, there are mainly two options:</p>
+<ul>
+<li>One by one: Go to the <strong>Run Browser</strong> of each sample, navigate to the tab <strong>FASTA/FASTQ download</strong> and click on the <strong>FASTQ</strong> button.</li>
+<li>Complete dataset: In the SRA <strong>Run Selector</strong> of the BioProject, go to the <strong>Select</strong> section and click on the <strong>Accession List</strong> button. This will
+download a text file <code>SRR_Acc_List.txt</code> that you can use to download the reads in bulk with the <a href="http://www.ncbi.nlm.nih.gov/Traces/sra/?view=toolkit_doc">SRA Toolkit</a>, a command-line software package, that we will use in a later lesson.</li>
+</ul>
+</blockquote>
+<h2 id="where-to-learn-more">Where to learn more</h2>
+<h3 id="about-the-sequence-read-archive">About the Sequence Read Archive</h3>
+<ul>
+<li>You can learn more about the SRA by reading the <a href="http://www.ncbi.nlm.nih.gov/Traces/sra/">SRA Documentation</a></li>
+<li>The best way to transfer a large SRA dataset is by using the <a href="http://www.ncbi.nlm.nih.gov/Traces/sra/?view=toolkit_doc">SRA Toolkit</a></li>
+</ul>
+<h2 id="references">References</h2>
+<p>Jordan G Okie, Amisha T Poret-Peterson, et al. Genomic adaptations in information processing underpin trophic strategy in a whole-ecosystem nutrient enrichment experiment. eLife; 2020. DOI: 10.7554/eLife.49816
+<a href="https://elifesciences.org/articles/49816#info">Paper</a>.<br>
+Data on NCBI SRA: <a href="https://www.ncbi.nlm.nih.gov/Traces/study/?acc=PRJNA556841&amp;o=acc_s%3Aa">https://www.ncbi.nlm.nih.gov/Traces/study/?acc=PRJEB22811&amp;o=acc_s%3Aa</a><br>
+Data on EMBL-EBI ENA: <a href="https://www.ebi.ac.uk/ena/data/view/PRJNA556841">https://www.ebi.ac.uk/ena/browser/view/PRJEB22811</a></p>
+
+</body>
+</html>

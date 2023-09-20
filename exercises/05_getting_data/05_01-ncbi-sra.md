@@ -1,16 +1,13 @@
----
-title: "Examining Data on the NCBI SRA Database"
-teaching: 10
-exercises: 10
-questions:
+# Examining Data on the NCBI SRA Database
+
+### Questions:
 - "How do I access public sequencing data?"
-objectives:
+### Objectives:
 - "Be aware that public genomic data is available."
 - "Understand how to access and download this data."  
-keypoints:
+### Keypoints:
 - "Public data repositories are a great source of genomic data."
 - "You are likely to put your data on a public repository."
----
 
 ## Public data
 
@@ -22,13 +19,13 @@ There are many repositories for public data. Some model organisms or fields have
 
 ## Accessing the original archived data
 
-The [sequencing dataset (from Okie *et al.* 2020) adapted for this workshop](https://doi.org/10.5281/zenodo.4285900) was obtained from the [NCBI Sequence Read Archive](http://www.ncbi.nlm.nih.gov/sra), which is a large (~27 petabasepairs/2.7 x 10^16 basepairs as of April 2019) repository for next-generation sequence data. Like many NCBI databases, it is complex, and mastering its use is greater than the scope of this lesson. The papers will often have a direct link (perhaps in the supplemental information) to where the SRA dataset can be found. We are only using a small part of the Okie *et al.* 2020 dataset, so a direct link cannot be found. 
+The [sequencing dataset (from Okie *et al.* 2020) adapted for this class](https://doi.org/10.5281/zenodo.4285900) was obtained from the [NCBI Sequence Read Archive](http://www.ncbi.nlm.nih.gov/sra), which is a large (~27 petabasepairs/2.7 x 10^16 basepairs as of April 2019) repository for next-generation sequence data. Like many NCBI databases, it is complex, and mastering its use is greater than the scope of this lesson. The papers will often have a direct link (perhaps in the supplemental information) to where the SRA dataset can be found. We are only using a small part of the Okie *et al.* 2020 dataset, so a direct link cannot be found.
 
 ## Using the SRA Run Selector
 
-See the figures below to determine how data accession is provided within the original paper. 
+See the figures below to determine how the authors show the data accession within the original paper. 
 
-The next image shows the study's title, "_Genomic adaptations in information processing underpin trophic strategy in a whole-ecosystem nutrient enrichment experiment_", as well as the authors.
+This image shows the study's title, "_Genomic adaptations in information processing underpin trophic strategy in a whole-ecosystem nutrient enrichment experiment_", as well as the authors.
 
 <img style='border:1px solid #000000' src="../fig/01-03-01.png" width="800" alt="Screenshot of the cover page of the article named: Genomic adaptations in information processing underpin trophic strategy in a whole-ecosystem nutrient enrichment experiment"/>
 
@@ -67,7 +64,6 @@ Follow the next steps to access the data in the SRA using the information in thi
 > `.tsv`(tab-separated values) extensions, respectively. But since they are both 
 > plain text files, you can find them with the `.txt` extension, just like in 
 > our `SraRunTable.txt`.
-{: .callout}
 
 > ## Discussion 1  
 > Discuss with the person next to you:
@@ -78,32 +74,33 @@ Follow the next steps to access the data in the SRA using the information in thi
 > sequencing data?
 > 3. What other kind of metadata is available?
 >
-> > ## Solution
-> > 1. The Illumina sequencing platform was used, shown in the column "Platform". The column "Instrument" 
-> > shows which type of Illumina sequencer was used, in this case, Illumina MiSeq.  
-> > 2. The "LibraryLayout" column shows that all samples contain paired-end data.v  
-> > 3. Technology and instruments are good examples of the types of metadata that can exist for a sequenced biological sample. 
-> > There is technical information, like "Assay Type" and "DATASTORE filetype", information about the sequences 
-> > like "Bases" and biological metadata like "environment_(biome)" and "potassium_ppm".  
-> >
-> {: .solution}
-{: .challenge}
+<details>
+  <summary markdown="span">Solution</summary>
 
-After answering the questions, you should avoid saving any changes you might have made to this file. We don't want to make any changes. If you were to save this file, make sure you save it as a plain `.txt` file. Remember to keep raw things raw.
+1. The Illumina sequencing platform was used, shown in the column "Platform". The column "Instrument" 
+shows which type of Illumina sequencer was used, in this case, Illumina MiSeq.  
+2. The "LibraryLayout" column shows that all samples contain paired-end data. 
+3. Technology and instruments are good examples of the types of metadata that can exist for a sequenced biological sample. 
+There is technical information, like "Assay Type" and "DATASTORE filetype", information about the sequences 
+like "Bases" and biological metadata like "environment_(biome)" and "potassium_ppm".  
+
+</details>
+
+<br>
+
+After answering the questions, you should avoid saving any changes you might have made to the SraRunTable.txt file. We don't want to make any changes. If you were to save this file, make sure you save it as a plain `.txt` file. Remember to keep raw things raw.
 
 > ## Discussion 2: Exploring the European Nucleotide Archive
 >
 > Navigate to the [ENA](https://www.ebi.ac.uk/ena) and search the BioProject "PRJEB22811". Explore the ENA Browser and discuss it with your 
 > neighbor the differences between the ENA Browser and the SRA Run Selector.
 >
-{: .challenge}
 
 > ## Downloading reads
 > For downloading the reads, there are mainly two options:
 > * One by one: Go to the **Run Browser** of each sample, navigate to the tab **FASTA/FASTQ download** and click on the **FASTQ** button.
 > * Complete dataset: In the SRA **Run Selector** of the BioProject, go to the **Select** section and click on the **Accession List** button. This will 
-> download a text file `SRR_Acc_List.txt` that you can use to download the reads in bulk with the [SRA Toolkit](http://www.ncbi.nlm.nih.gov/Traces/sra/?view=toolkit_doc), a command-line software package, which is outside the scope of this lesson.
-{: .callout}
+> download a text file `SRR_Acc_List.txt` that you can use to download the reads in bulk with the [SRA Toolkit](http://www.ncbi.nlm.nih.gov/Traces/sra/?view=toolkit_doc), a command-line software package, that we will use in a later lesson.
 
 ## Where to learn more
 

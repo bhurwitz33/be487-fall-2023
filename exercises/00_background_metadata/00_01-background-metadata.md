@@ -3,7 +3,7 @@
 
 ### Questions:
 - "How do you plan a metagenomics experiment?"
-- "How does a metagenomics project look like?"   
+- "What does a metagenomics project look like?"   
 ### Objectives:
 - "Learn the differences between shotgun and metabarcoding (amplicon metagenomics) techniques."
 - "Understand the importance of metadata."  

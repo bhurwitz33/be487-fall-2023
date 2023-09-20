@@ -1,0 +1,620 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>02_02-writing-scripts.md</title>
+<meta http-equiv="Content-type" content="text/html;charset=UTF-8">
+
+<style>
+/* https://github.com/microsoft/vscode/blob/master/extensions/markdown-language-features/media/markdown.css */
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
+body {
+	font-family: var(--vscode-markdown-font-family, -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif);
+	font-size: var(--vscode-markdown-font-size, 14px);
+	padding: 0 26px;
+	line-height: var(--vscode-markdown-line-height, 22px);
+	word-wrap: break-word;
+}
+
+#code-csp-warning {
+	position: fixed;
+	top: 0;
+	right: 0;
+	color: white;
+	margin: 16px;
+	text-align: center;
+	font-size: 12px;
+	font-family: sans-serif;
+	background-color:#444444;
+	cursor: pointer;
+	padding: 6px;
+	box-shadow: 1px 1px 1px rgba(0,0,0,.25);
+}
+
+#code-csp-warning:hover {
+	text-decoration: none;
+	background-color:#007acc;
+	box-shadow: 2px 2px 2px rgba(0,0,0,.25);
+}
+
+body.scrollBeyondLastLine {
+	margin-bottom: calc(100vh - 22px);
+}
+
+body.showEditorSelection .code-line {
+	position: relative;
+}
+
+body.showEditorSelection .code-active-line:before,
+body.showEditorSelection .code-line:hover:before {
+	content: "";
+	display: block;
+	position: absolute;
+	top: 0;
+	left: -12px;
+	height: 100%;
+}
+
+body.showEditorSelection li.code-active-line:before,
+body.showEditorSelection li.code-line:hover:before {
+	left: -30px;
+}
+
+.vscode-light.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.15);
+}
+
+.vscode-light.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.40);
+}
+
+.vscode-light.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+.vscode-dark.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.4);
+}
+
+.vscode-dark.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.60);
+}
+
+.vscode-dark.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+.vscode-high-contrast.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 160, 0, 0.7);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 160, 0, 1);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+img {
+	max-width: 100%;
+	max-height: 100%;
+}
+
+a {
+	text-decoration: none;
+}
+
+a:hover {
+	text-decoration: underline;
+}
+
+a:focus,
+input:focus,
+select:focus,
+textarea:focus {
+	outline: 1px solid -webkit-focus-ring-color;
+	outline-offset: -1px;
+}
+
+hr {
+	border: 0;
+	height: 2px;
+	border-bottom: 2px solid;
+}
+
+h1 {
+	padding-bottom: 0.3em;
+	line-height: 1.2;
+	border-bottom-width: 1px;
+	border-bottom-style: solid;
+}
+
+h1, h2, h3 {
+	font-weight: normal;
+}
+
+table {
+	border-collapse: collapse;
+}
+
+table > thead > tr > th {
+	text-align: left;
+	border-bottom: 1px solid;
+}
+
+table > thead > tr > th,
+table > thead > tr > td,
+table > tbody > tr > th,
+table > tbody > tr > td {
+	padding: 5px 10px;
+}
+
+table > tbody > tr + tr > td {
+	border-top: 1px solid;
+}
+
+blockquote {
+	margin: 0 7px 0 5px;
+	padding: 0 16px 0 10px;
+	border-left-width: 5px;
+	border-left-style: solid;
+}
+
+code {
+	font-family: Menlo, Monaco, Consolas, "Droid Sans Mono", "Courier New", monospace, "Droid Sans Fallback";
+	font-size: 1em;
+	line-height: 1.357em;
+}
+
+body.wordWrap pre {
+	white-space: pre-wrap;
+}
+
+pre:not(.hljs),
+pre.hljs code > div {
+	padding: 16px;
+	border-radius: 3px;
+	overflow: auto;
+}
+
+pre code {
+	color: var(--vscode-editor-foreground);
+	tab-size: 4;
+}
+
+/** Theming */
+
+.vscode-light pre {
+	background-color: rgba(220, 220, 220, 0.4);
+}
+
+.vscode-dark pre {
+	background-color: rgba(10, 10, 10, 0.4);
+}
+
+.vscode-high-contrast pre {
+	background-color: rgb(0, 0, 0);
+}
+
+.vscode-high-contrast h1 {
+	border-color: rgb(0, 0, 0);
+}
+
+.vscode-light table > thead > tr > th {
+	border-color: rgba(0, 0, 0, 0.69);
+}
+
+.vscode-dark table > thead > tr > th {
+	border-color: rgba(255, 255, 255, 0.69);
+}
+
+.vscode-light h1,
+.vscode-light hr,
+.vscode-light table > tbody > tr + tr > td {
+	border-color: rgba(0, 0, 0, 0.18);
+}
+
+.vscode-dark h1,
+.vscode-dark hr,
+.vscode-dark table > tbody > tr + tr > td {
+	border-color: rgba(255, 255, 255, 0.18);
+}
+
+</style>
+
+<style>
+/* Tomorrow Theme */
+/* http://jmblog.github.com/color-themes-for-google-code-highlightjs */
+/* Original theme - https://github.com/chriskempson/tomorrow-theme */
+
+/* Tomorrow Comment */
+.hljs-comment,
+.hljs-quote {
+	color: #8e908c;
+}
+
+/* Tomorrow Red */
+.hljs-variable,
+.hljs-template-variable,
+.hljs-tag,
+.hljs-name,
+.hljs-selector-id,
+.hljs-selector-class,
+.hljs-regexp,
+.hljs-deletion {
+	color: #c82829;
+}
+
+/* Tomorrow Orange */
+.hljs-number,
+.hljs-built_in,
+.hljs-builtin-name,
+.hljs-literal,
+.hljs-type,
+.hljs-params,
+.hljs-meta,
+.hljs-link {
+	color: #f5871f;
+}
+
+/* Tomorrow Yellow */
+.hljs-attribute {
+	color: #eab700;
+}
+
+/* Tomorrow Green */
+.hljs-string,
+.hljs-symbol,
+.hljs-bullet,
+.hljs-addition {
+	color: #718c00;
+}
+
+/* Tomorrow Blue */
+.hljs-title,
+.hljs-section {
+	color: #4271ae;
+}
+
+/* Tomorrow Purple */
+.hljs-keyword,
+.hljs-selector-tag {
+	color: #8959a8;
+}
+
+.hljs {
+	display: block;
+	overflow-x: auto;
+	color: #4d4d4c;
+	padding: 0.5em;
+}
+
+.hljs-emphasis {
+	font-style: italic;
+}
+
+.hljs-strong {
+	font-weight: bold;
+}
+</style>
+
+<style>
+/*
+ * Markdown PDF CSS
+ */
+
+ body {
+	font-family: -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif, "Meiryo";
+	padding: 0 12px;
+}
+
+pre {
+	background-color: #f8f8f8;
+	border: 1px solid #cccccc;
+	border-radius: 3px;
+	overflow-x: auto;
+	white-space: pre-wrap;
+	overflow-wrap: break-word;
+}
+
+pre:not(.hljs) {
+	padding: 23px;
+	line-height: 19px;
+}
+
+blockquote {
+	background: rgba(127, 127, 127, 0.1);
+	border-color: rgba(0, 122, 204, 0.5);
+}
+
+.emoji {
+	height: 1.4em;
+}
+
+code {
+	font-size: 14px;
+	line-height: 19px;
+}
+
+/* for inline code */
+:not(pre):not(.hljs) > code {
+	color: #C9AE75; /* Change the old color so it seems less like an error */
+	font-size: inherit;
+}
+
+/* Page Break : use <div class="page"/> to insert page break
+-------------------------------------------------------- */
+.page {
+	page-break-after: always;
+}
+
+</style>
+
+<script src="https://unpkg.com/mermaid/dist/mermaid.min.js"></script>
+</head>
+<body>
+  <script>
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: document.body.classList.contains('vscode-dark') || document.body.classList.contains('vscode-high-contrast')
+          ? 'dark'
+          : 'default'
+    });
+  </script>
+<h1 id="writing-scripts-and-working-with-data">Writing Scripts and Working with Data</h1>
+<h3 id="questions">Questions:</h3>
+<ul>
+<li>How can we automate a commonly used set of commands?</li>
+<li>How can we transfer files between local and remote computers?</li>
+</ul>
+<h3 id="objectives">Objectives:</h3>
+<ul>
+<li>Use the <code>nano</code> text editor to modify text files.</li>
+<li>Write a basic shell script.</li>
+<li>Use the <code>bash</code> command to execute a shell script.</li>
+<li>Use <code>chmod</code> to make a script an executable program.</li>
+</ul>
+<h3 id="keypoints">Keypoints:</h3>
+<ul>
+<li>Scripts are a collection of commands executed together.</li>
+<li>Scripts are executable text files.</li>
+<li>Nano is a text editor.</li>
+<li>In a terminal, <code>scp</code> transfers information to and from virtual and local computers.</li>
+<li>R studio remote interface allows the transfer of information between</li>
+</ul>
+<h2 id="writing-files">Writing files</h2>
+<p>We have been able to do much work with existing files, but what if we want to write our own files? We are not going to type in a FASTA file, but we will see as we go through other in-class exercises; there are many reasons we will want to write a file or edit an existing file.</p>
+<p>We will use a text editor called Nano to add text to files. We are going to create a file to take notes about what we have been doing with the data files in <code>/xdisk/bhurwitz/bh_class/your_netid/exercises/data/untrimmed_fastq</code>.</p>
+<p>Taking notes is good practice when working in bioinformatics. We can create a file called a <code>README.txt</code> that describes the data files in the directory or documents how the files in that directory were generated. As the name suggests, it is a file that others should read to understand the information in that directory.</p>
+<p>Let's change our working directory to <code>/xdisk/bhurwitz/bh_class/your_netid/exercises/data/untrimmed_fastq</code> using <code>cd</code>,
+then run <code>nano</code> to create a file called <code>README.txt</code>:</p>
+<pre class="hljs"><code><div>$ cd /xdisk/bhurwitz/bh_class/your_netid/exercises/data/untrimmed_fastq
+$ nano README.txt
+</div></code></pre>
+<p>You should see something like this:</p>
+<a href="../fig/02-05-01.png">
+  <img src="../fig/02-05-01.png" alt="nano screen with the name of the file in the top bar, a blank screen to write in the middle, and a bottom bar with the shortcuts for the available nano instructions." />
+</a>
+<em> Figure 1. GNU Nano Text Editor Menu. <em/>
+<p>The text at the bottom of the screen shows the keyboard shortcuts for performing various tasks in <code>nano</code>. We will talk more about how to interpret this information soon.</p>
+<blockquote>
+<h2 id="which-editor">Which Editor?</h2>
+<p>When we say, &quot;<code>nano</code> is a text editor,&quot; we really do mean &quot;text&quot;: it can
+only work with plain character data, not tables, images, or any other
+human-friendly media. We use it in examples because it is one of the
+least complex text editors. However, because of this trait, it may
+not be powerful enough or flexible enough for the work you need to do
+after this class. On Unix systems (such as Linux and Mac OS X),
+many programmers use <a href="http://www.gnu.org/software/emacs/">Emacs</a> or
+<a href="http://www.vim.org/">Vim</a> (both of which require more time to learn),
+or a graphical editor such as
+<a href="http://projects.gnome.org/gedit/">Gedit</a>. On Windows, you may wish to
+use <a href="http://notepad-plus-plus.org/">Notepad++</a>. Windows also has a built-in
+editor called <code>notepad</code> that can be run from the command line in the same
+way as <code>nano</code> for the purposes of this lesson.</p>
+<p>No matter what editor you use, you need to know where it searches
+for and saves files. If you start it from the shell, it will (probably)
+use your current working directory as its default location. If you use
+your computer's start menu, it may want to save files in your desktop or
+documents directory instead. You can change this by navigating to
+another directory the first time you &quot;Save As...&quot;</p>
+</blockquote>
+<p>Let us type in a few lines of text. Describe the files in this directory and describe you have been doing with them.
+<a href="../fig/02-05-02.png">
+<img src="../fig/02-05-02.png" alt="The same screen as before but now it has text in the middle part." />
+</a>
+<em> Figure 2. For example, the README file is written in nano. <em/></p>
+<p>Once we are happy with our text, we can press <kbd>Ctrl</kbd>-<kbd>O</kbd> (press the <kbd>Ctrl</kbd> or <kbd>Control</kbd> key and, while
+holding it down, press the <kbd>O</kbd> key) to write our data to disk. You will be asked what file we want to save this to:
+Press <kbd>Return</kbd> to accept the suggested default of <code>README.txt</code>.</p>
+<p>Once our file is saved, we can use <kbd>Ctrl</kbd>-<kbd>X</kbd> to quit the editor and
+return to the shell.</p>
+<blockquote>
+<h2 id="control-ctrl-or--key">Control, Ctrl, or ^ Key</h2>
+<p>The Control key is also called the &quot;Ctrl&quot; key. There are various ways
+in which using the Control key may be described. For example, you may
+see an instruction to press the <kbd>Ctrl</kbd> key and, while holding it down,
+press the <kbd>X</kbd> key, described as any of:</p>
+<ul>
+<li><code>Control-X</code></li>
+<li><code>Control+X</code></li>
+<li><code>Ctrl-X</code></li>
+<li><code>Ctrl+X</code></li>
+<li><code>^X</code></li>
+<li><code>C-x</code></li>
+</ul>
+<p>In <code>nano</code>, along the bottom of the screen, you will see <code>^G Get Help ^O WriteOut</code>.
+This means that you can use <kbd>Ctrl</kbd>-<kbd>G</kbd> to get help and <kbd>Ctrl</kbd>-<kbd>O</kbd> to save your
+file.</p>
+</blockquote>
+<p>Now you have written a file. You can look at it with <code>less</code> or <code>cat</code>, or open it up again and edit it with <code>nano</code>.</p>
+<blockquote>
+<h2 id="exercise-1-edit-a-file-with-nano">Exercise 1: Edit a file with nano</h2>
+<p>Open <code>README.txt</code>, add the date to the top of the file, and save the file.</p>
+</blockquote>
+<details>
+  <summary markdown="span">Solution</summary>
+  <ul>
+<pre class="hljs"><code><div>Use `nano README.txt` to open the file.  
+Add today's date and then use Ctrl X to exit and `y` to save.
+</div></code></pre>
+</details>
+<h2 id="writing-scripts">Writing scripts</h2>
+<p>A really powerful thing about the command line is that you can write scripts. Scripts let you save commands to run them and also lets you put multiple commands together. Though writing scripts may require an additional time investment initially, this can save you time as you run them repeatedly. Scripts can also address the challenge of reproducibility: if you need to repeat analysis, you retain a record of your command history within the script.</p>
+<p>One thing we will commonly want to do with sequencing results is pull out bad reads and write them to a file to see if we can figure out what is going on with them. We are going to look for reads with long sequences of N's like we did before, but now we are going to write a script, so we can run it each time we get new sequences rather than type the code in by hand each time.</p>
+<p>Bad reads have a lot of N's, so we are going to look for  <code>NNNNNNNNNN</code> with <code>grep</code>. We want the whole FASTQ record, so we are also going to get the one line above the sequence and the two lines below. We also want to look at all the files that end with <code>.fastq</code>, so we will use the <code>*</code> wildcard.</p>
+<pre class="hljs"><code><div>grep -B1 -A2 NNNNNNNNNN *.fastq &gt; scripted_bad_reads.txt
+</div></code></pre>
+<p>We are going to create a new file to put this command in. We will call it <code>bad-reads-script.sh</code>. The <code>sh</code> is not required, but using that extension tells us it is a shell script.</p>
+<pre class="hljs"><code><div>$ nano bad-reads-script.sh
+</div></code></pre>
+<p>Type your <code>grep</code> command into the file and save it as before. Be careful not to add the <code>$</code> at the beginning of the line.</p>
+<p>Now comes the neat part. We can run this script. Type:</p>
+<pre class="hljs"><code><div>$ bash bad-reads-script.sh
+</div></code></pre>
+<p>It will look like nothing happened, but now if you look at <code>scripted_bad_reads.txt</code>, you can see that there are now reads in the file.</p>
+<blockquote>
+<h2 id="exercise-2-edit-a-script">Exercise 2: Edit a script</h2>
+<p>We want the script to tell us when it is done. Try using the <code>echo</code> command to let the user know the script is done.</p>
+</blockquote>
+<details>
+  <summary markdown="span">Solution</summary>
+  <ul>
+<pre class="hljs"><code><div>1. Open `bad-reads-script.sh` and add the line `echo &quot;Script finished!&quot;` after the `grep` command and save the file.  
+2. Run the updated script.
+</div></code></pre>
+</details>
+<h2 id="making-the-script-into-a-program">Making the script into a program</h2>
+<p>We had to type <code>bash</code> because we needed to tell the computer what program to use to run this script. Instead, we can turn this script into its own program. We need to tell it that it is a program by making it executable. We can do this by changing the file permissions. We talked about permissions in an earlier class.</p>
+<p>First, let us look at the current permissions.</p>
+<pre class="hljs"><code><div>$ ls -l bad-reads-script.sh
+</div></code></pre>
+<pre class="hljs"><code><div>-rw-rw-r-- 1 user user 0 Aug 25 21:46 bad-reads-script.sh
+</div></code></pre>
+<p>We see that it says <code>-rw-r--r--</code>. This combination shows that the file can be read by any user and written to by the file owner (you). We want to change these permissions so the file can be executed as a program. We use the command <code>chmod</code> as we did earlier when we removed write permissions. Here we are adding (<code>+</code>) executable permissions (<code>+x</code>).</p>
+<pre class="hljs"><code><div>$ chmod +x bad-reads-script.sh
+</div></code></pre>
+<p>Now let us look at the permissions again.</p>
+<pre class="hljs"><code><div>$ ls -l bad-reads-script.sh
+</div></code></pre>
+<pre class="hljs"><code><div>-rwxrwxr-x 1 user user 0 Aug 25 21:46 bad-reads-script.sh
+</div></code></pre>
+<p>Now we see that it says <code>-rwxr-xr-x</code>. The <code>x</code>'s there now tell us we can run it as a program. So, let us try it! We will need to put <code>./</code> at the beginning, so the computer knows to look here in this directory for the program.</p>
+<pre class="hljs"><code><div>$ ./bad-reads-script.sh
+</div></code></pre>
+<p>The script should run the same way as before, but now we have created our own computer program!</p>
+<p>It is good practice to keep any large files compressed while not using them. In this way, you save storage space; you will see that you will appreciate it when you advance your analysis. So, since we will not use the FASTQ files for now, let us compress them. Moreover, run <code>ls -lh</code> to confirm that they are compressed.</p>
+<pre class="hljs"><code><div>$ cd /xdisk/bhurwitz/bh_class/your_netid/exercises/data/untrimmed_fastq
+$ gzip *.fastq
+$ ls -lh  *.fastq.gz
+</div></code></pre>
+<pre class="hljs"><code><div>total 428M
+-rw-r--r-- 1 user user  24M Aug 26 12:36 JC1A_R1.fastq.gz
+-rw-r--r-- 1 user user  24M Aug 26 12:37 JC1A_R2.fastq.gz
+-rw-r--r-- 1 user user 179M Aug 26 12:44 JP4D_R1.fastq.gz
+-rw-r--r-- 1 user user 203M NAug 26 12:51 JP4D_R2.fastq.gz
+</div></code></pre>
+<h2 id="moving-and-downloading-data">Moving and downloading data</h2>
+<p>So far, we have worked with pre-loaded data on the hpc. Usually, however, most analyses begin with moving data onto the hpc. Below we will show you some commands to download data onto the hpc or to move data between your computer and the hpc.</p>
+<h3 id="getting-data-tofrom-the-hpc">Getting data to/from the HPC</h3>
+<p>Two programs will download data from a remote server to your local
+(or remote) machine: <code>wget</code> and <code>curl</code>. They were designed to do slightly different tasks by default, so you will need to give the programs somewhat different options to get the same behavior, but they are mostly interchangeable.</p>
+<ul>
+<li>
+<p><code>wget</code> is short for &quot;world wide web get&quot;, and its basic function is to <em>download</em></p>
+</li>
+<li>
+<p><code>cURL</code> is a pun. It is supposed to be read as &quot;see URL&quot;, so its primary function is
+to <em>display</em> webpages or data at a web address.</p>
+</li>
+</ul>
+<p>Which one you need to use mainly depends on your operating system, as most computers will
+only have one or the other installed by default.</p>
+<p>Let us say you want to download some data from Ensembl. We will download a tiny
+tab-delimited file that tells us what data is available on the Ensembl bacteria server.
+Before starting our download, we need to know whether we are using <code>curl</code> or <code>wget</code>.</p>
+<p>To see which program you have, type:</p>
+<pre class="hljs"><code><div>$ which curl
+$ which wget
+</div></code></pre>
+<p><code>which</code> is a BASH program that looks through everything you have
+installed and tells you what folder it is installed to. If it cannot
+find the program you asked for, it returns nothing, i.e., it gives you no
+results.</p>
+<p>On the hpc, you will likely get the following output:</p>
+<pre class="hljs"><code><div>$ which curl
+</div></code></pre>
+<pre class="hljs"><code><div>/usr/bin/curl
+</div></code></pre>
+<pre class="hljs"><code><div>$ which wget
+</div></code></pre>
+<pre class="hljs"><code><div>/usr/bin/wget
+</div></code></pre>
+<p>This output means that you have both <code>curl</code> and <code>wget</code> installed.</p>
+<p>Now we can use one of the following commands to download the file to your home directory:</p>
+<pre class="hljs"><code><div>$ cd
+$ wget ftp://ftp.ensemblgenomes.org/pub/release-37/bacteria/species_EnsemblBacteria.txt
+</div></code></pre>
+<p>or</p>
+<pre class="hljs"><code><div>$ cd
+$ curl -O ftp://ftp.ensemblgenomes.org/pub/release-37/bacteria/species_EnsemblBacteria.txt
+</div></code></pre>
+<p>Since we wanted to <em>download</em> the file rather than view it, we used <code>wget</code> without any modifiers. With <code>curl</code> however, we had to use the -O flag, which simultaneously tells <code>curl</code> to download the page instead of showing it to us <strong>and</strong> specifies that it should save the
+file using the same name it had on the server: species_EnsemblBacteria.txt</p>
+<p>It's important to note that both <code>curl</code> and <code>wget</code> download to the computer that the command line belongs to. So, if you are logged into AWS on the command line and execute the <code>curl</code> command above in the AWS terminal, the file will be downloaded to your AWS machine, not your local one.</p>
+<h3 id="moving-files-between-your-laptop-and-the-hpc">Moving files between your laptop and the HPC</h3>
+<p>What if the data you need is on your local computer, but you need to get it <em>onto</em> the HPC? Or, what if you need to download files from the HPC to your laptop. Here is how you can do it!</p>
+<h3 id="uploaddownload-small-files-between-the-hpc-and-your-laptop">Upload/Download small files between the HPC and your laptop.</h3>
+<p>If your files are small, you can use the online <a href="https://ood.hpc.arizona.edu/">HPC portal</a> and select the file browser from the top menu to get easy access for transferring files to/from your /home, /xdisk, and /groups directories. You can also view, edit, copy, and rename your files.</p>
+<h3 id="transferring-larger-data-files-between-your-local-machine-and-the-hpc-with-scp">Transferring larger data files between your local machine and the HPC with <code>scp</code></h3>
+<p><code>scp</code> stands for 'secure copy protocol' and is a widely used UNIX tool for moving files between computers. The simplest way to use <code>scp</code> is to run it in your local terminal and use it to copy a single file.</p>
+<p>You will need to use an SSH v2 compliant terminal to move files to/from HPC. For more information on using SCP, use man scp.</p>
+<p>Moving a File or Directory to the HPC:</p>
+<details>
+  <summary markdown="span">Mac OS</summary>
+  <ul>
+In your terminal, navigate to the desired working directory on your local machine (laptop or desktop usually). To move a file or directory to a designated subdirectory in your account on HPC:
+<pre class="hljs"><code><div>$ scp -rp filenameordirectory NetId@filexfer.hpc.arizona.edu:subdirectory
+Getting a File or Directory From the HPC:
+</div></code></pre>
+<p>In your terminal, navigate to the desired working directory on your local machine. The copy a remote file from HPC to your current directory:</p>
+<pre class="hljs"><code><div>$ scp -rp NetId@filexfer.hpc.arizona.edu:filenameordirectory .
+** the space folllowed by a period at the end means the destination is the current directory** 
+</div></code></pre>
+</details>
+<details>
+  <summary markdown="span">PC</summary>
+  <ul>
+Windows users can use software like WinSCP to make SCP transfers. To use WinSCP, first download/install the software from: https://winscp.net/eng/download.php
+<p>To connect, enter filexfer.hpc.arizona.edu in the Host Name field, enter your NetID under User name, and enter your password. Accept by clicking Login. You'll be prompted to Duo Authenticate.</p>
+</details>
+<br>
+<p>Wildcards</p>
+<p>Wildcards can be used for multiple file transfers (e.g. all files with .dat extension). Note the backslash &quot; \ &quot; preceding *</p>
+<p>$ scp NetId@filexfer.hpc.arizona.edu:subdirectory/*.fastq ~/Downloads</p>
+<blockquote>
+<h2 id="exercise-3-downloading-data-with-scp">Exercise 3: Downloading data with <code>scp</code></h2>
+<p>Let's say we want to download a text file <code>/xdisk/bhurwitz/bh_class/your_netid/exercises/data/untrimmed_fastq/scripted_bad_reads.txt</code> from the hpc to your local computer. Note you will perform this action from a shell on your local computer.
+Which of the following commands would download the file?<br>
+A)</p>
+<pre class="hljs"><code><div>$  scp local_file.txt your_netid@filexfer.hpc.arizona.edu:/xdisk/bhurwitz/bh_class/your_netid/exercises/data/untrimmed_fastq/
+</div></code></pre>
+</blockquote>
+<blockquote>
+<p>B)</p>
+<pre class="hljs"><code><div>$ scp your_netid@filexfer.hpc.arizona.edu:/xdisk/bhurwitz/bh_class/your_netid/exercises/data/untrimmed_fastq/scripted_bad_reads.txt ~/Downloads
+</div></code></pre>
+</blockquote>
+<details>
+  <summary markdown="span">Solution</summary>
+  <ul>
+<li>A) False. This command will upload the file `local_file.txt` to the /xdisk/bhurwitz/bh_class/your_netid/exercises/data/untrimmed_fastq/ directory.</li>
+<li>B) True. This option downloads the bad reads file in `/xdisk/bhurwitz/bh_class/your_netid/exercises/data/untrimmed_fastq/` to your local `~/Downloads` directory. Be sure to execute this from your local machine.</li>
+</details>
+
+</body>
+</html>

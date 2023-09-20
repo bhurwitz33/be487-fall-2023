@@ -447,7 +447,7 @@ that contains a match.</p>
 </div></code></pre>
 <p>The output shows all of the lines that contain the sequence GATCGAGAGGGGATAGGCG. As the flag -B1 is used, it also shows the previous line to each occurence. In a FastQ file the identifier of each sequence is one line avobe the sequence itself, therefore in this example you can see the names and the sequences that match your query.&lt;</p>
 <li>2.To search for a sequence in all of the FastQ files you could use the asterisk `*` wildcard before the file extension `.fastq` :</li>
-<pre class="hljs"><code><div>$ grep -B1 AAGTT *.fastq
+<pre class="hljs"><code><div>$ grep -B1 AAGTT *.fastq | head
 </div></code></pre>
 <p>In this case, the lines with the sequence AAGTT are shown for all of the files that end with '.fastq' in the current directory. The output shows the name of the file followed by semicolon to differentiate what file each line comes from.</p>
 </details>

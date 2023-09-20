@@ -1,0 +1,697 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>06_02-trimming-filtering.md</title>
+<meta http-equiv="Content-type" content="text/html;charset=UTF-8">
+
+<style>
+/* https://github.com/microsoft/vscode/blob/master/extensions/markdown-language-features/media/markdown.css */
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
+body {
+	font-family: var(--vscode-markdown-font-family, -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif);
+	font-size: var(--vscode-markdown-font-size, 14px);
+	padding: 0 26px;
+	line-height: var(--vscode-markdown-line-height, 22px);
+	word-wrap: break-word;
+}
+
+#code-csp-warning {
+	position: fixed;
+	top: 0;
+	right: 0;
+	color: white;
+	margin: 16px;
+	text-align: center;
+	font-size: 12px;
+	font-family: sans-serif;
+	background-color:#444444;
+	cursor: pointer;
+	padding: 6px;
+	box-shadow: 1px 1px 1px rgba(0,0,0,.25);
+}
+
+#code-csp-warning:hover {
+	text-decoration: none;
+	background-color:#007acc;
+	box-shadow: 2px 2px 2px rgba(0,0,0,.25);
+}
+
+body.scrollBeyondLastLine {
+	margin-bottom: calc(100vh - 22px);
+}
+
+body.showEditorSelection .code-line {
+	position: relative;
+}
+
+body.showEditorSelection .code-active-line:before,
+body.showEditorSelection .code-line:hover:before {
+	content: "";
+	display: block;
+	position: absolute;
+	top: 0;
+	left: -12px;
+	height: 100%;
+}
+
+body.showEditorSelection li.code-active-line:before,
+body.showEditorSelection li.code-line:hover:before {
+	left: -30px;
+}
+
+.vscode-light.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.15);
+}
+
+.vscode-light.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.40);
+}
+
+.vscode-light.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+.vscode-dark.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.4);
+}
+
+.vscode-dark.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.60);
+}
+
+.vscode-dark.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+.vscode-high-contrast.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 160, 0, 0.7);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 160, 0, 1);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+img {
+	max-width: 100%;
+	max-height: 100%;
+}
+
+a {
+	text-decoration: none;
+}
+
+a:hover {
+	text-decoration: underline;
+}
+
+a:focus,
+input:focus,
+select:focus,
+textarea:focus {
+	outline: 1px solid -webkit-focus-ring-color;
+	outline-offset: -1px;
+}
+
+hr {
+	border: 0;
+	height: 2px;
+	border-bottom: 2px solid;
+}
+
+h1 {
+	padding-bottom: 0.3em;
+	line-height: 1.2;
+	border-bottom-width: 1px;
+	border-bottom-style: solid;
+}
+
+h1, h2, h3 {
+	font-weight: normal;
+}
+
+table {
+	border-collapse: collapse;
+}
+
+table > thead > tr > th {
+	text-align: left;
+	border-bottom: 1px solid;
+}
+
+table > thead > tr > th,
+table > thead > tr > td,
+table > tbody > tr > th,
+table > tbody > tr > td {
+	padding: 5px 10px;
+}
+
+table > tbody > tr + tr > td {
+	border-top: 1px solid;
+}
+
+blockquote {
+	margin: 0 7px 0 5px;
+	padding: 0 16px 0 10px;
+	border-left-width: 5px;
+	border-left-style: solid;
+}
+
+code {
+	font-family: Menlo, Monaco, Consolas, "Droid Sans Mono", "Courier New", monospace, "Droid Sans Fallback";
+	font-size: 1em;
+	line-height: 1.357em;
+}
+
+body.wordWrap pre {
+	white-space: pre-wrap;
+}
+
+pre:not(.hljs),
+pre.hljs code > div {
+	padding: 16px;
+	border-radius: 3px;
+	overflow: auto;
+}
+
+pre code {
+	color: var(--vscode-editor-foreground);
+	tab-size: 4;
+}
+
+/** Theming */
+
+.vscode-light pre {
+	background-color: rgba(220, 220, 220, 0.4);
+}
+
+.vscode-dark pre {
+	background-color: rgba(10, 10, 10, 0.4);
+}
+
+.vscode-high-contrast pre {
+	background-color: rgb(0, 0, 0);
+}
+
+.vscode-high-contrast h1 {
+	border-color: rgb(0, 0, 0);
+}
+
+.vscode-light table > thead > tr > th {
+	border-color: rgba(0, 0, 0, 0.69);
+}
+
+.vscode-dark table > thead > tr > th {
+	border-color: rgba(255, 255, 255, 0.69);
+}
+
+.vscode-light h1,
+.vscode-light hr,
+.vscode-light table > tbody > tr + tr > td {
+	border-color: rgba(0, 0, 0, 0.18);
+}
+
+.vscode-dark h1,
+.vscode-dark hr,
+.vscode-dark table > tbody > tr + tr > td {
+	border-color: rgba(255, 255, 255, 0.18);
+}
+
+</style>
+
+<style>
+/* Tomorrow Theme */
+/* http://jmblog.github.com/color-themes-for-google-code-highlightjs */
+/* Original theme - https://github.com/chriskempson/tomorrow-theme */
+
+/* Tomorrow Comment */
+.hljs-comment,
+.hljs-quote {
+	color: #8e908c;
+}
+
+/* Tomorrow Red */
+.hljs-variable,
+.hljs-template-variable,
+.hljs-tag,
+.hljs-name,
+.hljs-selector-id,
+.hljs-selector-class,
+.hljs-regexp,
+.hljs-deletion {
+	color: #c82829;
+}
+
+/* Tomorrow Orange */
+.hljs-number,
+.hljs-built_in,
+.hljs-builtin-name,
+.hljs-literal,
+.hljs-type,
+.hljs-params,
+.hljs-meta,
+.hljs-link {
+	color: #f5871f;
+}
+
+/* Tomorrow Yellow */
+.hljs-attribute {
+	color: #eab700;
+}
+
+/* Tomorrow Green */
+.hljs-string,
+.hljs-symbol,
+.hljs-bullet,
+.hljs-addition {
+	color: #718c00;
+}
+
+/* Tomorrow Blue */
+.hljs-title,
+.hljs-section {
+	color: #4271ae;
+}
+
+/* Tomorrow Purple */
+.hljs-keyword,
+.hljs-selector-tag {
+	color: #8959a8;
+}
+
+.hljs {
+	display: block;
+	overflow-x: auto;
+	color: #4d4d4c;
+	padding: 0.5em;
+}
+
+.hljs-emphasis {
+	font-style: italic;
+}
+
+.hljs-strong {
+	font-weight: bold;
+}
+</style>
+
+<style>
+/*
+ * Markdown PDF CSS
+ */
+
+ body {
+	font-family: -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif, "Meiryo";
+	padding: 0 12px;
+}
+
+pre {
+	background-color: #f8f8f8;
+	border: 1px solid #cccccc;
+	border-radius: 3px;
+	overflow-x: auto;
+	white-space: pre-wrap;
+	overflow-wrap: break-word;
+}
+
+pre:not(.hljs) {
+	padding: 23px;
+	line-height: 19px;
+}
+
+blockquote {
+	background: rgba(127, 127, 127, 0.1);
+	border-color: rgba(0, 122, 204, 0.5);
+}
+
+.emoji {
+	height: 1.4em;
+}
+
+code {
+	font-size: 14px;
+	line-height: 19px;
+}
+
+/* for inline code */
+:not(pre):not(.hljs) > code {
+	color: #C9AE75; /* Change the old color so it seems less like an error */
+	font-size: inherit;
+}
+
+/* Page Break : use <div class="page"/> to insert page break
+-------------------------------------------------------- */
+.page {
+	page-break-after: always;
+}
+
+</style>
+
+<script src="https://unpkg.com/mermaid/dist/mermaid.min.js"></script>
+</head>
+<body>
+  <script>
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: document.body.classList.contains('vscode-dark') || document.body.classList.contains('vscode-high-contrast')
+          ? 'dark'
+          : 'default'
+    });
+  </script>
+<h2 id="cleaning-reads">Cleaning reads</h2>
+<p>In the last exercise, we took a high-level look at the quality
+of each of our samples using <code>FastQC</code>. We visualized per-base quality
+graphs showing the distribution of the quality at each base across
+all the reads from our sample. This information helps us to determine
+the quality threshold we will accept, and thus, we saw information about
+which samples fail which quality checks. Some of our samples failed
+quite a few quality metrics used by FastQC. However, this does not mean
+that our samples should be thrown out! It is common to have some
+quality metrics fail, which may or may not be a problem for your
+downstream application. For our workflow, we will remove some low-quality sequences to reduce our false-positive rate due to
+sequencing errors.</p>
+<p>To accomplish this, we will use a program called
+<a href="http://www.usadellab.org/cms/?page=trimmomatic">Trimmomatic</a>. This
+useful tool filters poor quality reads and trims poor quality bases
+from the specified samples.</p>
+<h2 id="trimmomatic-options">Trimmomatic options</h2>
+<p>Trimmomatic has a variety of options to accomplish its task.
+If we run the following command, we can see some of its options:</p>
+<pre class="hljs"><code><div>$ interactive
+$ apptainer run /contrib/singularity/shared/bhurwitz/trimmomatic:0.39--hdfd78af_2.sif trimmomatic
+</div></code></pre>
+<p>Which will give you the following output:</p>
+<pre class="hljs"><code><div>Usage: 
+       PE [-version] [-threads &lt;threads&gt;] [-phred33|-phred64] [-trimlog &lt;trimLogFile&gt;] [-summary &lt;statsSummaryFile&gt;] [-quiet] [-validatePairs] [-basein &lt;inputBase&gt; | &lt;inputFile1&gt; &lt;inputFile2&gt;] [-baseout &lt;outputBase&gt; | &lt;outputFile1P&gt; &lt;outputFile1U&gt; &lt;outputFile2P&gt; &lt;outputFile2U&gt;] &lt;trimmer1&gt;...
+   or: 
+       SE [-version] [-threads &lt;threads&gt;] [-phred33|-phred64] [-trimlog &lt;trimLogFile&gt;] [-summary &lt;statsSummaryFile&gt;] [-quiet] &lt;inputFile&gt; &lt;outputFile&gt; &lt;trimmer1&gt;...
+   or: 
+       -version
+</div></code></pre>
+<p>This output shows that we must first specify whether we have paired-end (<code>PE</code>) or single-end (<code>SE</code>) reads. Next, we will specify with which flags we
+want to run Trimmomatic. For example, you can specify <code>threads</code>
+to indicate the number of processors on your computer that you want Trimmomatic
+to use. In most cases, using multiple threads(processors) can help to run the
+trimming faster. These flags are unnecessary, but they can give you more control
+over the command. The flags are followed by <strong>positional arguments</strong>, meaning
+the order in which you specify them is essential. In paired-end mode, Trimmomatic
+expects the two input files and then the names of the output files. These files are
+described below. While in single-end mode, Trimmomatic will expect one file
+as input, after which you can enter the optional settings and, lastly, the
+name of the output file.</p>
+<table>
+<thead>
+<tr>
+<th>Option</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>&lt;inputFile1&gt;</td>
+<td>input forward reads to be trimmed. Typically the file name will contain an <code>_1</code> or <code>_R1</code> in the name.</td>
+</tr>
+<tr>
+<td>&lt;inputFile2&gt;</td>
+<td>Input reverse reads to be trimmed. Typically the file name will contain an <code>_2</code> or <code>_R2</code> in the name.</td>
+</tr>
+<tr>
+<td>&lt;outputFile1P&gt;</td>
+<td>Output file that contains surviving pairs from the <code>_1</code> file.</td>
+</tr>
+<tr>
+<td>&lt;outputFile1U&gt;</td>
+<td>Output file that contains orphaned reads from the <code>_1</code> file.</td>
+</tr>
+<tr>
+<td>&lt;outputFile2P&gt;</td>
+<td>Output file that contains surviving pairs from the <code>_2</code> file.</td>
+</tr>
+<tr>
+<td>&lt;outputFile2U&gt;</td>
+<td>Output file that contains orphaned reads from the <code>_2</code> file.</td>
+</tr>
+</tbody>
+</table>
+<p>The last thing Trimmomatic expects to see is the trimming parameters:</p>
+<table>
+<thead>
+<tr>
+<th>step</th>
+<th>meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>ILLUMINACLIP</code></td>
+<td>Perform adapter removal.</td>
+</tr>
+<tr>
+<td><code>SLIDINGWINDOW</code></td>
+<td>Perform sliding window trimming, cutting once the average quality within the window falls below a threshold.</td>
+</tr>
+<tr>
+<td><code>LEADING</code></td>
+<td>Cut bases off the start of a read if below a threshold quality.</td>
+</tr>
+<tr>
+<td><code>TRAILING</code></td>
+<td>Cut bases off the end of a read if below a threshold quality.</td>
+</tr>
+<tr>
+<td><code>CROP</code></td>
+<td>Cut the read to a specified length.</td>
+</tr>
+<tr>
+<td><code>HEADCROP</code></td>
+<td>Cut the specified number of bases from the start of the read.</td>
+</tr>
+<tr>
+<td><code>MINLEN</code></td>
+<td>Drop an entire read if it is below a specified length.</td>
+</tr>
+<tr>
+<td><code>TOPHRED33</code></td>
+<td>Convert quality scores to Phred-33.</td>
+</tr>
+<tr>
+<td><code>TOPHRED64</code></td>
+<td>Convert quality scores to Phred-64.</td>
+</tr>
+</tbody>
+</table>
+<p>Understanding the steps you are using to
+clean your data is essential. We will use only a few options and trimming steps in our
+analysis. For more information about the Trimmomatic arguments
+and options, see <a href="http://www.usadellab.org/cms/uploads/supplementary/Trimmomatic/TrimmomaticManual_V0.32.pdf">the Trimmomatic manual</a>.</p>
+<a href="../fig/03-03-01.png">
+  <img src="../fig/03-03-01.png" alt="Diagram showing the parts of the sequence that are reviewed by each parameter and the parts that are maintained or discarded at the end of the process. The Illuminaclip parameter removes the adapters, and the SlidingWindow scans the read by sections and removes a part of the read below the quality threshold. We remain with a trimmed read that has a valid quality." />
+</a>
+<p>However, a complete command for Trimmomatic will look something like the command below. This command is an example and will not work, as we do not have the files it refers to:</p>
+<pre class="hljs"><code><div>$ apptainer run /contrib/singularity/shared/bhurwitz/trimmomatic:0.39--hdfd78af_2.sif trimmomatic \
+ PE -threads 4 SRR_1056_1.fastq SRR_1056_2.fastq \
+ SRR_1056_1.trimmed.fastq SRR_1056_1un.trimmed.fastq \
+ SRR_1056_2.trimmed.fastq SRR_1056_2un.trimmed.fastq \
+ ILLUMINACLIP:SRR_adapters.fa SLIDINGWINDOW:4:20
+</div></code></pre>
+<p>In this example, we have told Trimmomatic:</p>
+<table>
+<thead>
+<tr>
+<th>code</th>
+<th>meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>PE</code></td>
+<td>that it will be taking a paired-end file as input</td>
+</tr>
+<tr>
+<td><code>-threads 4</code></td>
+<td>to use four computing threads to run (this will speed up our run)</td>
+</tr>
+<tr>
+<td><code>SRR_1056_1.fastq</code></td>
+<td>the first input file name. Forward</td>
+</tr>
+<tr>
+<td><code>SRR_1056_2.fastq</code></td>
+<td>the second input file name. Reverse</td>
+</tr>
+<tr>
+<td><code>SRR_1056_1.trimmed.fastq</code></td>
+<td>the output file for surviving pairs from the <code>_1</code> file</td>
+</tr>
+<tr>
+<td><code>SRR_1056_1un.trimmed.fastq</code></td>
+<td>the output file for orphaned reads from the <code>_1</code> file</td>
+</tr>
+<tr>
+<td><code>SRR_1056_2.trimmed.fastq</code></td>
+<td>the output file for surviving pairs from the <code>_2</code> file</td>
+</tr>
+<tr>
+<td><code>SRR_1056_2un.trimmed.fastq</code></td>
+<td>the output file for orphaned reads from the <code>_2</code> file</td>
+</tr>
+<tr>
+<td><code>ILLUMINACLIP:SRR_adapters.fa</code></td>
+<td>to clip the Illumina adapters from the input file using the adapter sequences listed in <code>SRR_adapters.fa</code></td>
+</tr>
+<tr>
+<td><code>SLIDINGWINDOW:4:20</code></td>
+<td>to use a sliding window of size 4 that will remove bases if their Phred score is below 20</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<h2 id="multi-line-for-long-commands">Multi-line for long commands</h2>
+<p>Some of the commands we ran in this lesson are long! To separate code chunks onto separate lines
+When typing into your terminal one command with long input or many modifying parameters, you can
+use the <code>\</code> character to make your code more readable. For example, let us use multi lines
+with the echo command. With <code>\</code> it is possible to use several lines to print &quot;hello world&quot;
+on your terminal.</p>
+<pre class="hljs"><code><div>$ echo he\
+$ llo\
+$ world
+</div></code></pre>
+</blockquote>
+<blockquote>
+<pre class="hljs"><code><div>$ hello world
+</div></code></pre>
+</blockquote>
+<blockquote>
+<p>Note: Some terminals only wait a few seconds for you to keep typing. In that case, you may write
+down the full command in a text file and then copy it to your terminal.</p>
+</blockquote>
+<h2 id="running-trimmomatic">Running Trimmomatic</h2>
+<p>Now, we will run Trimmomatic on our data. Navigate to your
+<code>untrimmed_fastq</code> data directory and verify that you are
+located in the <code>untrimmed_fastq/</code> directory:</p>
+<pre class="hljs"><code><div>$ cd /xdisk/bhurwitz/bh_class/YOUR_NETID/exercises/data/untrimmed_fastq
+$ pwd
+</div></code></pre>
+<pre class="hljs"><code><div>$ /xdisk/bhurwitz/bh_class/YOUR_NETID/exercises/data/untrimmed_fastq
+</div></code></pre>
+<p>You should have only four files in this directory. Those files correspond
+to the files of forward and reverse reads from samples JC1A and JP4D.</p>
+<pre class="hljs"><code><div>$ ls
+</div></code></pre>
+<pre class="hljs"><code><div>$ JC1A_R1.fastq.gz  JC1A_R2.fastq.gz  JP4D_R1.fastq  JP4D_R2.fastq.gz  TruSeq3-PE.fa   
+</div></code></pre>
+<p>We are going to run Trimmomatic on one of our paired-end samples.
+While using FastQC, we saw that Universal adapters were present
+in our samples. The adapter sequences came with the installation of
+Trimmomatic and it is located in our current directory in the file <code>TruSeq3-PE.fa</code>.</p>
+<p>We will also use a sliding window of size 4 that will remove bases if their
+Phred score is below 20 (like in our example above). We will also
+discard any reads that do not have at least 25 bases remaining after
+this trimming step. This command will take a few minutes to run.</p>
+<p>Before, we unzipped one of our files to work with it. Let us compress
+the file corresponding to the sample <code>JP4D</code> again before we run Trimmomatic.</p>
+<pre class="hljs"><code><div>gzip JP4D_R1.fastq
+</div></code></pre>
+<pre class="hljs"><code><div>$ apptainer run /contrib/singularity/shared/bhurwitz/trimmomatic:0.39--hdfd78af_2.sif trimmomatic \
+PE JP4D_R1.fastq.gz JP4D_R2.fastq.gz \
+JP4D_R1.trim.fastq.gz  JP4D_R1un.trim.fastq.gz \
+JP4D_R2.trim.fastq.gz  JP4D_R2un.trim.fastq.gz \
+SLIDINGWINDOW:4:20 MINLEN:35 ILLUMINACLIP:TruSeq3-PE.fa:2:40:15 
+</div></code></pre>
+<pre class="hljs"><code><div>TrimmomaticPE: Started with arguments:
+ JP4D_R1.fastq.gz JP4D_R2.fastq.gz JP4D_R1.trim.fastq.gz JP4D_R1un.trim.fastq.gz JP4D_R2.trim.fastq.gz JP4D_R2un.trim.fastq.gz SLIDINGWINDOW:4:20 MINLEN:35 ILLUMINACLIP:TruSeq3-PE.fa:2:40:15
+Multiple cores found: Using 2 threads
+Using PrefixPair: 'TACACTCTTTCCCTACACGACGCTCTTCCGATCT' and 'GTGACTGGAGTTCAGACGTGTGCTCTTCCGATCT'
+ILLUMINACLIP: Using 1 prefix pairs, 0 forward/reverse sequences, 0 forward only sequences, 0 reverse only sequences
+Quality encoding detected as phred33
+Input Read Pairs: 1123987 Both Surviving: 751427 (66.85%) Forward Only Surviving: 341434 (30.38%) Reverse Only Surviving: 11303 (1.01%) Dropped: 19823 (1.76%)
+TrimmomaticPE: Completed successfully
+</div></code></pre>
+<blockquote>
+<h2 id="exercise-1-what-did-trimmomatic-do">Exercise 1: What did Trimmomatic do?</h2>
+<p>Use the output from your Trimmomatic command to answer the
+following questions.</p>
+<ol>
+<li>What percent of reads did we discard from our sample?</li>
+<li>What percent of reads did we keep both pairs?</li>
+</ol>
+</blockquote>
+<details>
+  <summary markdown="span">Solution</summary>
+  <ul> 
+1) 1.76%    
+2) 66.85%
+</details>
+<br>
+<p>You may have noticed that Trimmomatic automatically detected the
+quality encoding of our sample. It is always a good idea to
+double-check this or manually enter the quality encoding.</p>
+<p>We can confirm that we have our output files:</p>
+<pre class="hljs"><code><div>$ ls JP4D*
+</div></code></pre>
+<pre class="hljs"><code><div>JP4D_R1.fastq.gz       JP4D_R1un.trim.fastq.gz	JP4D_R2.trim.fastq.gz
+JP4D_R1.trim.fastq.gz  JP4D_R2.fastq.gz		JP4D_R2un.trim.fastq.gz
+</div></code></pre>
+<p>The output files are also FASTQ files. It should be smaller than our
+input file because we have removed reads. We can confirm this with this
+command:</p>
+<pre class="hljs"><code><div>$ ls JP4D* -l -h
+</div></code></pre>
+<pre class="hljs"><code><div>-rw-r--r-- 1 dcuser dcuser 179M Nov 26 12:44 JP4D_R1.fastq.gz
+-rw-rw-r-- 1 dcuser dcuser 107M Mar 11 23:05 JP4D_R1.trim.fastq.gz
+-rw-rw-r-- 1 dcuser dcuser  43M Mar 11 23:05 JP4D_R1un.trim.fastq.gz
+-rw-r--r-- 1 dcuser dcuser 203M Nov 26 12:51 JP4D_R2.fastq.gz
+-rw-rw-r-- 1 dcuser dcuser 109M Mar 11 23:05 JP4D_R2.trim.fastq.gz
+-rw-rw-r-- 1 dcuser dcuser 1.3M Mar 11 23:05 JP4D_R2un.trim.fastq.gz
+</div></code></pre>
+<p>We have just successfully run Trimmomatic on one of our FASTQ files!
+However, there is some bad news. Trimmomatic can only operate on
+one sample at a time, and we have more than one sample. The good news
+is that we can use a <code>for</code> loop to iterate through our sample files
+quickly!</p>
+<pre class="hljs"><code><div>$ for infile in *_R1.fastq.gz
+do
+base=$(basename ${infile} _R1.fastq.gz)
+apptainer run /contrib/singularity/shared/bhurwitz/trimmomatic:0.39--hdfd78af_2.sif trimmomatic \
+PE ${infile} ${base}_R2.fastq.gz \
+${base}_R1.trim.fastq.gz ${base}_R1un.trim.fastq.gz \
+${base}_R2.trim.fastq.gz ${base}_R2un.trim.fastq.gz \
+SLIDINGWINDOW:4:20 MINLEN:35 ILLUMINACLIP:TruSeq3-PE.fa:2:40:15
+done
+</div></code></pre>
+<p>Go ahead and run the <code>for</code> loop. It should take a few minutes for
+Trimmomatic to run for each of our four input files. Once it is done,
+take a look at your directory contents. You will notice that even though we ran Trimmomatic on file <code>JP4D</code> before running the for loop, there is only one set of files for it. Because we matched the ending <code>_R1.fastq.gz</code>, we re-ran Trimmomatic on this file, overwriting our first results. That is ok, but it is good to be aware that it happened.</p>
+<pre class="hljs"><code><div>$ ls
+</div></code></pre>
+<pre class="hljs"><code><div>JC1A_R1.fastq.gz                     JP4D_R1.fastq.gz                                    
+JC1A_R1.trim.fastq.gz                JP4D_R1.trim.fastq.gz                                
+JC1A_R1un.trim.fastq.gz              JP4D_R1un.trim.fastq.gz                                
+JC1A_R2.fastq.gz                     JP4D_R2.fastq.gz                                 
+JC1A_R2.trim.fastq.gz                JP4D_R2.trim.fastq.gz                                 
+JC1A_R2un.trim.fastq.gz              JP4D_R2un.trim.fastq.gz                                 
+TruSeq3-PE.fa   
+</div></code></pre>
+<p>We have completed the trimming and filtering steps of our quality
+control process! Before we move on, let us move our trimmed FASTQ files
+to our results directory</p>
+<pre class="hljs"><code><div>$ cd /xdisk/bhurwitz/bh_class/YOUR_NETID/exercises/data/untrimmed_fastq
+$ mv *.trim* ../../06_qc_trimming
+$ cd ../../06_qc_trimming
+$ ls
+</div></code></pre>
+<pre class="hljs"><code><div>JC1A_R1.trim.fastq.gz    JP4D_R1.trim.fastq.gz                
+JC1A_R1un.trim.fastq.gz  JP4D_R1un.trim.fastq.gz              
+JC1A_R2.trim.fastq.gz    JP4D_R2.trim.fastq.gz                
+JC1A_R2un.trim.fastq.gz  JP4D_R2un.trim.fastq.gz   
+</div></code></pre>
+
+</body>
+</html>

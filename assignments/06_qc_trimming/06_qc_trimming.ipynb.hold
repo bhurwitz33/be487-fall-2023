@@ -5,12 +5,132 @@
    "id": "5de7bac8",
    "metadata": {},
    "source": [
-    "# Trimming\n",
+    "# Quality Control and Trimming\n",
     "\n",
-    "This notebook will go through the workflow for the trimmomatic tool. This tool cleans FASTQ reads, offering a selection for multiple options within the command line. \n",
+    "This notebook will go through the workflow for read quality control and trimming.  \n",
     "\n",
-    "1. Compressing Files to run through Trimmomatic\n",
-    "2. An introduction to [Trimmomatic](https://carpentries-lab.github.io/metagenomics-analysis/03-trimming-filtering/index.html).\n"
+    "1. Quality Control using fastqc to determine quality thresholds.\n",
+    "2. Compressing Files to run through Trimmomatic\n",
+    "3. An introduction to [Trimmomatic](https://carpentries-lab.github.io/metagenomics-analysis/03-trimming-filtering/index.html).\n"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "07ebed36",
+   "metadata": {},
+   "source": [
+    "## Getting Started\n",
+    "\n",
+    "You will need to rerun this section if you return to this Jupyter notebook later."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "4538157b",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# Let's go into the working directory for this homework assignment\n",
+    "netid = \"YOUR_NETID\"\n",
+    "workingdir = \"/xdisk/bhurwitz/bh_class/$netid/assignments/06_qc_trimming\"\n",
+    "%cd ${workingdir}"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "49e61de4",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# Create variable for your xfile.\n",
+    "# Create a variable called fastqdir with information about where our raw FASTQ files are located (downloaded in 05_getting_data)\n",
+    "xfile = \"YOUR_XFILE\"\n",
+    "fastqdir = \"/xdisk/bhurwitz/bh_class/$netid/assignments/05_getting_data\""
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "bfeaabfe",
+   "metadata": {},
+   "source": [
+    "## Section 1: Assessing Read Quality\n",
+    "\n",
+    "Now that we have all of our data downloaded, we are ready to start the quality control process. We will use a tool called fastqc that generates a report about the quality of our sequence data. "
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "df7e3021",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# Create a script to run fastqc on each of our accessions\n",
+    "# note that we are using the netid variable you set above in getting started.\n",
+    "my_code = '''#!/bin/bash\n",
+    "#SBATCH --ntasks=3\n",
+    "#SBATCH --nodes=1             \n",
+    "#SBATCH --time=10:00:00   \n",
+    "#SBATCH --partition=standard\n",
+    "#SBATCH --account=bh_class\n",
+    "#SBATCH --array=0-4                         \n",
+    "#SBATCH --output=Job-%a.out\n",
+    "#SBATCH --cpus-per-task=1                  \n",
+    "#SBATCH --mem=4G                           \n",
+    "\n",
+    "pwd; hostname; date\n",
+    " \n",
+    "names=($(cat \"${fastqdir}/${xfile}\"))\n",
+    "\n",
+    "apptainer run /contrib/singularity/shared/bhurwitz/fastqc-0.11.9.sif fastqc \\\n",
+    "    ${fastqdir}/${names[${SLURM_ARRAY_TASK_ID}]}_*.fastq*\n",
+    "'''\n",
+    "\n",
+    "with open('fastqc_parallel.sh', mode='w') as file:\n",
+    "    file.write(my_code)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "231b9374",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# Check the code and make sure the location of the xfile and fastqdir are correct. If not, go back to getting started.\n",
+    "!cat fastqc_parallel.sh"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "fe884278",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# Let's run sbatch to run fastqc on each of the FASTQ files\n",
+    "!sbatch ./fastqc_parallel.sh"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "3699608e",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# You can check if it is running using the squeue command\n",
+    "!squeue --job=YOUR_JOBID"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "f8b30b51",
+   "metadata": {},
+   "source": [
+    "Remember that you will need to come back to this step to see if all of the fastqc files were created. And you will need to assess how to trim your reads based on these data."
    ]
   },
   {
@@ -18,19 +138,11 @@
    "id": "74ce6846",
    "metadata": {},
    "source": [
-    "## File Prep -- Compressing to run files through Trimmomatic\n",
+    "## Section 2: Trimming your sequences based on the fastq reports. \n",
     "\n",
-    "Trimmomatic works on FAST files that are compressed with either gzip or bzip2. We'll be using gzip to get the .gz file extension we need. These files are massive so lets run a script to sbatch the compression job."
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "id": "859a53a3",
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "!nano ~/scripts/gzip_untrimmedfiles.sh"
+    "Part 1. File Prep -- Compressing your FASTQ files so that they can run through Trimmomatic\n",
+    "\n",
+    "Trimmomatic works on FASTQ files that are compressed with either gzip or bzip2. We'll be using gzip to get the .gz file extension we need. These FASTQ files are massive so lets run a script to sbatch the compression job."
    ]
   },
   {
@@ -40,25 +152,26 @@
    "metadata": {},
    "outputs": [],
    "source": [
-    "#!/bin/bash\n",
+    "# Let's create a script that gzip's all of the FASTQ files\n",
+    "my_code = '''#!/bin/bash\n",
     "#SBATCH --ntasks=1\n",
     "#SBATCH --nodes=1             \n",
     "#SBATCH --time=10:00:00   \n",
     "#SBATCH --partition=standard\n",
-    "#SBATCH --account=bhurwitz\n",
-    "#SBATCH --array=0-46                           # needs to be the number of files we're assessing read quality\n",
+    "#SBATCH --account=bh_class\n",
+    "#SBATCH --array=0-4              # needs to be the number of files we're assessing read quality\n",
     "#SBATCH --output=Job-%a.out\n",
-    "#SBATCH --cpus-per-task=1                    # num CPUs per task\n",
-    "#SBATCH --mem=4G                             # total memory per node\n",
+    "#SBATCH --cpus-per-task=1        # num CPUs per task\n",
+    "#SBATCH --mem=4G                 # total memory per node\n",
     " \n",
-    "# SLURM Inherits your environment. cd $SLURM_SUBMIT_DIR not needed\n",
     "pwd; hostname; date\n",
-    " \n",
-    "names=($(cat /xdisk/bhurwitz/YOUR_NAME/bio_pipeline/data/SRR_Acc_List.txt))\n",
-    "readdir=\"/xdisk/bhurwitz/YOUR_NAME/data\"\n",
     "\n",
+    "names=($(cat ${fastqdir}/${xfile}))\n",
+    "gzip ${fastqdir}/${names[${SLURM_ARRAY_TASK_ID}]}_*.fastq\n",
+    "'''\n",
     "\n",
-    "gzip ${readdir}/${names[${SLURM_ARRAY_TASK_ID}]}_*.fastq"
+    "with open('gzip_untrimmedfiles.sh', mode='w') as file:\n",
+    "    file.write(my_code)"
    ]
   },
   {
@@ -72,15 +185,26 @@
    ]
   },
   {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "f74429b0",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# You can check if it is running using the squeue command\n",
+    "!squeue --job=YOUR_JOBID"
+   ]
+  },
+  {
    "cell_type": "markdown",
    "id": "11eda481",
    "metadata": {},
    "source": [
     "## Trimming .fastq Files\n",
     "\n",
-    "In order to run trimmomatic in a PE (paired-end) format we'll need two files. We have this as we used our other tools to split the file downloads to return *_1.fastq and *_2.fastq for each SRA. Our output will be presented with 4 output files (forward paired, forward unpaired, reverse paired and reverse unpaired). \n",
+    "In order to run trimmomatic in a PE (paired-end) format we'll need two files. In our case, we have *_1.fastq and *_2.fastq for each accession from the SRA. Our fastqc output will give us 4 output files (forward paired, forward unpaired, reverse paired and reverse unpaired). \n",
     "\n",
-    "We'll be following along with the software carpentries workshop. We saw in our reports after running QC that we had no adapters present in the reads, so we can skip the Illumina adapter removal. If we did need to run an adapter trim we would use the FastQC report to determine which and some info from the manual to help pick."
+    "We saw in our reports after running QC that we had no adapters present in the reads, so we can skip the Illumina adapter removal. If we did need to run an adapter trim we would use the FastQC report to determine which one and info from the manual to help pick."
    ]
   },
   {
@@ -110,16 +234,6 @@
    ]
   },
   {
-   "cell_type": "code",
-   "execution_count": null,
-   "id": "19d9b040",
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "!nano trimmomatic_fastq.sh"
-   ]
-  },
-  {
    "cell_type": "markdown",
    "id": "bdf10aee",
    "metadata": {},
@@ -135,8 +249,8 @@
    "metadata": {},
    "outputs": [],
    "source": [
-    "!mkdir /xdisk/bhurwitz/YOUR_NAME/trimming/trimmed_reads\n",
-    "!mkdir /xdisk/bhurwitz/YOUR_NAME/trimming/untrimmed_reads"
+    "!mkdir ${workingdir}/trimmed_reads\n",
+    "!mkdir ${workingdir}/untrimmed_reads"
    ]
   },
   {
@@ -146,31 +260,34 @@
    "metadata": {},
    "outputs": [],
    "source": [
-    "#!/bin/bash\n",
+    "# Let's create a script that runs trimmomatic on all of our fastq files\n",
+    "my_code = '''#!/bin/bash\n",
     "#SBATCH --ntasks=1\n",
     "#SBATCH --nodes=1             \n",
     "#SBATCH --time=10:00:00   \n",
     "#SBATCH --partition=standard\n",
-    "#SBATCH --account=bhurwitz\n",
-    "#SBATCH --array=0-46                           # needs to be the number of files we're assessing read quality\n",
+    "#SBATCH --account=bh_class\n",
+    "#SBATCH --array=0-4                          # needs to be the number of files we're assessing read quality\n",
     "#SBATCH --output=Job-%a.out\n",
     "#SBATCH --cpus-per-task=1                    # num CPUs per task\n",
     "#SBATCH --mem=4G                             # total memory per node\n",
     " \n",
-    "# SLURM Inherits your environment. cd $SLURM_SUBMIT_DIR not needed\n",
     "pwd; hostname; date\n",
     " \n",
-    "names=($(cat /xdisk/bhurwitz/YOUR_NAME/bio_pipeline/data/SRR_Acc_List.txt))\n",
-    "readdir=\"/xdisk/bhurwitz/YOUR_NAME/data\"\n",
-    "trimdir=\"/xdisk/bhurwitz/YOUR_NAME/trimming/trimmed_reads\"\n",
-    "untrimdir=\"/xdisk/bhurwitz/YOUR_NAME/trimming/untrimmed_reads\"\n",
+    "names=($(cat ${fastqdir}/${xfile}))\n",
+    "\n",
+    "trimdir=\"${workingdir}/trimmed_reads\"\n",
+    "untrimdir=\"${workingdir}/untrimmed_reads\"\n",
     "\n",
     "apptainer run /contrib/singularity/shared/bhurwitz/trimmomatic:0.39--hdfd78af_2.sif trimmomatic PE \\\n",
-    "    ${readdir}/${names[${SLURM_ARRAY_TASK_ID}]}_1.fastq.gz ${readdir}/${names[${SLURM_ARRAY_TASK_ID}]}_2.fastq.gz \\\n",
+    "    ${fastqdir}/${names[${SLURM_ARRAY_TASK_ID}]}_1.fastq.gz ${fastqdir}/${names[${SLURM_ARRAY_TASK_ID}]}_2.fastq.gz \\\n",
     "    ${trimdir}/${names[${SLURM_ARRAY_TASK_ID}]}_1.fastq.gz ${untrimdir}/${names[${SLURM_ARRAY_TASK_ID}]}_1.fastq.gz \\\n",
     "    ${trimdir}/${names[${SLURM_ARRAY_TASK_ID}]}_2.fastq.gz ${untrimdir}/${names[${SLURM_ARRAY_TASK_ID}]}_2.fastq.gz \\\n",
     "    SLIDINGWINDOW:4:20\n",
-    "    "
+    "'''\n",
+    "\n",
+    "with open('trimmomatic_fastq.sh', mode='w') as file:\n",
+    "    file.write(my_code)"
    ]
   },
   {
@@ -181,6 +298,17 @@
    "outputs": [],
    "source": [
     "!sbatch trimmomatic_fastq.sh"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "69f708e8",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# You can check if it is running using the squeue command\n",
+    "!squeue --job=YOUR_JOBID"
    ]
   },
   {

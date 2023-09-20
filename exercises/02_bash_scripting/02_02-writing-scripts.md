@@ -20,13 +20,13 @@
 
 ## Writing files
 
-We have been able to do much work with existing files, but what if we want to write our own files? We are not going to type in a FASTA file, but we will see as we go through other tutorials; there are many reasons we will want to write a file or edit an existing file.
+We have been able to do much work with existing files, but what if we want to write our own files? We are not going to type in a FASTA file, but we will see as we go through other in-class exercises; there are many reasons we will want to write a file or edit an existing file.
 
 We will use a text editor called Nano to add text to files. We are going to create a file to take notes about what we have been doing with the data files in `/xdisk/bhurwitz/bh_class/your_netid/exercises/data/untrimmed_fastq`.
 
 Taking notes is good practice when working in bioinformatics. We can create a file called a `README.txt` that describes the data files in the directory or documents how the files in that directory were generated. As the name suggests, it is a file that others should read to understand the information in that directory.
 
-Let's change our working directory to `~/dc_workshop/data/untrimmed_fastq` using `cd`,
+Let's change our working directory to `/xdisk/bhurwitz/bh_class/your_netid/exercises/data/untrimmed_fastq` using `cd`,
 then run `nano` to create a file called `README.txt`:
 
 ```
@@ -67,7 +67,7 @@ The text at the bottom of the screen shows the keyboard shortcuts for performing
 > another directory the first time you "Save As..."
 
 
-Let us type in a few lines of text. Describe the files in this directory or what you have been doing with them.
+Let us type in a few lines of text. Describe the files in this directory and describe you have been doing with them.
     <a href="../fig/02-05-02.png">
   <img src="../fig/02-05-02.png" alt="The same screen as before but now it has text in the middle part." />
 </a>
@@ -110,7 +110,7 @@ Now you have written a file. You can look at it with `less` or `cat`, or open it
 
 ```
 Use `nano README.txt` to open the file.  
-Add today's date and then use <kbd>Ctrl</kbd>-<kbd>X</kbd> to exit and `y` to save.
+Add today's date and then use Ctrl X to exit and `y` to save.
 ```
 </details>
 
@@ -145,7 +145,7 @@ It will look like nothing happened, but now if you look at `scripted_bad_reads.t
 
 > ## Exercise 2: Edit a script
 >
-> We want the script to tell us when it is done.  
+> We want the script to tell us when it is done. Try using the `echo` command to let the user know the script is done.  
 > 
 <details>
   <summary markdown="span">Solution</summary>
@@ -186,7 +186,7 @@ $ ls -l bad-reads-script.sh
 ```
 
 ```
--rwxrwxr-x 1 dcuser dcuser 0 Oct 25 21:46 bad-reads-script.sh
+-rwxrwxr-x 1 user user 0 Aug 25 21:46 bad-reads-script.sh
 ```
 
 Now we see that it says `-rwxr-xr-x`. The `x`'s there now tell us we can run it as a program. So, let us try it! We will need to put `./` at the beginning, so the computer knows to look here in this directory for the program.
@@ -194,39 +194,34 @@ Now we see that it says `-rwxr-xr-x`. The `x`'s there now tell us we can run it 
 ```
 $ ./bad-reads-script.sh
 ```
-{: .bash}
 
 The script should run the same way as before, but now we have created our own computer program!
 
 It is good practice to keep any large files compressed while not using them. In this way, you save storage space; you will see that you will appreciate it when you advance your analysis. So, since we will not use the FASTQ files for now, let us compress them. Moreover, run `ls -lh` to confirm that they are compressed. 
 
 ```
-$ gzip ~/dc_workshop/data/untrimmed_fastq/*.fastq
-$ ls -lh  ~/dc_workshop/data/untrimmed_fastq/*.fastq.gz
+$ cd /xdisk/bhurwitz/bh_class/your_netid/exercises/data/untrimmed_fastq
+$ gzip *.fastq
+$ ls -lh  *.fastq.gz
 ```
-{: .bash}
+
 
 ```
 total 428M
--rw-r--r-- 1 dcuser dcuser  24M Nov 26 12:36 JC1A_R1.fastq.gz
--rw-r--r-- 1 dcuser dcuser  24M Nov 26 12:37 JC1A_R2.fastq.gz
--rw-r--r-- 1 dcuser dcuser 179M Nov 26 12:44 JP4D_R1.fastq.gz
--rw-r--r-- 1 dcuser dcuser 203M Nov 26 12:51 JP4D_R2.fastq.gz
+-rw-r--r-- 1 user user  24M Aug 26 12:36 JC1A_R1.fastq.gz
+-rw-r--r-- 1 user user  24M Aug 26 12:37 JC1A_R2.fastq.gz
+-rw-r--r-- 1 user user 179M Aug 26 12:44 JP4D_R1.fastq.gz
+-rw-r--r-- 1 user user 203M NAug 26 12:51 JP4D_R2.fastq.gz
 ```
-{: .output}
 
 ## Moving and downloading data
 
-So far, we have worked with pre-loaded data on the instance in the cloud. Usually, however,
-most analyses begin with moving data onto the instance. Below we will show you some commands to 
-download data onto your instance or to move data between your computer and the cloud.
+So far, we have worked with pre-loaded data on the hpc. Usually, however, most analyses begin with moving data onto the hpc. Below we will show you some commands to download data onto the hpc or to move data between your computer and the hpc.
 
-### Getting data from the cloud
+### Getting data to/from the HPC
 
 Two programs will download data from a remote server to your local
-(or remote) machine: ``wget`` and ``curl``. They were designed to do slightly different
-tasks by default, so you will need to give the programs somewhat different options to get
-the same behavior, but they are mostly interchangeable.
+(or remote) machine: ``wget`` and ``curl``. They were designed to do slightly different tasks by default, so you will need to give the programs somewhat different options to get the same behavior, but they are mostly interchangeable.
 
  - ``wget`` is short for "world wide web get", and its basic function is to *download*
 
@@ -246,45 +241,39 @@ To see which program you have, type:
 $ which curl
 $ which wget
 ```
-{: .bash}
 
 ``which`` is a BASH program that looks through everything you have
 installed and tells you what folder it is installed to. If it cannot
 find the program you asked for, it returns nothing, i.e., it gives you no
 results.
 
-On Mac OSX, you will likely get the following output:
+On the hpc, you will likely get the following output:
 
 ```
 $ which curl
 ```
-{: .bash}
 
 ```
 /usr/bin/curl
 ```
-{: .output}
+
 
 ```
 $ which wget
 ```
-{: .bash}
 
 ```
-$
+/usr/bin/wget
 ```
-{: .output}
 
-This output means that you have ``curl`` installed but not ``wget``.
+This output means that you have both ``curl`` and ``wget`` installed.
 
-Once you know whether you have ``curl`` or ``wget`` use one of the
-following commands to download the file:
+Now we can use one of the following commands to download the file to your home directory:
 
 ```
 $ cd
 $ wget ftp://ftp.ensemblgenomes.org/pub/release-37/bacteria/species_EnsemblBacteria.txt
 ```
-{: .bash}
 
 or
 
@@ -292,147 +281,81 @@ or
 $ cd
 $ curl -O ftp://ftp.ensemblgenomes.org/pub/release-37/bacteria/species_EnsemblBacteria.txt
 ```
-{: .bash}
 
-Since we wanted to *download* the file rather than view it, we used ``wget`` without
-any modifiers. With ``curl`` however, we had to use the -O flag, which simultaneously tells ``curl`` to
-download the page instead of showing it to us **and** specifies that it should save the
+Since we wanted to *download* the file rather than view it, we used ``wget`` without any modifiers. With ``curl`` however, we had to use the -O flag, which simultaneously tells ``curl`` to download the page instead of showing it to us **and** specifies that it should save the
 file using the same name it had on the server: species_EnsemblBacteria.txt
 
-It's important to note that both ``curl`` and ``wget`` download to the computer that the
-command line belongs to. So, if you are logged into AWS on the command line and execute
-the ``curl`` command above in the AWS terminal, the file will be downloaded to your AWS
-machine, not your local one.
+It's important to note that both ``curl`` and ``wget`` download to the computer that the command line belongs to. So, if you are logged into AWS on the command line and execute the ``curl`` command above in the AWS terminal, the file will be downloaded to your AWS machine, not your local one.
 
-### Moving files between your laptop and your instance
+### Moving files between your laptop and the HPC
 
-What if the data you need is on your local computer, but you need to get it *into* the
-cloud? There are several ways to do this. While following this lesson, you may be using
-the RStudio interface containing a terminal, some other terminal, or your own local computer. Depending on your setup, 
-there are several alternatives to transfer the files. Here we describe how to use the RStudio interface 
-to transfer files..
- 
+What if the data you need is on your local computer, but you need to get it *onto* the HPC? Or, what if you need to download files from the HPC to your laptop. Here is how you can do it!
+       
+### Upload/Download small files between the HPC and your laptop.  
     
-> ## Transferring files scenarios
-> 1. If you are working on your **local** computer, there is no need to transfer files because you already have them locally.   
-> In that case, you only need to know the directory you are working in.  
-> 2. If you are working on a remote machine such as an AWS instance, you can use the `scp` command. In that case, it is *always* easier
-to start the transfer locally. **If you are typing into a terminal, the terminal should not be logged into your instance. It should show your local computer. If you are using a transfer program, it needs to be installed on your local machine, not your instance.**     
-> 3. If you are using the **RStudio server** from the AWS instance, you can transfer files between your local and your remote machine using the graphic interface of RStudio.  
-{: .callout}
+If your files are small, you can use the online [HPC portal](https://ood.hpc.arizona.edu/) and select the file browser from the top menu to get easy access for transferring files to/from your /home, /xdisk, and /groups directories. You can also view, edit, copy, and rename your files. 
     
+### Transferring larger data files between your local machine and the HPC with `scp`  
+    
+`scp` stands for 'secure copy protocol' and is a widely used UNIX tool for moving files between computers. The simplest way to use `scp` is to run it in your local terminal and use it to copy a single file. 
 
-### Downloading files in RStudio  
-    
-We will follow the next five steps to download files with the RStudio interface. 
-    
-1. First, we select the file to download from the bottom right panel.  
-<a href="{{ page.root }}/fig/02-05-03.png">
-  <img src="{{ page.root }}/fig/02-05-03.png" alt="Download data with R Studio." 
-     width="826" 
-     height="235"
-     alt="Bottom right panel where the file menu is displayed. The file to download is selected." />
-</a>
-    
-2. Then, we choose “More” to display more actions for the selected file.  
-<a href="{{ page.root }}/fig/02-05-04.png">
-  <img src="{{ page.root }}/fig/02-05-04.png" alt="Download data with R studio." 
-     width="826" 
-     height="235"
-     alt="More button highlighted." />
-</a>
-    
-3. Within the "More" menu, the “export” button should become available.  
-<a href="{{ page.root }}/fig/02-05-05.png">
-  <img src="{{ page.root }}/fig/02-05-05.png" alt="Download data with R studio." 
-     width="826" 
-     height="555"
-     alt="Export button highlighted." />
-</a>
-    
-4. An emergent window should be displayed on your screen where you can select the “Download” option.  
-<a href="{{ page.root }}/fig/02-05-06.png">
-  <img src="{{ page.root }}/fig/02-05-06.png" alt="Download data with R studio." 
-     width="729" 
-     height="399"
-     alt="emergent window where you write the name of the file and click download." />
-</a>  
-    
-5. Your file should now be downloaded to your local computer.  
+You will need to use an SSH v2 compliant terminal to move files to/from HPC. For more information on using SCP, use man scp.
 
+Moving a File or Directory to the HPC:
 
-### Upload files to AWS in RStudio  
-    
-Now that we learned how to download files from the RStudio interface, 
-we will learn the opposite action, uploading files from your local computer
-to your remote AWS machine.  
-    
-1. Choose the option 'Upload' in your RStudio interface.
-<a href="{{ page.root }}/fig/02-05-08.png">
-  <img src="{{ page.root }}/fig/02-05-08.png" alt="Upload data with R studio." 
-     width="826" 
-     height="235"
-     alt="The Upload button is highlighted." />
-</a>
-    
-2. After an emergent window is displayed on your screen, select “Select file”.
-<a href="{{ page.root }}/fig/02-05-09.png">
-  <img src="{{ page.root }}/fig/02-05-09.png" alt="Upload data with R studio." 
-     width="636" 
-     height="418"
-       alt="Select filed button highlighted in the emergent window" />
-</a>
-    
-3. A new screen is displayed on your computer where you should choose the file to upload. 
-    Choose the file and click “open”.
-<a href="{{ page.root }}/fig/02-05-10.png">
-  <img src="{{ page.root }}/fig/02-05-10.png" alt="Upload data with R studio." 
-     width="682" 
-     height="460"
-       alt="file to upload and open button are highlighted in the window of the local filesystem" />
-</a>
-    
-4. Finally, if the file is correct, click “ok,” and the uploading will start.
-    
-5. Now, you can view a new file in your RStudio interface.
-<a href="{{ page.root }}/fig/02-05-12.png">
-  <img src="{{ page.root }}/fig/02-05-12.png" alt="Upload data with R studio." 
-     width="800" 
-     height="300" 
-       alt="The uploaded file is shown in the R studio interface" />
-</a>
-    
- 
-### Transferring data between your local and virtual machine with `scp`  
-    
-`scp` stands for 'secure copy protocol' and is a widely used UNIX tool for moving files
-between computers. The simplest way to use `scp` is to run it in your local terminal
-and use it to copy a single file. While `scp <local-file-path> <AWS instance path>` will upload a local file into your AWS instance, 
-`scp <AWS-instance-path> <local-file-path>` will move your file from your remote AWS instance into
-your local computer. The general form of the `scp` command is the following:  
+<details>
+  <summary markdown="span">Mac OS</summary>
+  <ul>
+In your terminal, navigate to the desired working directory on your local machine (laptop or desktop usually). To move a file or directory to a designated subdirectory in your account on HPC:
+
 ```
-$ scp <file you want to move, local or remote> <path to where I want to move it, local or remote>
+$ scp -rp filenameordirectory NetId@filexfer.hpc.arizona.edu:subdirectory
+Getting a File or Directory From the HPC:
 ```
-{: .bash}
 
-    
-> ## Exercise 3: Uploading data with `scp`  
-> Let us download the text file  `~/data/untrimmed_fastq/scripted_bad_reads.txt` from the remote machine to your local computer.
+In your terminal, navigate to the desired working directory on your local machine. The copy a remote file from HPC to your current directory:
+
+```
+$ scp -rp NetId@filexfer.hpc.arizona.edu:filenameordirectory .
+** the space folllowed by a period at the end means the destination is the current directory** 
+```
+
+</details>
+
+<details>
+  <summary markdown="span">PC</summary>
+  <ul>
+Windows users can use software like WinSCP to make SCP transfers. To use WinSCP, first download/install the software from: https://winscp.net/eng/download.php
+
+To connect, enter filexfer.hpc.arizona.edu in the Host Name field, enter your NetID under User name, and enter your password. Accept by clicking Login. You'll be prompted to Duo Authenticate.
+
+</details>
+
+<br>
+
+Wildcards
+
+Wildcards can be used for multiple file transfers (e.g. all files with .dat extension). Note the backslash " \ " preceding *
+
+$ scp NetId@filexfer.hpc.arizona.edu:subdirectory/\*.fastq ~/Downloads
+  
+> ## Exercise 3: Downloading data with `scp`  
+> Let's say we want to download a text file `/xdisk/bhurwitz/bh_class/your_netid/exercises/data/untrimmed_fastq/scripted_bad_reads.txt` from the hpc to your local computer. Note you will perform this action from a shell on your local computer.
 > Which of the following commands would download the file?  
 > A)  
 > ```
-> $  scp local_file.txt dcuser@ip.address:/home/dcuser/
+> $  scp local_file.txt your_netid@filexfer.hpc.arizona.edu:/xdisk/bhurwitz/bh_class/your_netid/exercises/data/untrimmed_fastq/
 > ```
-> {: .bash}
+
 > B)  
 > ```
-> $ scp dcuser@ip.address:/home/dcuser/dc_workshop/data/untrimmed_fastq/scripted_bad_reads.txt. ~/Downloads
+> $ scp your_netid@filexfer.hpc.arizona.edu:/xdisk/bhurwitz/bh_class/your_netid/exercises/data/untrimmed_fastq/scripted_bad_reads.txt ~/Downloads
 > ```
-> {: .bash}
->
-> > ## Solution
-> >    A) False. This command will upload the file `local_file.txt` to the dcuser home directory in your AWS remote machine.  
-> >    B) True. This option downloads the bad reads file in `~/data/scripted_bad_reads.txt` to your local `~/Downloads` directory
-> >       **(make sure you use substitute dcuser@ ip.address with your remote login credentials)**
-> {: .solution}
-{: .challenge}
+
+<details>
+  <summary markdown="span">Solution</summary>
+  <ul>
+<li>A) False. This command will upload the file `local_file.txt` to the /xdisk/bhurwitz/bh_class/your_netid/exercises/data/untrimmed_fastq/ directory.</li>
+<li>B) True. This option downloads the bad reads file in `/xdisk/bhurwitz/bh_class/your_netid/exercises/data/untrimmed_fastq/` to your local `~/Downloads` directory. Be sure to execute this from your local machine.</li>
+  
+</details>
