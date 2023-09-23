@@ -203,7 +203,7 @@ The FastQC tool produces several other diagnostic plots to assess sample quality
 We will now assess the quality of the reads that we downloaded. First, make sure you're still in the `untrimmed_fastq` directory.
 
 ```
-$ cd /xdisk/bhurwitz/bh_class/YOU_NETID/exercises/data/untrimmed_fastq
+$ cd /xdisk/bhurwitz/bh_class/YOUR_NETID/exercises/data/untrimmed_fastq
 ```
 
 

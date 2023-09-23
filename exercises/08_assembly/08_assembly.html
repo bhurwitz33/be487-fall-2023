@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>08_assembly.md</title>
+<meta http-equiv="Content-type" content="text/html;charset=UTF-8">
+
+<style>
+/* https://github.com/microsoft/vscode/blob/master/extensions/markdown-language-features/media/markdown.css */
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
+body {
+	font-family: var(--vscode-markdown-font-family, -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif);
+	font-size: var(--vscode-markdown-font-size, 14px);
+	padding: 0 26px;
+	line-height: var(--vscode-markdown-line-height, 22px);
+	word-wrap: break-word;
+}
+
+#code-csp-warning {
+	position: fixed;
+	top: 0;
+	right: 0;
+	color: white;
+	margin: 16px;
+	text-align: center;
+	font-size: 12px;
+	font-family: sans-serif;
+	background-color:#444444;
+	cursor: pointer;
+	padding: 6px;
+	box-shadow: 1px 1px 1px rgba(0,0,0,.25);
+}
+
+#code-csp-warning:hover {
+	text-decoration: none;
+	background-color:#007acc;
+	box-shadow: 2px 2px 2px rgba(0,0,0,.25);
+}
+
+body.scrollBeyondLastLine {
+	margin-bottom: calc(100vh - 22px);
+}
+
+body.showEditorSelection .code-line {
+	position: relative;
+}
+
+body.showEditorSelection .code-active-line:before,
+body.showEditorSelection .code-line:hover:before {
+	content: "";
+	display: block;
+	position: absolute;
+	top: 0;
+	left: -12px;
+	height: 100%;
+}
+
+body.showEditorSelection li.code-active-line:before,
+body.showEditorSelection li.code-line:hover:before {
+	left: -30px;
+}
+
+.vscode-light.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.15);
+}
+
+.vscode-light.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.40);
+}
+
+.vscode-light.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+.vscode-dark.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.4);
+}
+
+.vscode-dark.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.60);
+}
+
+.vscode-dark.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+.vscode-high-contrast.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 160, 0, 0.7);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 160, 0, 1);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+img {
+	max-width: 100%;
+	max-height: 100%;
+}
+
+a {
+	text-decoration: none;
+}
+
+a:hover {
+	text-decoration: underline;
+}
+
+a:focus,
+input:focus,
+select:focus,
+textarea:focus {
+	outline: 1px solid -webkit-focus-ring-color;
+	outline-offset: -1px;
+}
+
+hr {
+	border: 0;
+	height: 2px;
+	border-bottom: 2px solid;
+}
+
+h1 {
+	padding-bottom: 0.3em;
+	line-height: 1.2;
+	border-bottom-width: 1px;
+	border-bottom-style: solid;
+}
+
+h1, h2, h3 {
+	font-weight: normal;
+}
+
+table {
+	border-collapse: collapse;
+}
+
+table > thead > tr > th {
+	text-align: left;
+	border-bottom: 1px solid;
+}
+
+table > thead > tr > th,
+table > thead > tr > td,
+table > tbody > tr > th,
+table > tbody > tr > td {
+	padding: 5px 10px;
+}
+
+table > tbody > tr + tr > td {
+	border-top: 1px solid;
+}
+
+blockquote {
+	margin: 0 7px 0 5px;
+	padding: 0 16px 0 10px;
+	border-left-width: 5px;
+	border-left-style: solid;
+}
+
+code {
+	font-family: Menlo, Monaco, Consolas, "Droid Sans Mono", "Courier New", monospace, "Droid Sans Fallback";
+	font-size: 1em;
+	line-height: 1.357em;
+}
+
+body.wordWrap pre {
+	white-space: pre-wrap;
+}
+
+pre:not(.hljs),
+pre.hljs code > div {
+	padding: 16px;
+	border-radius: 3px;
+	overflow: auto;
+}
+
+pre code {
+	color: var(--vscode-editor-foreground);
+	tab-size: 4;
+}
+
+/** Theming */
+
+.vscode-light pre {
+	background-color: rgba(220, 220, 220, 0.4);
+}
+
+.vscode-dark pre {
+	background-color: rgba(10, 10, 10, 0.4);
+}
+
+.vscode-high-contrast pre {
+	background-color: rgb(0, 0, 0);
+}
+
+.vscode-high-contrast h1 {
+	border-color: rgb(0, 0, 0);
+}
+
+.vscode-light table > thead > tr > th {
+	border-color: rgba(0, 0, 0, 0.69);
+}
+
+.vscode-dark table > thead > tr > th {
+	border-color: rgba(255, 255, 255, 0.69);
+}
+
+.vscode-light h1,
+.vscode-light hr,
+.vscode-light table > tbody > tr + tr > td {
+	border-color: rgba(0, 0, 0, 0.18);
+}
+
+.vscode-dark h1,
+.vscode-dark hr,
+.vscode-dark table > tbody > tr + tr > td {
+	border-color: rgba(255, 255, 255, 0.18);
+}
+
+</style>
+
+<style>
+/* Tomorrow Theme */
+/* http://jmblog.github.com/color-themes-for-google-code-highlightjs */
+/* Original theme - https://github.com/chriskempson/tomorrow-theme */
+
+/* Tomorrow Comment */
+.hljs-comment,
+.hljs-quote {
+	color: #8e908c;
+}
+
+/* Tomorrow Red */
+.hljs-variable,
+.hljs-template-variable,
+.hljs-tag,
+.hljs-name,
+.hljs-selector-id,
+.hljs-selector-class,
+.hljs-regexp,
+.hljs-deletion {
+	color: #c82829;
+}
+
+/* Tomorrow Orange */
+.hljs-number,
+.hljs-built_in,
+.hljs-builtin-name,
+.hljs-literal,
+.hljs-type,
+.hljs-params,
+.hljs-meta,
+.hljs-link {
+	color: #f5871f;
+}
+
+/* Tomorrow Yellow */
+.hljs-attribute {
+	color: #eab700;
+}
+
+/* Tomorrow Green */
+.hljs-string,
+.hljs-symbol,
+.hljs-bullet,
+.hljs-addition {
+	color: #718c00;
+}
+
+/* Tomorrow Blue */
+.hljs-title,
+.hljs-section {
+	color: #4271ae;
+}
+
+/* Tomorrow Purple */
+.hljs-keyword,
+.hljs-selector-tag {
+	color: #8959a8;
+}
+
+.hljs {
+	display: block;
+	overflow-x: auto;
+	color: #4d4d4c;
+	padding: 0.5em;
+}
+
+.hljs-emphasis {
+	font-style: italic;
+}
+
+.hljs-strong {
+	font-weight: bold;
+}
+</style>
+
+<style>
+/*
+ * Markdown PDF CSS
+ */
+
+ body {
+	font-family: -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif, "Meiryo";
+	padding: 0 12px;
+}
+
+pre {
+	background-color: #f8f8f8;
+	border: 1px solid #cccccc;
+	border-radius: 3px;
+	overflow-x: auto;
+	white-space: pre-wrap;
+	overflow-wrap: break-word;
+}
+
+pre:not(.hljs) {
+	padding: 23px;
+	line-height: 19px;
+}
+
+blockquote {
+	background: rgba(127, 127, 127, 0.1);
+	border-color: rgba(0, 122, 204, 0.5);
+}
+
+.emoji {
+	height: 1.4em;
+}
+
+code {
+	font-size: 14px;
+	line-height: 19px;
+}
+
+/* for inline code */
+:not(pre):not(.hljs) > code {
+	color: #C9AE75; /* Change the old color so it seems less like an error */
+	font-size: inherit;
+}
+
+/* Page Break : use <div class="page"/> to insert page break
+-------------------------------------------------------- */
+.page {
+	page-break-after: always;
+}
+
+</style>
+
+<script src="https://unpkg.com/mermaid/dist/mermaid.min.js"></script>
+</head>
+<body>
+  <script>
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: document.body.classList.contains('vscode-dark') || document.body.classList.contains('vscode-high-contrast')
+          ? 'dark'
+          : 'default'
+    });
+  </script>
+<h2 id="assembling-reads">Assembling reads</h2>
+<p>The assembly process groups reads into contigs and contigs into
+scaffolds to obtain (ideally) the sequence of a whole
+genome. There are many programs devoted to
+<a href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC2874646/">genome</a> and
+metagenome assembly, some of the main strategies they use are Greedy extension, Overlap consensus (OLC), and De Bruijn charts. Contrary to metabarcoding, shotgun metagenomics needs an assembly step, which does not mean that metabarcoding never uses an assembly step but sometimes is unnecessary.</p>
+<a href="../fig/03-04-01.png">
+  <img src="../fig/03-04-01.png" width="868" height="777" alt="Three diagrams depicting the three assembly algorithms: The Greedy extension starts with any read, extends it whit the reads that make a match to make a contig, it continues with a different read when the previous contig can not be extended anymore. The Overlap Layout consensus finds every pairwise overlap, makes a layout graph with all the overlaps and chooses consensus sequences to make the contigs. The De Bruijn Graphs divides the reads in k-mers, makes a k-mer graph that shows all the overlapping k-mers, and chooses paths from the graph to make the contigs. " />
+</a>
+<p><a href="https://github.com/ablab/spades">MetaSPAdes</a> is an NGS de novo assembler
+for assembling large and complex metagenomics data, and it is one of the
+most used and recommended. It is part of the SPAdes toolkit, which
+contains several assembly pipelines.</p>
+<p>Some of the problems faced by metagenomics assembly are:</p>
+<ul>
+<li>Differences in coverage between the genomes due to the differences in abundance in the sample.</li>
+<li>The fact that different species often share conserved regions.</li>
+<li>The presence of several strains of a single species in the community.</li>
+</ul>
+<p>SPAdes already deals with the non-uniform coverage problem in its algorithm, so it is helpful for the assembly of simple communities, but the <a href="https://pubmed.ncbi.nlm.nih.gov/28298430/">metaSPAdes</a> algorithm deals with the other problems as well, allowing it to assemble metagenomes from complex communities.</p>
+<p>Let's see if our program is installed correctly:</p>
+<pre class="hljs"><code><div>$ /contrib/singularity/shared/bhurwitz/spades:3.15.5--h95f258a_1.sif metaspades.py
+</div></code></pre>
+<pre class="hljs"><code><div>SPAdes genome assembler v3.15.0 [metaSPAdes mode]
+
+Usage: spades.py [options] -o &lt;output_dir&gt;
+
+Basic options:
+  -o &lt;output_dir&gt;             directory to store all the resulting files (required)
+  --iontorrent                this flag is required for IonTorrent data
+  --test                      runs SPAdes on a toy dataset
+  -h, --help                  prints this usage message
+  -v, --version               prints version
+
+Input data:
+  --12 &lt;filename&gt;             file with interlaced forward and reverse paired-end reads
+  -1 &lt;filename&gt;               file with forward paired-end reads
+  -2 &lt;filename&gt;               file with reverse paired-end reads    
+</div></code></pre>
+<h2 id="metaspades-is-a-metagenomics-assembler">MetaSPAdes is a metagenomics assembler</h2>
+<p>The help we just saw tells us how to run <code>metaspades.py</code>. We are going
+to use the most straightforward options, just specifying our forward paired-end
+reads with <code>-1</code> and reverse paired-end reads with <code>-2</code>, and the output
+directory where we want our results to be stored.</p>
+<p>Note that spades needs a lot of memory (we are asking for 24G!</p>
+<pre class="hljs"><code><div>$  interactive -m 24GB
+$ cd /xdisk/bhurwitz/bh_class/YOUR_NETID/exercises/06_qc_trimming
+$ /contrib/singularity/shared/bhurwitz/spades:3.15.5--h95f258a_1.sif metaspades.py -1 JC1A_R1.trim.fastq.gz -2 JC1A_R2.trim.fastq.gz -o ../../08_assembly/assembly_JC1A
+</div></code></pre>
+<p>When the run is finished, it shows this message:</p>
+<pre class="hljs"><code><div>======= SPAdes pipeline finished.
+
+SPAdes log can be found here: /xdisk/bhurwitz/bh_class/YOUR_NETID/exercises/08_assembly/assembly_JC1A/spades.log
+
+Thank you for using SPAdes!
+
+</div></code></pre>
+<p>Now, let's go to the output files:</p>
+<pre class="hljs"><code><div>$ cd ../../08_assembly/assembly_JC1A
+$ ls -F
+</div></code></pre>
+<pre class="hljs"><code><div>assembly_graph_after_simplification.gfa  corrected/              K55/             scaffolds.fasta
+assembly_graph.fastg                     dataset.info            misc/            scaffolds.paths
+assembly_graph_with_scaffolds.gfa        first_pe_contigs.fasta  params.txt       spades.log
+before_rr.fasta                          input_dataset.yaml      pipeline_state/  strain_graph.gfa
+contigs.fasta                            K21/                    run_spades.sh    tmp/
+contigs.paths                            K33/                    run_spades.yaml   
+</div></code></pre>
+<p>As we can see, MetaSPAdes gave us a lot of files. The ones with the assembly are the <code>contigs.fasta</code> and the <code>scaffolds.fasta</code>.
+Also, we found three <code>K</code> folders: <em>K21, K33, and K55</em>; this contains the individual result files for an assembly
+with k-mers equal to those numbers: 21, 33, and 55. The best-assembled results are
+the ones that are displayed outside these k-folders. The folder <code>corrected</code> hold the corrected reads
+with the SPAdes algorithm. Moreover, the file
+<code>assembly_graph_with_scaffolds.gfa</code> have the information needed to visualize
+our assembly by different means, like programs such as <a href="https://rrwick.github.io/Bandage/">Bandage</a>.</p>
+<p>The contigs are just made from assembled reads, but the scaffolds are the result
+from a subsequent process in which the contigs are ordered, oriented, and connected with Ns.</p>
+<p>We can recognize which sample our assembly outputs corresponds to because they are inside
+the assembly results folder: <code>assembly_JP4D/</code>. However, the files within it do not have the
+sample ID. If we need the files out of their folder, it is beneficial to rename them.</p>
+<blockquote>
+<h2 id="exercise-1-rename-all-files-in-a-folder-needed-in-the-next-episode">Exercise 1: Rename all files in a folder (needed in the next episode)</h2>
+<p>Add the prefix <code>JC1A</code> (the sample ID) separated by a <code>_</code> to the beginning of the names of all the contents in the <code>assembly_JC1A/</code> directory. Remember that many solutions are possible.</p>
+<p>A) <code>$ mv * JC1A_</code><br>
+B) <code>$ mv * JC1A_*</code><br>
+C) <code>$ for name in *; do mv $name JC1A_; done</code><br>
+D) <code>$ for name in *; do mv $name JC1A_$name; done</code></p>
+</blockquote>
+<details>
+  <summary markdown="span">Solution</summary>
+  <ul> 
+<p>A)  No, this option is going to give you as error <code>mv: target 'JC1A_' is not a directory</code>
+This is because <code>mv</code> has two options:<br>
+<code>mv file_1 file_2</code><br>
+<code>mv file_1, file_2, ..... file_n directory</code><br>
+When a list of files is passed to <code>mv</code>, the <code>mv</code> expects the last parameters to be a directory.<br>
+Here, <code>*</code> gives you a list of all the files in the directory. The last parameter is <code>JC1A_</code> (which <code>mv</code> expects to be a directory).<br>
+B)  No. Again, every file is sent to the same file.<br>
+C)  No, every file is sent to the same file JC1A_</p>
+<blockquote>
+<p>D)  Yes, this is one of the possible solutions.</p>
+</blockquote>
+<p>Do you have another solution?</p>
+</details>
+<blockquote>
+<h2 id="exercise-2-compare-two-fasta-files-from-the-assembly-output">Exercise 2: Compare two fasta files from the assembly output</h2>
+<p>You want to know how many contigs and scaffolds result from the assembly.
+Use <code>contigs.fasta</code>  and <code>scaffolds.fasta </code> files and sort the commands to create correct code lines.<br>
+Do they have the same number of lines? Why?<br>
+<strong>Hint</strong>: You can use the following commands: <code>grep</code>, <code>|</code> (pipe), <code>-l</code>, <code>&quot;&gt;&quot;</code>, <code>wc</code>, <code>filename.fasta</code></p>
+</blockquote>
+<details>
+  <summary markdown="span">Solution</summary>
+  <ul> 
+<pre class="hljs"><code><div>$ grep “&gt;” contigs.fasta | wc -l
+$ grep “&gt;” scaffolds.fasta | wc -l
+</div></code></pre>
+<p>A contig is created from reads and then a scaffold from a group of contigs, so we expect fewer lines in the <code>scaffolds.fasta </code> .</p>
+</details>
+
+</body>
+</html>

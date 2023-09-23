@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>07_contam_removal.md</title>
+<meta http-equiv="Content-type" content="text/html;charset=UTF-8">
+
+<style>
+/* https://github.com/microsoft/vscode/blob/master/extensions/markdown-language-features/media/markdown.css */
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
+body {
+	font-family: var(--vscode-markdown-font-family, -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif);
+	font-size: var(--vscode-markdown-font-size, 14px);
+	padding: 0 26px;
+	line-height: var(--vscode-markdown-line-height, 22px);
+	word-wrap: break-word;
+}
+
+#code-csp-warning {
+	position: fixed;
+	top: 0;
+	right: 0;
+	color: white;
+	margin: 16px;
+	text-align: center;
+	font-size: 12px;
+	font-family: sans-serif;
+	background-color:#444444;
+	cursor: pointer;
+	padding: 6px;
+	box-shadow: 1px 1px 1px rgba(0,0,0,.25);
+}
+
+#code-csp-warning:hover {
+	text-decoration: none;
+	background-color:#007acc;
+	box-shadow: 2px 2px 2px rgba(0,0,0,.25);
+}
+
+body.scrollBeyondLastLine {
+	margin-bottom: calc(100vh - 22px);
+}
+
+body.showEditorSelection .code-line {
+	position: relative;
+}
+
+body.showEditorSelection .code-active-line:before,
+body.showEditorSelection .code-line:hover:before {
+	content: "";
+	display: block;
+	position: absolute;
+	top: 0;
+	left: -12px;
+	height: 100%;
+}
+
+body.showEditorSelection li.code-active-line:before,
+body.showEditorSelection li.code-line:hover:before {
+	left: -30px;
+}
+
+.vscode-light.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.15);
+}
+
+.vscode-light.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.40);
+}
+
+.vscode-light.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+.vscode-dark.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.4);
+}
+
+.vscode-dark.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.60);
+}
+
+.vscode-dark.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+.vscode-high-contrast.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 160, 0, 0.7);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 160, 0, 1);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+img {
+	max-width: 100%;
+	max-height: 100%;
+}
+
+a {
+	text-decoration: none;
+}
+
+a:hover {
+	text-decoration: underline;
+}
+
+a:focus,
+input:focus,
+select:focus,
+textarea:focus {
+	outline: 1px solid -webkit-focus-ring-color;
+	outline-offset: -1px;
+}
+
+hr {
+	border: 0;
+	height: 2px;
+	border-bottom: 2px solid;
+}
+
+h1 {
+	padding-bottom: 0.3em;
+	line-height: 1.2;
+	border-bottom-width: 1px;
+	border-bottom-style: solid;
+}
+
+h1, h2, h3 {
+	font-weight: normal;
+}
+
+table {
+	border-collapse: collapse;
+}
+
+table > thead > tr > th {
+	text-align: left;
+	border-bottom: 1px solid;
+}
+
+table > thead > tr > th,
+table > thead > tr > td,
+table > tbody > tr > th,
+table > tbody > tr > td {
+	padding: 5px 10px;
+}
+
+table > tbody > tr + tr > td {
+	border-top: 1px solid;
+}
+
+blockquote {
+	margin: 0 7px 0 5px;
+	padding: 0 16px 0 10px;
+	border-left-width: 5px;
+	border-left-style: solid;
+}
+
+code {
+	font-family: Menlo, Monaco, Consolas, "Droid Sans Mono", "Courier New", monospace, "Droid Sans Fallback";
+	font-size: 1em;
+	line-height: 1.357em;
+}
+
+body.wordWrap pre {
+	white-space: pre-wrap;
+}
+
+pre:not(.hljs),
+pre.hljs code > div {
+	padding: 16px;
+	border-radius: 3px;
+	overflow: auto;
+}
+
+pre code {
+	color: var(--vscode-editor-foreground);
+	tab-size: 4;
+}
+
+/** Theming */
+
+.vscode-light pre {
+	background-color: rgba(220, 220, 220, 0.4);
+}
+
+.vscode-dark pre {
+	background-color: rgba(10, 10, 10, 0.4);
+}
+
+.vscode-high-contrast pre {
+	background-color: rgb(0, 0, 0);
+}
+
+.vscode-high-contrast h1 {
+	border-color: rgb(0, 0, 0);
+}
+
+.vscode-light table > thead > tr > th {
+	border-color: rgba(0, 0, 0, 0.69);
+}
+
+.vscode-dark table > thead > tr > th {
+	border-color: rgba(255, 255, 255, 0.69);
+}
+
+.vscode-light h1,
+.vscode-light hr,
+.vscode-light table > tbody > tr + tr > td {
+	border-color: rgba(0, 0, 0, 0.18);
+}
+
+.vscode-dark h1,
+.vscode-dark hr,
+.vscode-dark table > tbody > tr + tr > td {
+	border-color: rgba(255, 255, 255, 0.18);
+}
+
+</style>
+
+<style>
+/* Tomorrow Theme */
+/* http://jmblog.github.com/color-themes-for-google-code-highlightjs */
+/* Original theme - https://github.com/chriskempson/tomorrow-theme */
+
+/* Tomorrow Comment */
+.hljs-comment,
+.hljs-quote {
+	color: #8e908c;
+}
+
+/* Tomorrow Red */
+.hljs-variable,
+.hljs-template-variable,
+.hljs-tag,
+.hljs-name,
+.hljs-selector-id,
+.hljs-selector-class,
+.hljs-regexp,
+.hljs-deletion {
+	color: #c82829;
+}
+
+/* Tomorrow Orange */
+.hljs-number,
+.hljs-built_in,
+.hljs-builtin-name,
+.hljs-literal,
+.hljs-type,
+.hljs-params,
+.hljs-meta,
+.hljs-link {
+	color: #f5871f;
+}
+
+/* Tomorrow Yellow */
+.hljs-attribute {
+	color: #eab700;
+}
+
+/* Tomorrow Green */
+.hljs-string,
+.hljs-symbol,
+.hljs-bullet,
+.hljs-addition {
+	color: #718c00;
+}
+
+/* Tomorrow Blue */
+.hljs-title,
+.hljs-section {
+	color: #4271ae;
+}
+
+/* Tomorrow Purple */
+.hljs-keyword,
+.hljs-selector-tag {
+	color: #8959a8;
+}
+
+.hljs {
+	display: block;
+	overflow-x: auto;
+	color: #4d4d4c;
+	padding: 0.5em;
+}
+
+.hljs-emphasis {
+	font-style: italic;
+}
+
+.hljs-strong {
+	font-weight: bold;
+}
+</style>
+
+<style>
+/*
+ * Markdown PDF CSS
+ */
+
+ body {
+	font-family: -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif, "Meiryo";
+	padding: 0 12px;
+}
+
+pre {
+	background-color: #f8f8f8;
+	border: 1px solid #cccccc;
+	border-radius: 3px;
+	overflow-x: auto;
+	white-space: pre-wrap;
+	overflow-wrap: break-word;
+}
+
+pre:not(.hljs) {
+	padding: 23px;
+	line-height: 19px;
+}
+
+blockquote {
+	background: rgba(127, 127, 127, 0.1);
+	border-color: rgba(0, 122, 204, 0.5);
+}
+
+.emoji {
+	height: 1.4em;
+}
+
+code {
+	font-size: 14px;
+	line-height: 19px;
+}
+
+/* for inline code */
+:not(pre):not(.hljs) > code {
+	color: #C9AE75; /* Change the old color so it seems less like an error */
+	font-size: inherit;
+}
+
+/* Page Break : use <div class="page"/> to insert page break
+-------------------------------------------------------- */
+.page {
+	page-break-after: always;
+}
+
+</style>
+
+<script src="https://unpkg.com/mermaid/dist/mermaid.min.js"></script>
+</head>
+<body>
+  <script>
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: document.body.classList.contains('vscode-dark') || document.body.classList.contains('vscode-high-contrast')
+          ? 'dark'
+          : 'default'
+    });
+  </script>
+<h2 id="in-class-discussion-on-contamination">In-class discussion on contamination</h2>
+<p>On July 31, 2023 the Salzberg lab released a controversial preprint titled <a href="https://www.biorxiv.org/content/10.1101/2023.07.28.550993v1">Major data analysis errors invalidate cancer microbiome findings</a>. The authors critic a <a href="https://www.nature.com/articles/s41586-020-2095-1">large-scale study</a> from the Knight Lab with more than 17K samples. They report two main issues with the paper:</p>
+<ol>
+<li>errors in the genome database and the associated computational methods led to millions of false positive findings of bacterial reads across all samples, largely because most of the sequences identified as bacteria were instead human; and</li>
+<li>errors in transformation of the raw data created an artificial signature, even for microbes with no reads detected, tagging each tumor type with a distinct signal that the machine learning programs then used to create an apparently accurate classifier</li>
+</ol>
+<p>They state that:
+&quot;Each of these problems invalidates the results, leading to the conclusion that the microbiome-based classifiers for identifying cancer presented in the study are entirely wrong. These flaws have subsequently affected more than a dozen additional published studies that used the same data and whose results are likely invalid as well.&quot;</p>
+<p>Yikes! Today's in-class discussion is going to focus on issue #1. In our FMT study, we will need to be sure to remove human contamination from the samples prior to assembling and analyzing the microbes present in the samples.</p>
+<h2 id="familiarize-yourself-with-controversies-around-the-cancer-microbiome">Familiarize yourself with controversies around the cancer microbiome</h2>
+<p>Let's start by reading an overview of this Hot Topic from a recent New York Times Article:</p>
+<p><a href="https://www.nytimes.com/2023/08/25/health/cancer-microbes-debate.html">Researchers Dispute High-Profile Discoveries of Cancer Microbes</a></p>
+<p>By Carl Zimmer (New York Times)</p>
+<p>Over the past few years, a flurry of studies have found that tumors harbor a remarkably rich array of bacteria, fungi and viruses. These surprising findings have led many scientists to rethink the nature of cancer.</p>
+<p>The medical possibilities were exciting: If tumors shed their distinctive microbes into the bloodstream, could they serve as an early marker of the disease? Or could antibiotics even shrink tumors?</p>
+<p>In 2019, a start-up dug into these findings to develop microbe-based tests for cancer. This year, regulators agreed to prioritize an upcoming trial of the company’s test because of its promise for saving lives.</p>
+<p>But now several research teams have cast doubt on three of the most prominent studies in the field, reporting that they were unable to reproduce the results. The purported tumor microbes, the critics said, were most likely mirages or the result of contamination.</p>
+<p>“They just found stuff that wasn’t there,” said Steven Salzberg, an expert on analyzing DNA sequences at Johns Hopkins University, who published one of the recent critiques.</p>
+<p>The authors of the work defended their data and pointed to more recent studies that reached similar conclusions. The unfolding debate reveals the tension between the potentially powerful applications that may come from understanding tumor microbes, and the challenge of deciphering their true nature. Independent experts said the current controversy is an example of the growing pains of a young but promising field.</p>
+<p>Biologists have known for decades that at least some microbes play a part in cancer. The most striking example is a virus known as HPV, which causes cervical cancer by infecting cells. And certain strains of bacteria drive other cancers in organs such as the intestines and the stomach.</p>
+<p>For decades, these links came to light slowly, because scientists lacked much of the technology available today. The search sped up drastically once researchers learned how to pull fragments of DNA from tumors. They then used computers to figure out whether the genetic material came from human cells or from other species.</p>
+<p>In 2019, a team of scientists at the New York University School of Medicine used these techniques in a study on pancreatic cancer they <a href="https://www.nature.com/articles/s41586-019-1608-2">published</a> in the journal Nature. In many tumors, they found DNA fragments from a few different species of fungi. Further research led them to conclude that the fungi were driving the growth of the tumors.</p>
+<p>These striking results attracted the attention of Dr. Peter Allen, a surgeon at the Duke University School of Medicine, who began looking for microbes in pancreatic tumors from his own patients.</p>
+<p>But after searching 140 tumors, Dr. Allen and his colleagues couldn’t find a significant amount of DNA from any microbes, including fungi. “We didn’t find any true signature,” he said.</p>
+<p>They then scrutinized the original study, whose genetic data had been uploaded to a public database. Dr. Allen’s team could not find a noticeable amount of fungal DNA in that data, either. They <a href="https://www.nature.com/articles/s41586-023-06292-1">published</a> their findings in Nature on Aug. 2.</p>
+<p>The New York University researchers defended their work. “My group still stands with what we found,” said Deepak Saxena, one of the authors of the original study. He pointed to other data in line with his results.</p>
+<p>In August, for example, researchers based at Tokyo Medical and Dental University <a href="https://www.gastrojournal.org/article/S0016-5085(23)00631-5/fulltext">reported</a> finding fungi in pancreatic tumors from 78 out of 180 patients. And patients with tumors containing fungi were at greater risk of dying in the three years after their surgery, the study found.</p>
+<p>Other researchers are questioning a 2020 report in Science by a team at the Weizmann Institute of Science in Israel. Examining 1,500 tumors from seven types of cancer, the study found that each type of tumor had a distinct set of bacteria, with breast cancer harboring a particularly rich variety.</p>
+<p>But Jacques Neefjes, a microbiologist at Leiden University in the Netherlands, and his colleagues could not detect bacteria inside cancer cells using some of the Weizmann team’s methods in their own collection of 129 breast cancer samples. “We do not find a single case,” he said.</p>
+<p>In January, Dr. Neefjes’s group <a href="https://www.science.org/doi/10.1126/science.aay9189#elettersSection">published</a> a summary of their findings, which Science appended to the Israeli paper. They argued that bacteria found by the Weizmann team were byproducts of infections and are not, in fact, a normal part of breast cancer tumors.</p>
+<p>Ravid Straussman, the leader of the Weizmann research, said that his group had done further research and that “the results clearly confirm the presence of bacteria in cancer cells.” He also said it was impossible to evaluate the claims from Dr. Neefjes’s team because they provided few details about their own experiment.</p>
+<p>In a third <a href="https://www.nature.com/articles/s41586-020-2095-1">study</a>, published in Nature in 2020, researchers from the University of California, San Diego analyzed a government database of tumor DNA, called the Cancer Genome Atlas, and trained a computer to identify microbial DNA sequences from 18,000 tumors. The computer learned to recognize 33 different types of cancer based on their distinctive combinations of microbes.</p>
+<p>“It looked like an incredible proof of concept,” said Abraham Gihawi, a postdoctoral researcher at the University of East Anglia.</p>
+<p>But Dr. Gihawi and his colleagues changed their minds when they took a close look at the microbes that supposedly favored certain kinds of cancer. They seemed utterly out of place. Adrenal gland tumors appeared to host a virus that was previously only known to infect shrimp in the Gulf of Mexico. Bacteria only known to grow on seaweed seemed to prefer bladder cancer.</p>
+<p>“This is a sure sign that something is going wrong,” Dr. Gihawi and his colleagues wrote in a letter they <a href="https://www.microbiologyresearch.org/content/journal/mgen/10.1099/mgen.0.001088">published</a> on Aug. 9 in the journal Microbial Genomics. They deemed the seaweed bacteria and other out-of-place species “nonsensical.”</p>
+<p>In a subsequent study with Dr. Salzberg, the researchers reanalyzed the data for themselves. “We’ve shown that the paper is wrong,” Dr. Salzberg said. The second <a href="https://www.biorxiv.org/content/10.1101/2023.07.28.550993v1">analysis</a> has been accepted by the journal mBio, he said.</p>
+<p>Dr. Salzberg and his colleagues pointed to several possible reasons for the seemingly inexplicable results. In order to identify microbial DNA from tumors, for example, it’s first necessary to remove as many human sequences as possible. The critics say the San Diego team left some human sequences behind.</p>
+<p>The critics also argue that errors can arise when scientists compare tumor sequences to microbial DNA to look for matches because <a href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6581058/">some of that data</a> is contaminated with human DNA. That’s how the DNA from a human cancer cell could appear to resemble the DNA from a seaweed microbe.</p>
+<p>The San Diego team, led by Rob Knight, has <a href="https://www.biorxiv.org/content/10.1101/2023.02.10.528049v1">responded at length</a> to these criticisms. Dr. Knight said that he and his colleagues had used the best resources they could for their 2020 paper, and they went on to improve their methods for a paper they published last year in the journal Cell with Dr. Straussman’s group.</p>
+<p>In that study, they used new techniques to remove more human DNA from their analysis. To predict different cancer types, they considered only bacteria with DNA that had gone through very rigorous inspection. “You still get tumor type-specific signatures,” Dr. Knight said.</p>
+<p>In 2019, Dr. Knight co-founded a company called Micronoma to develop cancer tests based on his microbe findings. (Dr. Straussman serves on its scientific advisory board.) So far, the company has raised $17.5 million from private investors.</p>
+<p>In January, Micronoma <a href="https://www.micronoma.com/micronoma-receives-fda-breakthrough-device-designation-for-oncobiotalung-a-novel-liquid-biopsy-assay-for-lung-carcinoma-detection/">received</a> a “Breakthrough Device” designation from the Food and Drug Administration for a lung cancer test, which will speed up its development for a clinical trial. Sandrine Miller-Montgomery, the chief executive of Micronoma, said that the trial would start in 2024.</p>
+<p>“These critiques have not led to any change in our company’s plans,” Dr. Miller-Montgomery said.</p>
+<p>Dr. Sven Borchmann, a physician-scientist at the University of Cologne, questioned whether the San Diego team was trying to turn its findings into a medical test too quickly, instead of doing more experiments to figure out what the results really meant. “I think they focused too quickly on application instead of understanding,” he said.</p>
+<p>Still, Dr. Borchmann suspected that Dr. Knight’s team did find a number of species that would hold up to scrutiny, despite the recent challenge. “It doesn’t ruin the whole claim,” he said.</p>
+<p>Qin Ma, a computational biologist at the Ohio State University, agreed that the new criticisms of the three papers didn’t change the overall weight of evidence gathered over the years. “Everyone agrees that microbes exist in tumors and are important,” he said.</p>
+<p>But Dr. Ma and others <a href="https://www.cell.com/trends/microbiology/fulltext/S0966-842X(23)00030-6">acknowledged</a> that the field was still searching for a standard set of tools that would provide highly accurate results. The current debate is moving the field toward that goal, they said.</p>
+<p>“I would not be surprised if the disagreement causes both camps to innovate and push science further,” said Dr. Arturo Casadevall, a microbiologist at Johns Hopkins University School of Medicine who was not involved in any of the studies. “This is a story of the scientific process at work.”</p>
+<h2 id="in-class-discussion">In-class Discussion</h2>
+<p>Now that you have a deeper understanding of the issues related to the cancer microbiome, read the results for the Salzberg paper <a href="https://www.biorxiv.org/content/10.1101/2023.07.28.550993v1">Major data analysis errors invalidate cancer microbiome findings</a>. How did the authors find human contamination that the original authors missed? Describe the two steps that they took that the original authors did not. What were the major flaws in their approach to filtering out human contamination?</p>
+
+</body>
+</html>

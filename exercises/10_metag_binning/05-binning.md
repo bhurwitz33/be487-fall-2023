@@ -17,8 +17,8 @@ keypoints:
 Original genomes in the sample can be separated with a process called binning. This process allows separate analysis of each species contained in the metagenome with enough reads to reconstruct a genome. Genomes reconstructed from metagenomic assemblies are called MAGs (Metagenome-Assembled Genomes).
 In this process, the assembled contigs from the metagenome will be assigned to different bins (FASTA files that contain certain contigs). Ideally, each bin corresponds to only one original genome (a MAG).
 
-<a href="{{ page.root }}/fig/03-05-01.png">
-  <img src="{{ page.root }}/fig/03-05-01.png" width="435" height="631" alt="Diagram depicts the DNA sequences in the original sample as circular chromosomes of three different taxa. After sequencing, the DNA sequences of the three different taxa are mixed as small linear reads; after the assembly, we have contigs, each corresponding to a single taxon, except for the ones with a bad assembly that has sequences of different taxa in the same contig, after the binning taxa separate the contigs."/>
+<a href="../fig/03-05-01.png">
+  <img src="../fig/03-05-01.png" width="435" height="631" alt="Diagram depicts the DNA sequences in the original sample as circular chromosomes of three different taxa. After sequencing, the DNA sequences of the three different taxa are mixed as small linear reads; after the assembly, we have contigs, each corresponding to a single taxon, except for the ones with a bad assembly that has sequences of different taxa in the same contig, after the binning taxa separate the contigs."/>
 </a>
 
 Although an obvious way to separate contigs that correspond to a different species is by their taxonomic assignation, 
@@ -47,7 +47,7 @@ $ cd ~/dc_workshop/results/assembly_JC1A
 $ mkdir MAXBIN
 $ run_MaxBin.pl -thread 8 -contig JC1A_contigs.fasta -reads ../../data/trimmed_fastq/JC1A_R1.trim.fastq.gz -reads2 ../../data/trimmed_fastq/JC1A_R2.trim.fastq.gz -out MAXBIN/JC1A
 ~~~
-{: .bash} 
+
 ~~~
 MaxBin 2.2.7
 Thread: 12
@@ -65,7 +65,7 @@ Running HMMER hmmsearch....
 Try harder to dig out marker genes from contigs.
 Marker gene search reveals that the dataset cannot be binned (the medium of marker gene number <= 1). Program stop.
 ~~~
-{: .output} 
+
 
 It seems impossible to bin our assembly because the number of marker genes is less than 1. 
 We could have expected this as we know it is a small sample.
@@ -76,8 +76,8 @@ $ cd ~/dc_workshop/mags/
 $ mkdir MAXBIN
 $ run_MaxBin.pl -thread 8 -contig JP4D_contigs.fasta -reads ../data/trimmed_fastq/JP4D_R1.trim.fastq.gz -reads2 ../data/trimmed_fastq/JP4D_R2.trim.fastq.gz -out MAXBIN/JP4D
 ~~~
-{: .bash}  
-It will take a few minutes to run. Moreover, it will finish with an output like this:
+
+It will take ~7 min minutes to run. Moreover, it will finish with an output like this:
 
 ~~~
 ========== Job finished ==========
@@ -101,14 +101,14 @@ Store abundance information of reads file [../data/trimmed_fastq/JP4D_R2.trim.fa
 0 hours 6 minutes and 56 seconds.
 
 ~~~
-{: .output}  
+
 
 With the `.summary` file, we can quickly look at the bins that MaxBin produced. 
 
 ~~~
 $ cat MAXBIN/JP4D.summary
 ~~~
-{: .bash}  
+
 
 ~~~
 Bin name	Completeness	Genome size	GC content
@@ -117,7 +117,7 @@ JP4D.002.fasta	87.9%	6186438	67.3
 JP4D.003.fasta	51.4%	3289972	48.1
 JP4D.004.fasta	77.6%	5692657	38.9
 ~~~
-{: .output}  
+ 
 
 > ## Discussion: The quality of MAGs
 >
@@ -154,7 +154,7 @@ and that we want our output in the `CHECKM/` directory.
 $ mkdir CHECKM
 $ checkm taxonomy_wf domain Bacteria -x fasta MAXBIN/ CHECKM/ 
 ~~~
-{: .bash} 
+
 
 The run will end with our results printed in the console.
 ~~~
@@ -168,7 +168,6 @@ The run will end with our results printed in the console.
 --------------------------------------------------------------------------------------------------------------------------------------------------------
 
 ~~~
-{: .output} 
 
 To have these values in an output that is more usable and shearable, we can now run the quality step of CheckM `checkm qa` 
 and make it print the output in a `TSV` table instead of the console. In this step, we can ask CheckM to give us more parameters, like contig number and length.

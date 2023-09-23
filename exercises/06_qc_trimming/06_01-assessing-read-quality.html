@@ -520,7 +520,7 @@ acceptable (yellow) and bad (red) quality scores.</p>
 <p>The FastQC tool produces several other diagnostic plots to assess sample quality and the one plotted above. Here, we see positions within the read in which the boxes span a much more comprehensive range. Also, quality scores drop pretty low into the &quot;bad&quot; range, particularly on the tail end of the reads.</p>
 <h2 id="running-fastqc">Running FastQC</h2>
 <p>We will now assess the quality of the reads that we downloaded. First, make sure you're still in the <code>untrimmed_fastq</code> directory.</p>
-<pre class="hljs"><code><div>$ cd /xdisk/bhurwitz/bh_class/YOU_NETID/exercises/data/untrimmed_fastq
+<pre class="hljs"><code><div>$ cd /xdisk/bhurwitz/bh_class/YOUR_NETID/exercises/data/untrimmed_fastq
 </div></code></pre>
 <blockquote>
 <h2 id="exercise-2-looking-at-metadata-about-the-untrimmed-files">Exercise 2: Looking at metadata about the untrimmed-files</h2>
@@ -759,7 +759,7 @@ test(s) did those samples failed</p>
   <summary markdown="span">Solution</summary>
   <ul> 
 <p>We can get the list of all failed tests using <code>grep</code>.</p>
-<pre class="hljs"><code><div>$ cd ~/dc_workshop/docs
+<pre class="hljs"><code><div>$ cd /xdisk/bhurwitz/bh_class/YOUR_NETID/exercises/06_qc_trimming
 $ grep FAIL fastqc_summaries.txt
 </div></code></pre>
 <pre class="hljs"><code><div>FAIL    Per base sequence quality       JC1A_R1.fastq.gz             
