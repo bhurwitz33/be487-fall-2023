@@ -368,19 +368,17 @@ code {
 <h1 id="project-organization">Project Organization</h1>
 <h2 id="questions">Questions:</h2>
 <ul>
-<li>&quot;How can I organize my file system for a new bioinformatics project?&quot;</li>
-<li>&quot;How can I document my work?&quot;</li>
+<li>How can I organize my file system for a new bioinformatics project?</li>
+<li>How can I document my work?</li>
 </ul>
 <p>Objectives:</p>
 <ul>
-<li>&quot;Create a file system for a bioinformatics project.&quot;</li>
-<li>&quot;Explain what types of files should go in your <code>docs</code>, <code>data</code>, and <code>results</code> directories.&quot;</li>
-<li>&quot;Use the <code>history</code> command and a text editor like <code>nano</code> to document your work on your project.&quot;</li>
+<li>Create a file system for a bioinformatics project.</li>
+<li>Use the <code>history</code> command and a text editor like <code>nano</code> to document your work on your project.</li>
 </ul>
 <p>Keypoints:</p>
 <ul>
-<li>&quot;Spend the time to organize your file system when you start a new project. Your future self will thank you!&quot;</li>
-<li>&quot;Always save a write-protected copy of your raw data.&quot;</li>
+<li>Spend the time to organize your file system when you start a new project. Your future self will thank you!</li>
 </ul>
 <h2 id="getting-your-project-started">Getting your project started</h2>
 <p>Project organization is one of the most important parts of a sequencing project, and yet is often overlooked amidst the
@@ -405,8 +403,8 @@ $ ls
 <p>You should see the output:</p>
 <pre class="hljs"><code><div>01_intro_unix      07_contam_removal  13_microviz          19_pca_taxon_stats
 02_bash_scripting  08_assembly        14_alpha_diversity   20_kmer_comparisons
-03_intro_hpc       09_assembly_qc     15_beta_diversity_1  21_functional_annot
-04_project_setup   10_metag_binning   16_beta_diversity_2  
+03_cat_n           09_metag_binning   15_beta_diversity_1  21_functional_annot
+04_intro_hpc       10_assembly_qc     16_beta_diversity_2  
 05_getting_data    11_taxonomy        17_ordination
 06_qc_trimming     12_phyloseq        18_abundance_trans
 </div></code></pre>
@@ -416,9 +414,10 @@ $ ls
 metagenomic analyses for a given project. Each of our steps in this
 process are numbered according to their order of operation and have
 their own directory associated with them. For example, after we
-create genomes from our metagenomes (08_assembly), we will look at
-the quality of the assemblies (09_assembly_qc). Each of the analyses
-will be in the project directory for that step (e.g 09_assembly_qc),
+create genomes from our metagenomes (08_assembly), we will bin our assemblies
+(09_metag_binning) and look at the quality of the assemblies (10_assembly_qc).
+Each of the analyses
+will be in the project directory for that step (e.g 09_metag_binning),
 but may refer back to data from a prior step (e.g 08_assembly).
 This helps us to find the results for each step easliy.</p>
 </blockquote>
@@ -435,7 +434,7 @@ set of directories for a given project?</p>
 <p>To kick off our project, we will download sequence data from the sequence read archive (SRA). These data are considered our &quot;raw&quot; data, and represent the data that came off the sequencer. The raw data should never be changed. Regardless of how sure you are that you want to carry out a particular data cleaning step, there's always the chance that you'll change your mind later or that there will be an error in carrying out the data cleaning and you'll need to go back a step in the process. Having a raw copy of your data that you never modify guarantees that you will always be able to start over if something goes wrong with your analysis. As a result, all of the analyses performed on the &quot;raw&quot; data will be in a different folder.</p>
 <p>Do you remember how to prevent overwriting your raw data files by setting restrictive file permissions?</p>
 <h2 id="file-names">File names</h2>
-<p>Sometimes you will see bioinformaticists use file extensions to indicate what analyses have been run the the file. For example, you might see a raw data file called ERR2198720.fastq, and then the quality trimmed file called ERR2198720.trimmed.fastq. This is a bad idea! The reason is that file names can get very long (e.g. ERR2198720.trimmed.human_removed.phix_removed.fastq). Yikes! This is also a problem for automating tasks in an HPC pipeline where you have to remember all those extensions when referring back to the file. Instead, we can just save the files (with the same name, ERR2198720.fastq) in different directories according to what analysis was run on them. You will come to appreciate this later!</p>
+<p>Sometimes you will see bioinformaticists use file extensions to indicate what analyses have been run on the file. For example, you might see a raw data file called ERR2198720.fastq, and then the quality trimmed file called ERR2198720.trimmed.fastq. This is a bad idea! The reason is that file names can get very long (e.g. ERR2198720.trimmed.human_removed.phix_removed.fastq). Yikes! This is also a problem for automating tasks in an HPC pipeline where you have to remember all those extensions when referring back to the file. Instead, we can just save the files (with the same name, ERR2198720.fastq) in different directories according to what analysis was run on them. You will come to appreciate this later!</p>
 <h2 id="documenting-your-activity-on-the-project">Documenting your activity on the project</h2>
 <p>When carrying out wet-lab analyses, most scientists work from a written protocol and keep a hard copy of written notes in their lab notebook, including any things they did differently from the written protocol. This detailed record-keeping process is just as important when doing computational analyses. Luckily, it's even easier to record the steps you've carried out computational than it is when working at the bench.</p>
 <p>The <code>history</code> command is a convenient way to document all the
@@ -457,7 +456,7 @@ files. Let's document the work we have done on our project so far.</p>
 <details>
   <summary markdown="span">Solution</summary>
 ```
-$ history | tail -n 8 >> log_2023_09_12.sh
+$ history | tail -n 7 >> log_2023_09_12.sh
 ```
 <p>Note we used the last 7 lines as an example, the number of lines may vary.</p>
 </details>
@@ -465,43 +464,6 @@ $ history | tail -n 8 >> log_2023_09_12.sh
 <p>Congratulations! You've finished your introduction to using the shell for metagenomics projects. You now know how to navigate your file system, create, copy, move, and remove files and directories, and automate repetitive tasks using scripts and wildcards. With this solid foundation, you're ready to move on to apply all of these new
 skills to carrying out more sophisticated bioinformatics
 analysis work. Don't worry if everything doesn't feel perfectly comfortable yet. We're going to have many more opportunities for practice as we move forward on our bioinformatics journey!</p>
-<blockquote>
-<h2 id="just-fyi-navigating-in-nano">Just FYI: Navigating in Nano</h2>
-<p>Although <code>nano</code> is useful, it can be frustrating to edit documents, as you
-can't use your mouse to navigate to the part of the document you would like to edit.
-Here are some useful keyboard shortcuts for moving around within a text document in
-<code>nano</code>. You can find more information by typing <kbd>Ctrl</kbd>-<kbd>G</kbd> within <code>nano</code>.</p>
-<table>
-<thead>
-<tr>
-<th>key</th>
-<th>action</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><kbd>Ctrl</kbd>-<kbd>Space</kbd></td>
-<td>to move forward one word</td>
-</tr>
-<tr>
-<td><kbd>Alt</kbd>-<kbd>Space</kbd></td>
-<td>to move back one word</td>
-</tr>
-<tr>
-<td><kbd>Ctrl</kbd>-<kbd>A</kbd></td>
-<td>to move to the beginning of the current line</td>
-</tr>
-<tr>
-<td><kbd>Ctrl</kbd>-<kbd>E</kbd></td>
-<td>to move to the end of the current line</td>
-</tr>
-<tr>
-<td><kbd>Ctrl</kbd>-<kbd>W</kbd></td>
-<td>to search</td>
-</tr>
-</tbody>
-</table>
-</blockquote>
 
 </body>
 </html>

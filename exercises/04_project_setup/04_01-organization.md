@@ -2,17 +2,15 @@
 # Project Organization
 
 ## Questions:
-- "How can I organize my file system for a new bioinformatics project?"
-- "How can I document my work?"
+- How can I organize my file system for a new bioinformatics project?
+- How can I document my work?
 
 Objectives:
-- "Create a file system for a bioinformatics project."
-- "Explain what types of files should go in your `docs`, `data`, and `results` directories."
-- "Use the `history` command and a text editor like `nano` to document your work on your project."
+- Create a file system for a bioinformatics project.
+- Use the `history` command and a text editor like `nano` to document your work on your project.
 
 Keypoints:
-- "Spend the time to organize your file system when you start a new project. Your future self will thank you!"
-- "Always save a write-protected copy of your raw data."
+- Spend the time to organize your file system when you start a new project. Your future self will thank you!
 
 ## Getting your project started
 
@@ -48,8 +46,8 @@ You should see the output:
 ```
 01_intro_unix      07_contam_removal  13_microviz          19_pca_taxon_stats
 02_bash_scripting  08_assembly        14_alpha_diversity   20_kmer_comparisons
-03_intro_hpc       09_assembly_qc     15_beta_diversity_1  21_functional_annot
-04_project_setup   10_metag_binning   16_beta_diversity_2  
+03_cat_n           09_metag_binning   15_beta_diversity_1  21_functional_annot
+04_intro_hpc       10_assembly_qc     16_beta_diversity_2  
 05_getting_data    11_taxonomy        17_ordination
 06_qc_trimming     12_phyloseq        18_abundance_trans
 ```
@@ -59,9 +57,10 @@ You should see the output:
 > metagenomic analyses for a given project. Each of our steps in this 
 > process are numbered according to their order of operation and have
 > their own directory associated with them. For example, after we
-> create genomes from our metagenomes (08_assembly), we will look at
-> the quality of the assemblies (09_assembly_qc). Each of the analyses
-> will be in the project directory for that step (e.g 09_assembly_qc),
+> create genomes from our metagenomes (08_assembly), we will bin our assemblies
+> (09_metag_binning) and look at the quality of the assemblies (10_assembly_qc). 
+> Each of the analyses
+> will be in the project directory for that step (e.g 09_metag_binning),
 > but may refer back to data from a prior step (e.g 08_assembly). 
 > This helps us to find the results for each step easliy.
 
@@ -82,7 +81,7 @@ Do you remember how to prevent overwriting your raw data files by setting restri
 
 ## File names
 
-Sometimes you will see bioinformaticists use file extensions to indicate what analyses have been run the the file. For example, you might see a raw data file called ERR2198720.fastq, and then the quality trimmed file called ERR2198720.trimmed.fastq. This is a bad idea! The reason is that file names can get very long (e.g. ERR2198720.trimmed.human_removed.phix_removed.fastq). Yikes! This is also a problem for automating tasks in an HPC pipeline where you have to remember all those extensions when referring back to the file. Instead, we can just save the files (with the same name, ERR2198720.fastq) in different directories according to what analysis was run on them. You will come to appreciate this later!
+Sometimes you will see bioinformaticists use file extensions to indicate what analyses have been run on the file. For example, you might see a raw data file called ERR2198720.fastq, and then the quality trimmed file called ERR2198720.trimmed.fastq. This is a bad idea! The reason is that file names can get very long (e.g. ERR2198720.trimmed.human_removed.phix_removed.fastq). Yikes! This is also a problem for automating tasks in an HPC pipeline where you have to remember all those extensions when referring back to the file. Instead, we can just save the files (with the same name, ERR2198720.fastq) in different directories according to what analysis was run on them. You will come to appreciate this later!
 
 ## Documenting your activity on the project
 
@@ -127,22 +126,3 @@ Note we used the last 7 lines as an example, the number of lines may vary.
 Congratulations! You've finished your introduction to using the shell for metagenomics projects. You now know how to navigate your file system, create, copy, move, and remove files and directories, and automate repetitive tasks using scripts and wildcards. With this solid foundation, you're ready to move on to apply all of these new
 skills to carrying out more sophisticated bioinformatics
 analysis work. Don't worry if everything doesn't feel perfectly comfortable yet. We're going to have many more opportunities for practice as we move forward on our bioinformatics journey!
-
-<BR>
-
-> ## Just FYI: Navigating in Nano
-> 
-> Although `nano` is useful, it can be frustrating to edit documents, as you 
-> can't use your mouse to navigate to the part of the document you would like to edit.
-> Here are some useful keyboard shortcuts for moving around within a text document in 
-> `nano`. You can find more information by typing <kbd>Ctrl</kbd>-<kbd>G</kbd> within `nano`.
-> 
-> | key     | action |
-> | ------- | ---------- |
-> | <kbd>Ctrl</kbd>-<kbd>Space</kbd> | to move forward one word |
-> | <kbd>Alt</kbd>-<kbd>Space</kbd> | to move back one word |
-> | <kbd>Ctrl</kbd>-<kbd>A</kbd> | to move to the beginning of the current line |
-> | <kbd>Ctrl</kbd>-<kbd>E</kbd> | to move to the end of the current line |
-> | <kbd>Ctrl</kbd>-<kbd>W</kbd> | to search |
-> 
-
