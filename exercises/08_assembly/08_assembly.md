@@ -43,7 +43,7 @@ SPAdes already deals with the non-uniform coverage problem in its algorithm, so 
 
 Let's see if our program is installed correctly:
 ```
-$ /contrib/singularity/shared/bhurwitz/spades:3.15.5--h95f258a_1.sif metaspades.py
+$ /contrib/singularity/shared/bhurwitz/spades:3.15.5--h95f258a_1.sif metaspades.py --help
 ```
 
 ```
@@ -74,9 +74,9 @@ directory where we want our results to be stored.
 Note that spades needs a lot of memory (we are asking for 24G!
 
  ```
-$  interactive -m 24GB
+$  interactive -m 24GB -a bh_class
 $ cd /xdisk/bhurwitz/bh_class/YOUR_NETID/exercises/06_qc_trimming
-$ /contrib/singularity/shared/bhurwitz/spades:3.15.5--h95f258a_1.sif metaspades.py -1 JC1A_R1.trim.fastq.gz -2 JC1A_R2.trim.fastq.gz -o ../../08_assembly/assembly_JC1A
+$ /contrib/singularity/shared/bhurwitz/spades:3.15.5--h95f258a_1.sif metaspades.py -1 JC1A_R1.trim.fastq.gz -2 JC1A_R2.trim.fastq.gz -o ../08_assembly/assembly_JC1A
 ```
 
 When the run is finished, it shows this message:
@@ -92,7 +92,7 @@ Thank you for using SPAdes!
 
 Now, let's go to the output files: 
 ```
-$ cd ../../08_assembly/assembly_JC1A
+$ cd ../08_assembly/assembly_JC1A
 $ ls -F
 ```
 
@@ -110,21 +110,21 @@ contigs.paths                            K33/                    run_spades.yaml
 As we can see, MetaSPAdes gave us a lot of files. The ones with the assembly are the `contigs.fasta` and the `scaffolds.fasta`. 
 Also, we found three `K` folders: _K21, K33, and K55_; this contains the individual result files for an assembly 
 with k-mers equal to those numbers: 21, 33, and 55. The best-assembled results are 
-the ones that are displayed outside these k-folders. The folder `corrected` hold the corrected reads 
+the ones that are displayed outside these k-folders. The folder `corrected` holds the corrected reads 
 with the SPAdes algorithm. Moreover, the file 
-`assembly_graph_with_scaffolds.gfa` have the information needed to visualize 
+`assembly_graph_with_scaffolds.gfa` has the information needed to visualize 
 our assembly by different means, like programs such as [Bandage](https://rrwick.github.io/Bandage/).
 
-The contigs are just made from assembled reads, but the scaffolds are the result 
+The contigs are created from assembled reads, but the scaffolds are the result 
 from a subsequent process in which the contigs are ordered, oriented, and connected with Ns.
 
 We can recognize which sample our assembly outputs corresponds to because they are inside 
 the assembly results folder: `assembly_JP4D/`. However, the files within it do not have the 
 sample ID. If we need the files out of their folder, it is beneficial to rename them.
 
-> ## Exercise 1: Rename all files in a folder (needed in the next episode)
+> ## Exercise 1: Rename all files in a folder (needed in the next exercise)
 >
-> Add the prefix `JC1A` (the sample ID) separated by a `_` to the beginning of the names of all the contents in the `assembly_JC1A/` directory. Remember that many solutions are possible.
+> Add the prefix `JC1A` (the sample ID) separated by a `_` to the beginning of the names of all the contents in the `assembly_JC1A/` directory. Remember that multiple solutions may be possible.
 > 
 > A) `$ mv * JC1A_`    
 > B) `$ mv * JC1A_*`    
@@ -143,14 +143,20 @@ When a list of files is passed to `mv`, the `mv` expects the last parameters to 
 Here, `*` gives you a list of all the files in the directory. The last parameter is `JC1A_` (which `mv` expects to be a directory).   
 B)  No. Again, every file is sent to the same file.  
 C)  No, every file is sent to the same file JC1A_  
->D)  Yes, this is one of the possible solutions.  
+D)  Yes, this is one of the possible solutions.  
 
 Do you have another solution?
 </details>
 
+```
+# now run the command in your `assembly_JC1A/` directory
+for name in *; do mv $name JC1A_$name; done
+```
+
+<br>
 
 > ## Exercise 2: Compare two fasta files from the assembly output 
-> You want to know how many contigs and scaffolds result from the assembly. 
+> You may want to know how many contigs and scaffolds result from the assembly. 
 > Use `contigs.fasta`  and `scaffolds.fasta ` files and sort the commands to create correct code lines.   
 > Do they have the same number of lines? Why?  
 > **Hint**: You can use the following commands: `grep`, `|` (pipe), `-l`, `">"`, `wc`, `filename.fasta`

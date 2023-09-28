@@ -386,7 +386,7 @@ contains several assembly pipelines.</p>
 </ul>
 <p>SPAdes already deals with the non-uniform coverage problem in its algorithm, so it is helpful for the assembly of simple communities, but the <a href="https://pubmed.ncbi.nlm.nih.gov/28298430/">metaSPAdes</a> algorithm deals with the other problems as well, allowing it to assemble metagenomes from complex communities.</p>
 <p>Let's see if our program is installed correctly:</p>
-<pre class="hljs"><code><div>$ /contrib/singularity/shared/bhurwitz/spades:3.15.5--h95f258a_1.sif metaspades.py
+<pre class="hljs"><code><div>$ /contrib/singularity/shared/bhurwitz/spades:3.15.5--h95f258a_1.sif metaspades.py --help
 </div></code></pre>
 <pre class="hljs"><code><div>SPAdes genome assembler v3.15.0 [metaSPAdes mode]
 
@@ -410,9 +410,9 @@ to use the most straightforward options, just specifying our forward paired-end
 reads with <code>-1</code> and reverse paired-end reads with <code>-2</code>, and the output
 directory where we want our results to be stored.</p>
 <p>Note that spades needs a lot of memory (we are asking for 24G!</p>
-<pre class="hljs"><code><div>$  interactive -m 24GB
+<pre class="hljs"><code><div>$  interactive -m 24GB -a bh_class
 $ cd /xdisk/bhurwitz/bh_class/YOUR_NETID/exercises/06_qc_trimming
-$ /contrib/singularity/shared/bhurwitz/spades:3.15.5--h95f258a_1.sif metaspades.py -1 JC1A_R1.trim.fastq.gz -2 JC1A_R2.trim.fastq.gz -o ../../08_assembly/assembly_JC1A
+$ /contrib/singularity/shared/bhurwitz/spades:3.15.5--h95f258a_1.sif metaspades.py -1 JC1A_R1.trim.fastq.gz -2 JC1A_R2.trim.fastq.gz -o ../08_assembly/assembly_JC1A
 </div></code></pre>
 <p>When the run is finished, it shows this message:</p>
 <pre class="hljs"><code><div>======= SPAdes pipeline finished.
@@ -423,7 +423,7 @@ Thank you for using SPAdes!
 
 </div></code></pre>
 <p>Now, let's go to the output files:</p>
-<pre class="hljs"><code><div>$ cd ../../08_assembly/assembly_JC1A
+<pre class="hljs"><code><div>$ cd ../08_assembly/assembly_JC1A
 $ ls -F
 </div></code></pre>
 <pre class="hljs"><code><div>assembly_graph_after_simplification.gfa  corrected/              K55/             scaffolds.fasta
@@ -436,18 +436,18 @@ contigs.paths                            K33/                    run_spades.yaml
 <p>As we can see, MetaSPAdes gave us a lot of files. The ones with the assembly are the <code>contigs.fasta</code> and the <code>scaffolds.fasta</code>.
 Also, we found three <code>K</code> folders: <em>K21, K33, and K55</em>; this contains the individual result files for an assembly
 with k-mers equal to those numbers: 21, 33, and 55. The best-assembled results are
-the ones that are displayed outside these k-folders. The folder <code>corrected</code> hold the corrected reads
+the ones that are displayed outside these k-folders. The folder <code>corrected</code> holds the corrected reads
 with the SPAdes algorithm. Moreover, the file
-<code>assembly_graph_with_scaffolds.gfa</code> have the information needed to visualize
+<code>assembly_graph_with_scaffolds.gfa</code> has the information needed to visualize
 our assembly by different means, like programs such as <a href="https://rrwick.github.io/Bandage/">Bandage</a>.</p>
-<p>The contigs are just made from assembled reads, but the scaffolds are the result
+<p>The contigs are created from assembled reads, but the scaffolds are the result
 from a subsequent process in which the contigs are ordered, oriented, and connected with Ns.</p>
 <p>We can recognize which sample our assembly outputs corresponds to because they are inside
 the assembly results folder: <code>assembly_JP4D/</code>. However, the files within it do not have the
 sample ID. If we need the files out of their folder, it is beneficial to rename them.</p>
 <blockquote>
-<h2 id="exercise-1-rename-all-files-in-a-folder-needed-in-the-next-episode">Exercise 1: Rename all files in a folder (needed in the next episode)</h2>
-<p>Add the prefix <code>JC1A</code> (the sample ID) separated by a <code>_</code> to the beginning of the names of all the contents in the <code>assembly_JC1A/</code> directory. Remember that many solutions are possible.</p>
+<h2 id="exercise-1-rename-all-files-in-a-folder-needed-in-the-next-exercise">Exercise 1: Rename all files in a folder (needed in the next exercise)</h2>
+<p>Add the prefix <code>JC1A</code> (the sample ID) separated by a <code>_</code> to the beginning of the names of all the contents in the <code>assembly_JC1A/</code> directory. Remember that multiple solutions may be possible.</p>
 <p>A) <code>$ mv * JC1A_</code><br>
 B) <code>$ mv * JC1A_*</code><br>
 C) <code>$ for name in *; do mv $name JC1A_; done</code><br>
@@ -463,15 +463,17 @@ This is because <code>mv</code> has two options:<br>
 When a list of files is passed to <code>mv</code>, the <code>mv</code> expects the last parameters to be a directory.<br>
 Here, <code>*</code> gives you a list of all the files in the directory. The last parameter is <code>JC1A_</code> (which <code>mv</code> expects to be a directory).<br>
 B)  No. Again, every file is sent to the same file.<br>
-C)  No, every file is sent to the same file JC1A_</p>
-<blockquote>
-<p>D)  Yes, this is one of the possible solutions.</p>
-</blockquote>
+C)  No, every file is sent to the same file JC1A_<br>
+D)  Yes, this is one of the possible solutions.</p>
 <p>Do you have another solution?</p>
 </details>
+<pre class="hljs"><code><div># now run the command in your `assembly_JC1A/` directory
+for name in *; do mv $name JC1A_$name; done
+</div></code></pre>
+<br>
 <blockquote>
 <h2 id="exercise-2-compare-two-fasta-files-from-the-assembly-output">Exercise 2: Compare two fasta files from the assembly output</h2>
-<p>You want to know how many contigs and scaffolds result from the assembly.
+<p>You may want to know how many contigs and scaffolds result from the assembly.
 Use <code>contigs.fasta</code>  and <code>scaffolds.fasta </code> files and sort the commands to create correct code lines.<br>
 Do they have the same number of lines? Why?<br>
 <strong>Hint</strong>: You can use the following commands: <code>grep</code>, <code>|</code> (pipe), <code>-l</code>, <code>&quot;&gt;&quot;</code>, <code>wc</code>, <code>filename.fasta</code></p>
