@@ -385,8 +385,10 @@ contains several assembly pipelines.</p>
 <li>The presence of several strains of a single species in the community.</li>
 </ul>
 <p>SPAdes already deals with the non-uniform coverage problem in its algorithm, so it is helpful for the assembly of simple communities, but the <a href="https://pubmed.ncbi.nlm.nih.gov/28298430/">metaSPAdes</a> algorithm deals with the other problems as well, allowing it to assemble metagenomes from complex communities.</p>
-<p>Let's see if our program is installed correctly:</p>
-<pre class="hljs"><code><div>$ /contrib/singularity/shared/bhurwitz/spades:3.15.5--h95f258a_1.sif metaspades.py --help
+<p>Let's see if our program is installed correctly.
+Quick check! Are you on an interactive node? It won't find the container below if not.</p>
+<pre class="hljs"><code><div>$ interactive -m 24GB -a bh_class
+$ /contrib/singularity/shared/bhurwitz/spades:3.15.5--h95f258a_1.sif metaspades.py --help
 </div></code></pre>
 <pre class="hljs"><code><div>SPAdes genome assembler v3.15.0 [metaSPAdes mode]
 
@@ -409,9 +411,8 @@ Input data:
 to use the most straightforward options, just specifying our forward paired-end
 reads with <code>-1</code> and reverse paired-end reads with <code>-2</code>, and the output
 directory where we want our results to be stored.</p>
-<p>Note that spades needs a lot of memory (we are asking for 24G!</p>
-<pre class="hljs"><code><div>$  interactive -m 24GB -a bh_class
-$ cd /xdisk/bhurwitz/bh_class/YOUR_NETID/exercises/06_qc_trimming
+<p>Note that spades needs a lot of memory (we are asking for 24G!, and you need to be running the container on a compute node. Make sure you have run the <code>interactive -m 24GB -a bh_class</code> command above.</p>
+<pre class="hljs"><code><div>$ cd /xdisk/bhurwitz/bh_class/YOUR_NETID/exercises/06_qc_trimming
 $ /contrib/singularity/shared/bhurwitz/spades:3.15.5--h95f258a_1.sif metaspades.py -1 JC1A_R1.trim.fastq.gz -2 JC1A_R2.trim.fastq.gz -o ../08_assembly/assembly_JC1A
 </div></code></pre>
 <p>When the run is finished, it shows this message:</p>

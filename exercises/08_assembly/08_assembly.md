@@ -2,19 +2,19 @@
 # Metagenome Assembly
 
 ### Questions:
-- "Why should genomic data be assembled?"
-- "What is the difference between reads and contigs?"
-- "How can we assemble a metagenome?"
+- Why should genomic data be assembled?
+- What is the difference between reads and contigs?
+- How can we assemble a metagenome?
 ### Objectives: 
-- "Understand what an assembly is."  
-- "Run a metagenomics assembly workflow."
-- "Use an environment in a bioinformatic pipeline."
+- Understand what an assembly is. 
+- Run a metagenomics assembly workflow.
+- Use an environment in a bioinformatic pipeline.
 ### Keypoints:
-- "Assembly groups reads into contigs."
-- "De Bruijn Graphs use Kmers to assembly cleaned reads."
-- "Program screen allows you to keep open remote sessions."
-- "MetaSPAdes is a metagenomes assembler."
-- "Assemblers take FastQ files as input and produce a Fasta file as output."
+- Assembly groups reads into contigs.
+- De Bruijn Graphs use Kmers to assembly cleaned reads.
+- Program screen allows you to keep open remote sessions.
+- MetaSPAdes is a metagenomes assembler.
+- Assemblers take FastQ files as input and produce a Fasta file as output.
 ---
 
 ## Assembling reads
@@ -41,8 +41,10 @@ Some of the problems faced by metagenomics assembly are:
 SPAdes already deals with the non-uniform coverage problem in its algorithm, so it is helpful for the assembly of simple communities, but the [metaSPAdes](https://pubmed.ncbi.nlm.nih.gov/28298430/) algorithm deals with the other problems as well, allowing it to assemble metagenomes from complex communities. 
 
 
-Let's see if our program is installed correctly:
+Let's see if our program is installed correctly.
+Quick check! Are you on an interactive node? It won't find the container below if not.
 ```
+$ interactive -m 24GB -a bh_class
 $ /contrib/singularity/shared/bhurwitz/spades:3.15.5--h95f258a_1.sif metaspades.py --help
 ```
 
@@ -71,10 +73,9 @@ to use the most straightforward options, just specifying our forward paired-end
 reads with `-1` and reverse paired-end reads with `-2`, and the output 
 directory where we want our results to be stored.
 
-Note that spades needs a lot of memory (we are asking for 24G!
+Note that spades needs a lot of memory (we are asking for 24G!, and you need to be running the container on a compute node. Make sure you have run the `interactive -m 24GB -a bh_class` command above.
 
  ```
-$  interactive -m 24GB -a bh_class
 $ cd /xdisk/bhurwitz/bh_class/YOUR_NETID/exercises/06_qc_trimming
 $ /contrib/singularity/shared/bhurwitz/spades:3.15.5--h95f258a_1.sif metaspades.py -1 JC1A_R1.trim.fastq.gz -2 JC1A_R2.trim.fastq.gz -o ../08_assembly/assembly_JC1A
 ```
@@ -98,12 +99,12 @@ $ ls -F
 
 
 ```
-assembly_graph_after_simplification.gfa  corrected/              K55/             scaffolds.fasta
-assembly_graph.fastg                     dataset.info            misc/            scaffolds.paths
+assembly_graph_after_simplification.gfa  corrected               K55              scaffolds.fasta
+assembly_graph.fastg                     dataset.info            misc             scaffolds.paths
 assembly_graph_with_scaffolds.gfa        first_pe_contigs.fasta  params.txt       spades.log
-before_rr.fasta                          input_dataset.yaml      pipeline_state/  strain_graph.gfa
-contigs.fasta                            K21/                    run_spades.sh    tmp/
-contigs.paths                            K33/                    run_spades.yaml   
+before_rr.fasta                          input_dataset.yaml      pipeline_state   strain_graph.gfa
+contigs.fasta                            K21                     run_spades.sh    tmp
+contigs.paths                            K33                     run_spades.yaml
 ```
 
 
@@ -122,40 +123,9 @@ We can recognize which sample our assembly outputs corresponds to because they a
 the assembly results folder: `assembly_JP4D/`. However, the files within it do not have the 
 sample ID. If we need the files out of their folder, it is beneficial to rename them.
 
-> ## Exercise 1: Rename all files in a folder (needed in the next exercise)
->
-> Add the prefix `JC1A` (the sample ID) separated by a `_` to the beginning of the names of all the contents in the `assembly_JC1A/` directory. Remember that multiple solutions may be possible.
-> 
-> A) `$ mv * JC1A_`    
-> B) `$ mv * JC1A_*`    
-> C) `$ for name in *; do mv $name JC1A_; done`      
-> D) `$ for name in *; do mv $name JC1A_$name; done`      
->    
-<details>
-  <summary markdown="span">Solution</summary>
-  <ul> 
-
-A)  No, this option is going to give you as error `mv: target 'JC1A_' is not a directory` 
-This is because `mv` has two options:  
-`mv file_1 file_2`  
-`mv file_1, file_2, ..... file_n directory`   
-When a list of files is passed to `mv`, the `mv` expects the last parameters to be a directory.  
-Here, `*` gives you a list of all the files in the directory. The last parameter is `JC1A_` (which `mv` expects to be a directory).   
-B)  No. Again, every file is sent to the same file.  
-C)  No, every file is sent to the same file JC1A_  
-D)  Yes, this is one of the possible solutions.  
-
-Do you have another solution?
-</details>
-
-```
-# now run the command in your `assembly_JC1A/` directory
-for name in *; do mv $name JC1A_$name; done
-```
-
 <br>
 
-> ## Exercise 2: Compare two fasta files from the assembly output 
+> ## Exercise 1: Compare two fasta files from the assembly output 
 > You may want to know how many contigs and scaffolds result from the assembly. 
 > Use `contigs.fasta`  and `scaffolds.fasta ` files and sort the commands to create correct code lines.   
 > Do they have the same number of lines? Why?  
@@ -166,10 +136,13 @@ for name in *; do mv $name JC1A_$name; done
   <ul> 
 
 ```
-$ grep “>” contigs.fasta | wc -l
-$ grep “>” scaffolds.fasta | wc -l
+$ grep '>' contigs.fasta | wc -l
+$ grep '>' scaffolds.fasta | wc -l
 ```
 
-A contig is created from reads and then a scaffold from a group of contigs, so we expect fewer lines in the `scaffolds.fasta ` .
+A contig is created from reads and then a scaffold from a group of contigs, so we expect fewer lines in the `scaffolds.fasta `. But, why is the difference so small between these two files for this sample?
+
+hint: This sample has very shallow sequencing.
+
 </details>
 
