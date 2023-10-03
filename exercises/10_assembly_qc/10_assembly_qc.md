@@ -14,32 +14,40 @@ in the community and the depth at which we sequenced it.
 Two important things that can be measured to know its quality are completeness (is the MAG a complete genome?) 
 and if it is contaminated (does the MAG contain only one genome?). 
 
-Advances in DNA sequencing and bioinformatics have dramatically increased the rate of recovery of microbial genomes from metagenomic data. Assessing the quality of metagenome-assembled genomes (MAGs) is a critical step prior to downstream analysis. [CheckM2](https://www.nature.com/articles/s41592-023-01940-w?utm_source=twitter&utm_medium=social&utm_campaign=nmeth) is an improved method of predicting the completeness and contamination of MAGs using machine learning. CheckM2 provides a set of tools for assessing the quality of genomes recovered from isolates, single cells, or metagenomes. It provides robust estimates of genome completeness and contamination by using collocated sets of genes that are ubiquitous and single-copy within a phylogenetic lineage. Assessment of genome quality can also be examined using plots depicting key genomic characteristics (e.g., GC, coding density) which highlight sequences outside the expected distributions of a typical genome. If you want to make comments about the functional potential of a genome, look for maximum genome completeness and minimal contamination. 
+Advances in DNA sequencing and bioinformatics have dramatically increased the rate of recovery of microbial genomes from metagenomic data. Assessing the quality of metagenome-assembled genomes (MAGs) is a critical step prior to downstream analysis. [CheckM2](https://www.nature.com/articles/s41592-023-01940-w?utm_source=twitter&utm_medium=social&utm_campaign=nmeth) is an improved method of predicting the completeness and contamination of MAGs using machine learning. CheckM2 has universally trained machine learning models it applies regardless of taxonomic lineage to predict the completeness and contamination of genomic bins. This allows it to incorporate many lineages in its training set that have few - or even just one - high-quality genomic representatives, by putting it in the context of all other organisms in the training set. As a result of this machine learning framework, CheckM2 is also highly accurate on organisms with reduced genomes or unusual biology, such as the Nanoarchaeota or Patescibacteria.
 
-If your workflow involves metagenome assembled genomes (MAGs), then CheckM QC is likely one of the first things you will want to perform (i.e. prior to annotation of the AssemblySet). This information will indicate which genome bins should be discarded (i.e. rendered as unbinned) prior to analyses of the bins (e.g. Taxonomic Classification).
+CheckM2 uses two distinct machine learning models to predict genome completeness. The 'general' gradient boost model is able to generalize well and is intended to be used on organisms not well represented in GenBank or RefSeq (roughly, when an organism is novel at the level of order, class or phylum). The 'specific' neural network model is more accurate when predicting completeness of organisms more closely related to the reference training set (roughly, when an organism belongs to a known species, genus or family). CheckM2 uses a cosine similarity calculation to automatically determine the appropriate completeness model for each input genome, but you can also force the use of a particular completeness model, or get the prediction outputs for both. There is only one contamination model (based on gradient boost) which is applied regardless of taxonomic novelty and works well across all cases.
+
+If your workflow involves metagenome assembled genomes (MAGs), then CheckM2 QC is likely one of the first things you will want to perform (i.e. prior to annotation of the AssemblySet). This information will indicate which genome bins should be discarded (i.e. rendered as unbinned) prior to analyses of the bins (e.g. Taxonomic Classification).
+
+The main use of CheckM2 is to predict the completeness and contamination of metagenome-assembled genomes (MAGs) and single-amplified genomes (SAGs), although it can also be applied to isolate genomes.
 
 Input and Parameters:
 
-Assembly, Genome, or BinnedContigs: A user may submit a single genome Assembly object, an AssemblySet, a Genome, a GenomeSet, or a BinnedContig object containing multiple "binned" genomes. For every input assemblies/genomes/bin, a separate evaluation of the genome completeness using the clade-specific phylogenetic marker genes will be performed.
+Assembly, Genome, or BinnedContigs: A user may submit a single genome Assembly object, an AssemblySet, a Genome, a GenomeSet, or multiple "binned" genomes. You can give it a folder with FASTA files using --input and direct its output with --output-directory:
 
-Save all plots: The user has the option of generating and downloading all possible plots from the CheckM lineage workflow. Note that selecting this option will slow down the runtime (perhaps 10-20%).
+checkm2 predict --threads 30 --input <folder_with_bins> --output-directory <output_folder> 
+
+Database:
+
+The --database_path can be used with checkm2 predict to provide an already downloaded checkm2 database during a single predict run:
+
+checkm2 predict -i ./folder_with_MAGs -o ./output_folder --database_path /path/to/database/CheckM2_database/uniref100.KO.1.dmnd. 
+
+We will use this database that is downloaded on the HOC for you.
 
 Output:
 
-Output Report: The output report offers both graphical and tabular representations of the phylogenetic marker completeness and contamination. CheckM generates clade-specific marker gene sets for each bin and reports the taxonomic resolution possible for each bin in the "Marker Lineage" column. Users may want to look at the "Marker Lineage" column to see what MAGs were classified with, for example, the "d__Bacteria" or "d__Archaea" marker sets. Instances where a broad (domain-level) marker set is used compared to a marker set from specific lineage (e.g. c__Alphaproteobacteria) can help one contextualize (and evaluate) the genome completeness and contamination estimates.
+Output Report: By default, the output folder will have a tab-delimited file quality_report.tsv containing the completeness and contamination information for each bin. Contamination in MAGs may come from the binning together of closely-related strain or species, but may potentially also contain divergent DNA from other lineages or even domains.
 
-The number of Genomes that were used in generating each marker set is given, as is the number of markers generated. Marker genes are typically single-copy, so the occurrence of more than one in a given genome or bin may reveal contamination, which is indicated with yellow to red bars in the graphical depiction and by the columns "2" to "5+" in the table. As noted above in the article on assumptions, for incomplete genomes (e.g. 50-70%) the contamination measure is going to be an underestimate. In other words, be wary of a genome that is 50% complete with 0% contamination - contamination is present, this tool just doesn't detect it.
+Improved genome quality predictions by CheckM2 are the result of considering fully annotated genomes in its machine learning models, as opposed to CheckM1’s requirement for single-copy marker gene sets for each lineage. An additional advantage of the CheckM2 approach is that its models can be easily and rapidly updated to incorporate additional high quality genomic representation for novel lineages, further increasing the accuracy of its genome quality predictions.
 
-The fraction of marker genes that occur as duplicates is used to calculate the "Contamination" percentage in the table. Missing clade-specific phylogenetic markers are shown in gray in the plot and by the column "0" in the table, with the "Completeness" value obtained by the proportion of the missing markers to the total number of markers used. The presence of one and exactly one copy of a marker is indicated with a green bar in the plot and the tally in the "1" column of the table. Ideally, a perfect Genome will have all markers in exactly one copy assuming that the derivation of the markers was itself perfectly done and biology was perfectly predictable. Be sure to inspect results to ensure they are accurate. For example, for lineages not well-characterized in the CheckM database, the CheckM program will produce dubious results because marker gene assumptions are broken.
-
-Files: Plots and data output files are produced by the CheckM lineage workflow. Additionally, a Tab-delimited TSV table in zipped text format that contains the CheckM assessment summary (matching that in the HTML CheckM Table report) for each bin is available.
-
-Let's run CheckM2. Quick note that this will take 20 minutes to run on a node with 24G of memory and 24 cores.
+Let's run CheckM2. This will take 20 minutes to run on a node with 24G of memory and 24 cores.
 
 ```
 $ interactive -t 04:30:00 -m 24G -a bh_class  # be sure to get a node with enough memory
 $ export MAXBIN=/xdisk/bhurwitz/bh_class/YOUR_NETID/exercises/09_metag_binning/assembly_JP4D
-$ export CHECKM=/xdisk/bhurwitz/bh_class/YOUR_NETID/exercises/10_assembly_qc/assembly_JP4D_v2
+$ export CHECKM=/xdisk/bhurwitz/bh_class/YOUR_NETID/exercises/10_assembly_qc/assembly_JP4D
 $ cd $MAXBIN
 $ apptainer run /contrib/singularity/shared/bhurwitz/checkm2\:1.0.1--pyh7cba7a3_0.sif checkm2 \
        predict --threads 24 \

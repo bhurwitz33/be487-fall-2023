@@ -44,10 +44,11 @@ Let's bin the samples we assembled. The command for running MaxBin is `run_MaxBi
 Let's get started.
 
 ```
-$ cd /xdisk/bhurwitz/bh_class/YOUR_NETID/exercises/08_assembly/assembly_JC1A
+$ interactive
+$ cd /xdisk/bhurwitz/bh_class/bonnie/exercises/08_assembly/assembly_JC1A
 $ mkdir ../../09_metag_binning/assembly_JC1A
 $ /contrib/singularity/shared/bhurwitz/maxbin2:2.2.7--hdbdd923_5.sif run_MaxBin.pl \
--thread 8 -contig contigs.fasta \
+-thread 8 -contig JC1A_contigs.fasta \
 -reads ../../06_qc_trimming/JC1A_R1.trim.fastq.gz \
 -reads2 ../../06_qc_trimming/JC1A_R2.trim.fastq.gz \
 -out ../../09_metag_binning/assembly_JC1A
@@ -115,6 +116,7 @@ Store abundance information of reads file [../../06_qc_trimming/JP4D_R2.trim.fas
 With the `.summary` file, we can quickly look at the bins that MaxBin produced. First we will move all of the files into the assembly_JP4D directory.
 
 ```
+$ ../../09_metag_binning/
 $ mv assembly_JP4D.* assembly_JP4D
 $ cat ./assembly_JP4D/assembly_JP4D.summary
 ```
