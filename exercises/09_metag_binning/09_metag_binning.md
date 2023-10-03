@@ -39,44 +39,44 @@ None, because 18,412 reads of 150bp gives a total count of 2,761,800 bp (~2Mbp).
 
 <br>
 
-Let's bin the sample we just assembled. The command for running MaxBin is `run_MaxBin.pl`, and the arguments it needs are the FASTA file of the assembly, the FASTQ with the forward and reverse reads, the output directory, and the name. 
+Let's bin the samples we assembled. The command for running MaxBin is `run_MaxBin.pl`, and the arguments it needs are the FASTA file of the assembly, the FASTQ with the forward and reverse reads, the output directory, and the name. 
 
-/contrib/singularity/shared/bhurwitz/maxbin2:2.2.7--hdbdd923_5.sif run_MaxBin.pl --help
+Let's get started.
+
 ```
 $ cd /xdisk/bhurwitz/bh_class/YOUR_NETID/exercises/08_assembly/assembly_JC1A
 $ mkdir ../../09_metag_binning/assembly_JC1A
 $ /contrib/singularity/shared/bhurwitz/maxbin2:2.2.7--hdbdd923_5.sif run_MaxBin.pl \
--thread 8 -contig JC1A_contigs.fasta \
+-thread 8 -contig contigs.fasta \
 -reads ../../06_qc_trimming/JC1A_R1.trim.fastq.gz \
 -reads2 ../../06_qc_trimming/JC1A_R2.trim.fastq.gz \
 -out ../../09_metag_binning/assembly_JC1A
+$ mv ../../09_metag_binning/assembly_JC1A.* ../../09_metag_binning/assembly_JC1A
 ```
 
 ```
 MaxBin 2.2.7
 Thread: 8
-Input contig: JC1A_contigs.fasta
+Input contig: contigs.fasta
 Located reads file [../../06_qc_trimming/JC1A_R1.trim.fastq.gz]
 Located reads file [../../06_qc_trimming/JC1A_R2.trim.fastq.gz]
 out header: ../../09_metag_binning/assembly_JC1A
 Running Bowtie2 on reads file [../../06_qc_trimming/JC1A_R1.trim.fastq.gz]...this may take a while...
-Reading SAM file to estimate abundance values...
 Running Bowtie2 on reads file [../../06_qc_trimming/JC1A_R2.trim.fastq.gz]...this may take a while...
-Reading SAM file to estimate abundance values...
-Searching against 107 marker genes to find starting seed contigs for [JC1A_contigs.fasta]...
-Running FragGeneScan....
-Running HMMER hmmsearch....
+Searching against 107 marker genes to find starting seed contigs for [contigs.fasta]...
 Try harder to dig out marker genes from contigs.
 Marker gene search reveals that the dataset cannot be binned (the medium of marker gene number <= 1). Program stop.
 ```
 
-
-It seems impossible to bin our assembly because the number of marker genes is less than 1. 
+Oh No! It's impossible to bin our assembly because the number of marker genes is less than 1. 
 We could have expected this as we know it is a small sample.
 
-We will perform the binning process with the other sample from the same study that is larger. We have the assembly precomputed in the `/xdisk/bhurwitz/bh_class/mags/` directory.
+Let's try this on another sample that is bigger.
+
+We will perform the binning process with the other sample from the same study that is larger. We have the assembly precomputed in the `/xdisk/bhurwitz/bh_class/mags/` directory that you can copy over and use.
+
 ```
-$ cd ../../08_assembly
+$ cd ..
 $ mkdir assembly_JP4D
 $ cd assembly_JP4D
 $ cp /xdisk/bhurwitz/bh_class/mags/JP4D_contigs.fasta .
@@ -112,10 +112,11 @@ Store abundance information of reads file [../../06_qc_trimming/JP4D_R2.trim.fas
 
 ```
 
-With the `.summary` file, we can quickly look at the bins that MaxBin produced. 
+With the `.summary` file, we can quickly look at the bins that MaxBin produced. First we will move all of the files into the assembly_JP4D directory.
 
 ```
-$ cat ../../09_metag_binning/assembly_JP4D.summary
+$ mv assembly_JP4D.* assembly_JP4D
+$ cat ./assembly_JP4D/assembly_JP4D.summary
 ```
 
 ```

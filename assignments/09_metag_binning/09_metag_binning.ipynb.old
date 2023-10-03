@@ -122,14 +122,14 @@
     "\n",
     "pwd; hostname; date\n",
     "\n",
-    "source ./config.sh\n",
+    "source $SLURM_SUBMIT_DIR/config.sh\n",
     "names=($(cat $XFILE_DIR/$XFILE))\n",
     "\n",
     "SAMPLE_ID=${names[${SLURM_ARRAY_TASK_ID}]}\n",
     "\n",
     "### reads after trimming and human filtering\n",
-    "PAIR1=${FASTQ_DIR}/${SAMPLE_ID}_1.fastq*\n",
-    "PAIR2=${FASTQ_DIR}/${SAMPLE_ID}_2.fastq*\n",
+    "PAIR1=${FASTQ_DIR}/${SAMPLE_ID}_1.fastq.gz\n",
+    "PAIR2=${FASTQ_DIR}/${SAMPLE_ID}_2.fastq.gz\n",
     "\n",
     "MEGAHIT_OUTDIR=${WORK_DIR}/out_megahit\n",
     "OUTDIR=${MEGAHIT_OUTDIR}/${SAMPLE_ID}\n",
@@ -148,7 +148,7 @@
     "### final contigs\n",
     "CONTIGS=${MEGAHIT_DIR}/${SAMPLE_ID}/final.contigs.fa\n",
     "\n",
-    "apptainer run /contrib/singularity/shared/bhurwitz/maxbin2:2.2.7--hdbdd923_5.sif run_MaxBin.pl \\\n",
+    "/contrib/singularity/shared/bhurwitz/maxbin2:2.2.7--hdbdd923_5.sif run_MaxBin.pl \\\n",
     "-thread 24 -contig ${CONTIGS} \\\n",
     "-reads ${PAIR1} \\\n",
     "-reads2 ${PAIR2} \\\n",
@@ -327,7 +327,7 @@
     "    echo ${SAMPLE_ID}\n",
     "    for file in ${SAMPLE_ID}.*.fasta; do\n",
     "        num=$(echo $file | sed \"s/${SAMPLE_ID}\\.//\" | sed 's/.fasta//')\n",
-    "        cat ${SAMPLE_ID}.$num.fasta | sed -e \"s/^>/>${num}_/\" >> ${SAMPLE_ID}.all_contigs.fna\n",
+    "        cat ${SAMPLE_ID}.$num.fasta | sed -e \"s/^>/>${num}_/\" >> ${SAMPLE_ID}.fasta\n",
     "    done\n",
     "done\n",
     "\n",
@@ -369,10 +369,10 @@
    "source": [
     "# Let's check to see if the re-naming worked, where all ids are \n",
     "# named according to their bin id \"_\" name.\n",
-    "# My concatenated bin file is called ERR2198611.all_contigs.fna\n",
+    "# My concatenated bin file is called ERR2198611.fasta\n",
     "# Change this to one of your samples\n",
     "# You should see the the ids all start with their bin_id now\n",
-    "!egrep '>' $work_dir/out_megahit/YOUR_FILE.all_contigs.fna | head"
+    "!egrep '>' $work_dir/out_megahit/YOUR_FILE.fasta | head"
    ]
   },
   {
@@ -447,7 +447,7 @@
     "### final contigs\n",
     "CONTIGS=${METASPADES_DIR}/${SAMPLE_ID}/contigs.fasta\n",
     "\n",
-    "apptainer run /contrib/singularity/shared/bhurwitz/maxbin2:2.2.7--hdbdd923_5.sif run_MaxBin.pl \\\n",
+    "/contrib/singularity/shared/bhurwitz/maxbin2:2.2.7--hdbdd923_5.sif run_MaxBin.pl \\\n",
     "-thread 24 -contig ${CONTIGS} \\\n",
     "-reads ${PAIR1} \\\n",
     "-reads2 ${PAIR2} \\\n",
@@ -551,7 +551,7 @@
     "    echo ${SAMPLE_ID}\n",
     "    for file in ${SAMPLE_ID}.*.fasta; do\n",
     "        num=$(echo $file | sed \"s/${SAMPLE_ID}\\.//\" | sed 's/.fasta//')\n",
-    "        cat ${SAMPLE_ID}.$num.fasta | sed -e \"s/^>/>${num}_/\" >> ${SAMPLE_ID}.all_contigs.fna\n",
+    "        cat ${SAMPLE_ID}.$num.fasta | sed -e \"s/^>/>${num}_/\" >> ${SAMPLE_ID}.fasta\n",
     "    done\n",
     "done\n",
     "\n",
@@ -598,7 +598,7 @@
     "# My concatenated bin file is called ERR2198611.fasta\n",
     "# Change this to one of your samples\n",
     "# You should see the the ids all start with their bin_id now\n",
-    "!egrep '>' $work_dir/out_spades/YOUR_FILE.all_contigs.fna | head"
+    "!egrep '>' $work_dir/out_spades/YOUR_FILE.fasta | head"
    ]
   },
   {

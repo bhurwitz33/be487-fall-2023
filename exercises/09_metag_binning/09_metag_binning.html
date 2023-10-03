@@ -403,36 +403,34 @@ how many complete bacterial genomes can you reconstruct?</p>
 None, because 18,412 reads of 150bp gives a total count of 2,761,800 bp (~2Mbp). Even if no read maps to the same region, the amount of base pairs is less than the size of a bacterial genome. A “typical” bacterial genome is around 5 million bp.
 </details>
 <br>
-<p>Let's bin the sample we just assembled. The command for running MaxBin is <code>run_MaxBin.pl</code>, and the arguments it needs are the FASTA file of the assembly, the FASTQ with the forward and reverse reads, the output directory, and the name.</p>
-<p>/contrib/singularity/shared/bhurwitz/maxbin2:2.2.7--hdbdd923_5.sif run_MaxBin.pl --help</p>
+<p>Let's bin the samples we assembled. The command for running MaxBin is <code>run_MaxBin.pl</code>, and the arguments it needs are the FASTA file of the assembly, the FASTQ with the forward and reverse reads, the output directory, and the name.</p>
+<p>Let's get started.</p>
 <pre class="hljs"><code><div>$ cd /xdisk/bhurwitz/bh_class/YOUR_NETID/exercises/08_assembly/assembly_JC1A
 $ mkdir ../../09_metag_binning/assembly_JC1A
 $ /contrib/singularity/shared/bhurwitz/maxbin2:2.2.7--hdbdd923_5.sif run_MaxBin.pl \
--thread 8 -contig JC1A_contigs.fasta \
+-thread 8 -contig contigs.fasta \
 -reads ../../06_qc_trimming/JC1A_R1.trim.fastq.gz \
 -reads2 ../../06_qc_trimming/JC1A_R2.trim.fastq.gz \
 -out ../../09_metag_binning/assembly_JC1A
+$ mv ../../09_metag_binning/assembly_JC1A.* ../../09_metag_binning/assembly_JC1A
 </div></code></pre>
 <pre class="hljs"><code><div>MaxBin 2.2.7
 Thread: 8
-Input contig: JC1A_contigs.fasta
+Input contig: contigs.fasta
 Located reads file [../../06_qc_trimming/JC1A_R1.trim.fastq.gz]
 Located reads file [../../06_qc_trimming/JC1A_R2.trim.fastq.gz]
 out header: ../../09_metag_binning/assembly_JC1A
 Running Bowtie2 on reads file [../../06_qc_trimming/JC1A_R1.trim.fastq.gz]...this may take a while...
-Reading SAM file to estimate abundance values...
 Running Bowtie2 on reads file [../../06_qc_trimming/JC1A_R2.trim.fastq.gz]...this may take a while...
-Reading SAM file to estimate abundance values...
-Searching against 107 marker genes to find starting seed contigs for [JC1A_contigs.fasta]...
-Running FragGeneScan....
-Running HMMER hmmsearch....
+Searching against 107 marker genes to find starting seed contigs for [contigs.fasta]...
 Try harder to dig out marker genes from contigs.
 Marker gene search reveals that the dataset cannot be binned (the medium of marker gene number &lt;= 1). Program stop.
 </div></code></pre>
-<p>It seems impossible to bin our assembly because the number of marker genes is less than 1.
+<p>Oh No! It's impossible to bin our assembly because the number of marker genes is less than 1.
 We could have expected this as we know it is a small sample.</p>
-<p>We will perform the binning process with the other sample from the same study that is larger. We have the assembly precomputed in the <code>/xdisk/bhurwitz/bh_class/mags/</code> directory.</p>
-<pre class="hljs"><code><div>$ cd ../../08_assembly
+<p>Let's try this on another sample that is bigger.</p>
+<p>We will perform the binning process with the other sample from the same study that is larger. We have the assembly precomputed in the <code>/xdisk/bhurwitz/bh_class/mags/</code> directory that you can copy over and use.</p>
+<pre class="hljs"><code><div>$ cd ..
 $ mkdir assembly_JP4D
 $ cd assembly_JP4D
 $ cp /xdisk/bhurwitz/bh_class/mags/JP4D_contigs.fasta .
@@ -464,8 +462,9 @@ Store abundance information of reads file [../../06_qc_trimming/JP4D_R2.trim.fas
 0 hours 6 minutes and 18 seconds.
 
 </div></code></pre>
-<p>With the <code>.summary</code> file, we can quickly look at the bins that MaxBin produced.</p>
-<pre class="hljs"><code><div>$ cat ../../09_metag_binning/assembly_JP4D.summary
+<p>With the <code>.summary</code> file, we can quickly look at the bins that MaxBin produced. First we will move all of the files into the assembly_JP4D directory.</p>
+<pre class="hljs"><code><div>$ mv assembly_JP4D.* assembly_JP4D
+$ cat ./assembly_JP4D/assembly_JP4D.summary
 </div></code></pre>
 <pre class="hljs"><code><div>Bin name	Completeness	Genome size	GC content
 assembly_JP4D.001.fasta	57.9%	3141556	55.5

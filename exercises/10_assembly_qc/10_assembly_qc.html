@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>10_assembly_qc.md</title>
+<meta http-equiv="Content-type" content="text/html;charset=UTF-8">
+
+<style>
+/* https://github.com/microsoft/vscode/blob/master/extensions/markdown-language-features/media/markdown.css */
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
+body {
+	font-family: var(--vscode-markdown-font-family, -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif);
+	font-size: var(--vscode-markdown-font-size, 14px);
+	padding: 0 26px;
+	line-height: var(--vscode-markdown-line-height, 22px);
+	word-wrap: break-word;
+}
+
+#code-csp-warning {
+	position: fixed;
+	top: 0;
+	right: 0;
+	color: white;
+	margin: 16px;
+	text-align: center;
+	font-size: 12px;
+	font-family: sans-serif;
+	background-color:#444444;
+	cursor: pointer;
+	padding: 6px;
+	box-shadow: 1px 1px 1px rgba(0,0,0,.25);
+}
+
+#code-csp-warning:hover {
+	text-decoration: none;
+	background-color:#007acc;
+	box-shadow: 2px 2px 2px rgba(0,0,0,.25);
+}
+
+body.scrollBeyondLastLine {
+	margin-bottom: calc(100vh - 22px);
+}
+
+body.showEditorSelection .code-line {
+	position: relative;
+}
+
+body.showEditorSelection .code-active-line:before,
+body.showEditorSelection .code-line:hover:before {
+	content: "";
+	display: block;
+	position: absolute;
+	top: 0;
+	left: -12px;
+	height: 100%;
+}
+
+body.showEditorSelection li.code-active-line:before,
+body.showEditorSelection li.code-line:hover:before {
+	left: -30px;
+}
+
+.vscode-light.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.15);
+}
+
+.vscode-light.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.40);
+}
+
+.vscode-light.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+.vscode-dark.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.4);
+}
+
+.vscode-dark.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.60);
+}
+
+.vscode-dark.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+.vscode-high-contrast.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 160, 0, 0.7);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 160, 0, 1);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+img {
+	max-width: 100%;
+	max-height: 100%;
+}
+
+a {
+	text-decoration: none;
+}
+
+a:hover {
+	text-decoration: underline;
+}
+
+a:focus,
+input:focus,
+select:focus,
+textarea:focus {
+	outline: 1px solid -webkit-focus-ring-color;
+	outline-offset: -1px;
+}
+
+hr {
+	border: 0;
+	height: 2px;
+	border-bottom: 2px solid;
+}
+
+h1 {
+	padding-bottom: 0.3em;
+	line-height: 1.2;
+	border-bottom-width: 1px;
+	border-bottom-style: solid;
+}
+
+h1, h2, h3 {
+	font-weight: normal;
+}
+
+table {
+	border-collapse: collapse;
+}
+
+table > thead > tr > th {
+	text-align: left;
+	border-bottom: 1px solid;
+}
+
+table > thead > tr > th,
+table > thead > tr > td,
+table > tbody > tr > th,
+table > tbody > tr > td {
+	padding: 5px 10px;
+}
+
+table > tbody > tr + tr > td {
+	border-top: 1px solid;
+}
+
+blockquote {
+	margin: 0 7px 0 5px;
+	padding: 0 16px 0 10px;
+	border-left-width: 5px;
+	border-left-style: solid;
+}
+
+code {
+	font-family: Menlo, Monaco, Consolas, "Droid Sans Mono", "Courier New", monospace, "Droid Sans Fallback";
+	font-size: 1em;
+	line-height: 1.357em;
+}
+
+body.wordWrap pre {
+	white-space: pre-wrap;
+}
+
+pre:not(.hljs),
+pre.hljs code > div {
+	padding: 16px;
+	border-radius: 3px;
+	overflow: auto;
+}
+
+pre code {
+	color: var(--vscode-editor-foreground);
+	tab-size: 4;
+}
+
+/** Theming */
+
+.vscode-light pre {
+	background-color: rgba(220, 220, 220, 0.4);
+}
+
+.vscode-dark pre {
+	background-color: rgba(10, 10, 10, 0.4);
+}
+
+.vscode-high-contrast pre {
+	background-color: rgb(0, 0, 0);
+}
+
+.vscode-high-contrast h1 {
+	border-color: rgb(0, 0, 0);
+}
+
+.vscode-light table > thead > tr > th {
+	border-color: rgba(0, 0, 0, 0.69);
+}
+
+.vscode-dark table > thead > tr > th {
+	border-color: rgba(255, 255, 255, 0.69);
+}
+
+.vscode-light h1,
+.vscode-light hr,
+.vscode-light table > tbody > tr + tr > td {
+	border-color: rgba(0, 0, 0, 0.18);
+}
+
+.vscode-dark h1,
+.vscode-dark hr,
+.vscode-dark table > tbody > tr + tr > td {
+	border-color: rgba(255, 255, 255, 0.18);
+}
+
+</style>
+
+<style>
+/* Tomorrow Theme */
+/* http://jmblog.github.com/color-themes-for-google-code-highlightjs */
+/* Original theme - https://github.com/chriskempson/tomorrow-theme */
+
+/* Tomorrow Comment */
+.hljs-comment,
+.hljs-quote {
+	color: #8e908c;
+}
+
+/* Tomorrow Red */
+.hljs-variable,
+.hljs-template-variable,
+.hljs-tag,
+.hljs-name,
+.hljs-selector-id,
+.hljs-selector-class,
+.hljs-regexp,
+.hljs-deletion {
+	color: #c82829;
+}
+
+/* Tomorrow Orange */
+.hljs-number,
+.hljs-built_in,
+.hljs-builtin-name,
+.hljs-literal,
+.hljs-type,
+.hljs-params,
+.hljs-meta,
+.hljs-link {
+	color: #f5871f;
+}
+
+/* Tomorrow Yellow */
+.hljs-attribute {
+	color: #eab700;
+}
+
+/* Tomorrow Green */
+.hljs-string,
+.hljs-symbol,
+.hljs-bullet,
+.hljs-addition {
+	color: #718c00;
+}
+
+/* Tomorrow Blue */
+.hljs-title,
+.hljs-section {
+	color: #4271ae;
+}
+
+/* Tomorrow Purple */
+.hljs-keyword,
+.hljs-selector-tag {
+	color: #8959a8;
+}
+
+.hljs {
+	display: block;
+	overflow-x: auto;
+	color: #4d4d4c;
+	padding: 0.5em;
+}
+
+.hljs-emphasis {
+	font-style: italic;
+}
+
+.hljs-strong {
+	font-weight: bold;
+}
+</style>
+
+<style>
+/*
+ * Markdown PDF CSS
+ */
+
+ body {
+	font-family: -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif, "Meiryo";
+	padding: 0 12px;
+}
+
+pre {
+	background-color: #f8f8f8;
+	border: 1px solid #cccccc;
+	border-radius: 3px;
+	overflow-x: auto;
+	white-space: pre-wrap;
+	overflow-wrap: break-word;
+}
+
+pre:not(.hljs) {
+	padding: 23px;
+	line-height: 19px;
+}
+
+blockquote {
+	background: rgba(127, 127, 127, 0.1);
+	border-color: rgba(0, 122, 204, 0.5);
+}
+
+.emoji {
+	height: 1.4em;
+}
+
+code {
+	font-size: 14px;
+	line-height: 19px;
+}
+
+/* for inline code */
+:not(pre):not(.hljs) > code {
+	color: #C9AE75; /* Change the old color so it seems less like an error */
+	font-size: inherit;
+}
+
+/* Page Break : use <div class="page"/> to insert page break
+-------------------------------------------------------- */
+.page {
+	page-break-after: always;
+}
+
+</style>
+
+<script src="https://unpkg.com/mermaid/dist/mermaid.min.js"></script>
+</head>
+<body>
+  <script>
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: document.body.classList.contains('vscode-dark') || document.body.classList.contains('vscode-high-contrast')
+          ? 'dark'
+          : 'default'
+    });
+  </script>
+<h1 id="metagenome-quality-control">Metagenome Quality Control</h1>
+<h3 id="questions">Questions:</h3>
+<ul>
+<li>How can we assess the quality of genomes from a metagenome (MAGs: Metagenome-Assembled Genomes)?</li>
+</ul>
+<h3 id="objectives">Objectives:</h3>
+<ul>
+<li>Check the quality of the Metagenome-Assembled Genomes.</li>
+</ul>
+<h3 id="keypoints">Keypoints:</h3>
+<ul>
+<li>Use CheckM2 to evaluate the quality of each Metagenomics-Assembled Genome.</li>
+</ul>
+<h2 id="quality-check">Quality check</h2>
+<p>The quality of a MAG is highly dependent on the size of the genome of the species, its abundance
+in the community and the depth at which we sequenced it.
+Two important things that can be measured to know its quality are completeness (is the MAG a complete genome?)
+and if it is contaminated (does the MAG contain only one genome?).</p>
+<p>Advances in DNA sequencing and bioinformatics have dramatically increased the rate of recovery of microbial genomes from metagenomic data. Assessing the quality of metagenome-assembled genomes (MAGs) is a critical step prior to downstream analysis. <a href="https://www.nature.com/articles/s41592-023-01940-w?utm_source=twitter&amp;utm_medium=social&amp;utm_campaign=nmeth">CheckM2</a> is an improved method of predicting the completeness and contamination of MAGs using machine learning. CheckM2 provides a set of tools for assessing the quality of genomes recovered from isolates, single cells, or metagenomes. It provides robust estimates of genome completeness and contamination by using collocated sets of genes that are ubiquitous and single-copy within a phylogenetic lineage. Assessment of genome quality can also be examined using plots depicting key genomic characteristics (e.g., GC, coding density) which highlight sequences outside the expected distributions of a typical genome. If you want to make comments about the functional potential of a genome, look for maximum genome completeness and minimal contamination.</p>
+<p>If your workflow involves metagenome assembled genomes (MAGs), then CheckM QC is likely one of the first things you will want to perform (i.e. prior to annotation of the AssemblySet). This information will indicate which genome bins should be discarded (i.e. rendered as unbinned) prior to analyses of the bins (e.g. Taxonomic Classification).</p>
+<p>Input and Parameters:</p>
+<p>Assembly, Genome, or BinnedContigs: A user may submit a single genome Assembly object, an AssemblySet, a Genome, a GenomeSet, or a BinnedContig object containing multiple &quot;binned&quot; genomes. For every input assemblies/genomes/bin, a separate evaluation of the genome completeness using the clade-specific phylogenetic marker genes will be performed.</p>
+<p>Save all plots: The user has the option of generating and downloading all possible plots from the CheckM lineage workflow. Note that selecting this option will slow down the runtime (perhaps 10-20%).</p>
+<p>Output:</p>
+<p>Output Report: The output report offers both graphical and tabular representations of the phylogenetic marker completeness and contamination. CheckM generates clade-specific marker gene sets for each bin and reports the taxonomic resolution possible for each bin in the &quot;Marker Lineage&quot; column. Users may want to look at the &quot;Marker Lineage&quot; column to see what MAGs were classified with, for example, the &quot;d__Bacteria&quot; or &quot;d__Archaea&quot; marker sets. Instances where a broad (domain-level) marker set is used compared to a marker set from specific lineage (e.g. c__Alphaproteobacteria) can help one contextualize (and evaluate) the genome completeness and contamination estimates.</p>
+<p>The number of Genomes that were used in generating each marker set is given, as is the number of markers generated. Marker genes are typically single-copy, so the occurrence of more than one in a given genome or bin may reveal contamination, which is indicated with yellow to red bars in the graphical depiction and by the columns &quot;2&quot; to &quot;5+&quot; in the table. As noted above in the article on assumptions, for incomplete genomes (e.g. 50-70%) the contamination measure is going to be an underestimate. In other words, be wary of a genome that is 50% complete with 0% contamination - contamination is present, this tool just doesn't detect it.</p>
+<p>The fraction of marker genes that occur as duplicates is used to calculate the &quot;Contamination&quot; percentage in the table. Missing clade-specific phylogenetic markers are shown in gray in the plot and by the column &quot;0&quot; in the table, with the &quot;Completeness&quot; value obtained by the proportion of the missing markers to the total number of markers used. The presence of one and exactly one copy of a marker is indicated with a green bar in the plot and the tally in the &quot;1&quot; column of the table. Ideally, a perfect Genome will have all markers in exactly one copy assuming that the derivation of the markers was itself perfectly done and biology was perfectly predictable. Be sure to inspect results to ensure they are accurate. For example, for lineages not well-characterized in the CheckM database, the CheckM program will produce dubious results because marker gene assumptions are broken.</p>
+<p>Files: Plots and data output files are produced by the CheckM lineage workflow. Additionally, a Tab-delimited TSV table in zipped text format that contains the CheckM assessment summary (matching that in the HTML CheckM Table report) for each bin is available.</p>
+<p>Let's run CheckM2. Quick note that this will take 20 minutes to run on a node with 24G of memory and 24 cores.</p>
+<pre class="hljs"><code><div>$ interactive -t 04:30:00 -m 24G -a bh_class  # be sure to get a node with enough memory
+$ export MAXBIN=/xdisk/bhurwitz/bh_class/YOUR_NETID/exercises/09_metag_binning/assembly_JP4D
+$ export CHECKM=/xdisk/bhurwitz/bh_class/YOUR_NETID/exercises/10_assembly_qc/assembly_JP4D_v2
+$ cd $MAXBIN
+$ apptainer run /contrib/singularity/shared/bhurwitz/checkm2\:1.0.1--pyh7cba7a3_0.sif checkm2 \
+       predict --threads 24 \
+       --input $MAXBIN \
+       -x fasta \
+       --output-directory $CHECKM \
+       --database_path /groups/bhurwitz/databases/checkm2_database/uniref100.KO.1.dmnd
+      
+</div></code></pre>
+<p>Let's take a look at quality_report.tsv</p>
+<pre class="hljs"><code><div>$ cd $CHECKM
+$ cat quality_report.tsv 
+</div></code></pre>
+<pre class="hljs"><code><div>Name	Completeness	Contamination	Completeness_Model_Used	Translation_Table_Used	Coding_Density	Contig_N50 Average_Gene_Length	Genome_Size	GC_Content	Total_Coding_Sequences	Additional_Notes
+assembly_JP4D.001	67.67	13.37	Gradient Boost (General Model)	11	0.891	1670	218.7291812456263	3141556	0.55	4287	None
+assembly_JP4D.002	100.0	38.39	Gradient Boost (General Model)	11	0.894	2655	234.30446360639107	6186438	0.67	7886	None
+assembly_JP4D.003	55.4	9.48	Gradient Boost (General Model)	11	0.885	1594	219.36060401171963	3289972	0.48	4437	None
+assembly_JP4D.004	93.19	27.36	Gradient Boost (General Model)	11  0.868	2114	236.2645207439199	5692657	0.39	6990	None
+
+</div></code></pre>
+<p>Ideally, we would like to get only one contig per bin, with a length similar to the genome size of the corresponding taxa. Since this scenario is difficult to obtain, we can use parameters showing how good our assembly is. Here are some of the most common metrics:</p>
+<p>Contig_N50:
+If we arrange our contigs by size, from larger to smaller, and divide the whole sequence in half, N50 is the size of the smallest contig in the half that has the larger contigs; and L50 is the number of contigs in this half of the sequence. So we want big N50 and small L50 values for our genomes. Read <a href="https://www.molecularecologist.com/2017/03/29/whats-n50/">What is N50?</a>.</p>
+<p>Contamination:
+The question of how much contamination we can tolerate and how much completeness we need depends on the scientific question being tackled, Check out the <a href="https://genome.cshlp.org/content/25/7/1043">CheckM</a> paper for more details.</p>
+<blockquote>
+<h2 id="discussion-the-quality-of-mags">Discussion: The quality of MAGs</h2>
+<p>Can we trust the quality of our bins only with the given information?
+What else do we want to know about our MAGs to use for further analysis confidently?</p>
+</blockquote>
+<details>
+  <summary markdown="span">Solution</summary>
+  <ul> 
+<p><strong>completeness</strong> tells you how complete each genome is in the bin is. If the MAG is incomplete and highly fragmented, then you likely did not find that genome in your sample.</p>
+<p><strong>Genome size</strong> and <strong>GC content</strong> are like genomic fingerprints of taxa, so you can know if you have the taxa you are looking for. Since we are working with the mixed genomes of a community when we try to separate them with binning.</p>
+<p><strong>contamination</strong> to
+We want to know if we were able to separate each genome correctly. Contiamination tells use if we have more than one genome in our bin.</p>
+</details>
+<br>
+<p>You will also notice that CheckM2 provides you with two other output directories:</p>
+<p>diamond_output: Protein annotations from the program Diamond</p>
+<p>protein_files: Genes detected on your contigs from the program prodigal</p>
+<p>CheckM2 uses these outputs to determine how novel each of the genomes are in the bins based on known protein annotations.</p>
+
+</body>
+</html>
