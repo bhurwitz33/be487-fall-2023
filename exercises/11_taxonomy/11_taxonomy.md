@@ -1,19 +1,19 @@
----
-title: "Taxonomic Assignment"
-teaching: 30
-exercises: 15
-questions:
-- "How can I know to which taxa my sequences belong?"
-objectives:
-- "Understand how taxonomic assignment works."
-- "Use Kraken to assign taxonomies to reads and contigs."
-- "Visualize taxonomic assignations in graphics."
 
-keypoints:
-- "A database with previously gathered knowledge (genomes) is needed for taxonomic assignment."
-- "Taxonomic assignment can be done using Kraken."
-- "Krona and Pavian are web-based tools to visualize the assigned taxa."
----
+# Taxonomic Assignment
+
+### Questions:
+- How can I know to which taxa my sequences belong?
+
+### Objectives:
+- Understand how taxonomic assignment works.
+- Use Kraken to assign taxonomies to reads and contigs.
+- Visualize taxonomic assignations in graphics.
+
+### Keypoints:
+- A database with previously gathered knowledge (genomes) is needed for taxonomic assignment.
+- Taxonomic assignment can be done using Kraken.
+- Krona and Pavian are web-based tools to visualize the assigned taxa.
+
 ## What is a taxonomic assignment?
 
 A taxonomic assignment is a process of assigning an Operational Taxonomic
@@ -37,8 +37,8 @@ breaks the query sequence (reads/contigs) into pieces of length k,
 looks for where these are placed within the tree and make the 
 classification with the most probable position.  
 
-<a href="{{ page.root }}/fig/03-06-01.png">
-  <img src="{{ page.root }}/fig/03-06-01.png" alt="Diagram of a taxonomic tree with four levels of nodes, some nodes have a number from 1 to 3, and some do not. From the most recent nodes, one has a three, and its parent nodes do not have numbers. This node with a three is selected." />
+<a href="../fig/03-06-01.png">
+  <img src="../fig/03-06-01.png" alt="Diagram of a taxonomic tree with four levels of nodes, some nodes have a number from 1 to 3, and some do not. From the most recent nodes, one has a three, and its parent nodes do not have numbers. This node with a three is selected." />
 </a>
 <em> Figure 1. Lowest common ancestor assignment example.<em/>
   
@@ -50,16 +50,17 @@ When you do the taxonomic assignment of metagenomes, a key result is the abundan
 abundances along the metagenomics workflow, shown in the figure, and that because of them, we may not be obtaining the actual abundance of 
 the organisms in the sample.
 
-<a href="{{ page.root }}/fig/03-06-02.png">
-  <img src="{{ page.root }}/fig/03-06-02.png" alt="Flow diagram that shows how the initial composition of 33% for each of the three taxa in the sample ends up being 4%, 72%, and 24% after the biases imposed by the extraction, PCR, sequencing and bioinformatics steps." />
+<a href="../fig/03-06-02.png">
+  <img src="../fig/03-06-02.png" alt="Flow diagram that shows how the initial composition of 33% for each of the three taxa in the sample ends up being 4%, 72%, and 24% after the biases imposed by the extraction, PCR, sequencing and bioinformatics steps." />
 </a>
 <em>Figure 2. Abundance biases during a metagenomics protocol. <em/>
 
-  
+
+<br> 
+
 > ## Discussion: Taxonomic level of assignment
 >
 > What do you think is harder to assign, a species (like _E. coli_) or a phylum (like Proteobacteria)?
-{: .discussion}
   
 ## Using Kraken 2
 
