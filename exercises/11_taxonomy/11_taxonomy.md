@@ -69,12 +69,12 @@ a taxonomic classification system using exact k-mer matches to achieve
 high accuracy and fast classification speeds. `kraken2` is already installed in the **metagenomics
 environment**, let us have a look at `kraken2` help.  
  
-~~~  
+```  
 $ kraken2  --help
-~~~ 
+``` 
 {: .language-bash}
 
-~~~
+```
 Need to specify input filenames!
 Usage: kraken2 [options] <filename(s)>
 
@@ -116,7 +116,7 @@ Options:
 If none of the *-compressed flags are specified, and the filename provided
 is a regular file, automatic format detection is attempted.
 
-~~~  
+```  
 {: .output}
 
 In the help, we can see that in addition to our input files, we also need a database to compare them.  The database you use will determine the result you get for your data. Imagine you are searching for a recently discovered lineage that is not part of the available databases. Would you find it?
@@ -125,16 +125,16 @@ There are [several databases](http://ccb.jhu.edu/software/kraken2/downloads.shtm
 compatible to be used with kraken2 in the taxonomical assignment process. 
 
 Unfortunately, even the smallest Kraken database Minikraken, which needs 8Gb of free RAM, is not small enough to be run by the machines we are using, so **we will not be able to run `kraken2`**. We can check our available RAM with `free -h`to be sure of this.
-~~~
+```
 $ free -h
-~~~
+```
 {: .language-bash}
 
-~~~
+```
               total        used        free      shared  buff/cache   available
 Mem:           3.9G        272M        3.3G         48M        251M        3.3G
 Swap:            0B          0B          0B
-~~~
+```
 {: .output}
   
 ### Taxonomic assignment of metagenomic reads
@@ -146,22 +146,22 @@ In this case, we would use FASTQ files as inputs, which would be
   
 To run kraken2, we would use a command like this:  
 **No need to run this**
-~~~
+```
 $ mkdir TAXONOMY_READS
 $ kraken2 --db kraken-db --threads 8 --paired JP4D_R1.trim.fastq.gz JP4D_R2.trim.fastq.gz --output TAXONOMY_READS/JP4D.kraken --report TAXONOMY_READS/JP4D.report
-~~~
+```
 {: .language-bash}
 
 Since we cannot run `kraken2` here, we precomputed its results in a server, i.e., a more powerful machine. 
 In the server we ran `kraken2` and obtained`JP4D-kraken.kraken` and `JP4D.report`.
 
 Let us look at the precomputed outputs of `kraken2` for our JP4D reads.  
-~~~
+```
 head ~/dc_workshop/taxonomy/JP4D.kraken  
-~~~
+```
 {: .language-bash}
 
-~~~
+```
 U	MISEQ-LAB244-W7:156:000000000-A80CV:1:1101:19691:2037	0	250|251	0:216 |:| 0:217
 U	MISEQ-LAB244-W7:156:000000000-A80CV:1:1101:14127:2052	0	250|238	0:216 |:| 0:204
 U	MISEQ-LAB244-W7:156:000000000-A80CV:1:1101:14766:2063	0	251|251	0:217 |:| 0:217
@@ -172,7 +172,7 @@ U	MISEQ-LAB244-W7:156:000000000-A80CV:1:1101:17552:2088	0	251|249	0:217 |:| 0:21
 U	MISEQ-LAB244-W7:156:000000000-A80CV:1:1101:14217:2104	0	251|227	0:217 |:| 0:193
 C	MISEQ-LAB244-W7:156:000000000-A80CV:1:1101:15110:2108	2109625	136|169	0:51 31989:5 2109625:7 0:39 |:| 0:5 74033:2 31989:5 1077935:1 31989:7 0:7 60890:2 0:105 2109625:1
 C	MISEQ-LAB244-W7:156:000000000-A80CV:1:1101:19558:2111	119045	251|133	0:18 1224:9 2:5 119045:4 0:181 |:| 0:99
-~~~
+```
 {: .output}
 
   This information may need to be clarified. Let us take out our cheatsheet to understand some of its components:
@@ -194,11 +194,11 @@ C	MISEQ-LAB244-W7:156:000000000-A80CV:1:1101:19558:2111	119045	251|133	0:18 1224
 
 The Kraken file could be more readable. So let us look at the report file:
   
-~~~
+```
 head ~/dc_workshop/taxonomy/JP4D.report
-~~~
+```
 {: .language-bash} 
-~~~
+```
  78.13	587119	587119	U	0	unclassified
  21.87	164308	1166	R	1	root
  21.64	162584	0	R1	131567	  cellular organisms
@@ -209,7 +209,7 @@ head ~/dc_workshop/taxonomy/JP4D.report
   7.66	57527	6551	F	31989	            Rhodobacteraceae
   1.23	9235	420	G	1060	              Rhodobacter
   0.76	5733	4446	S	1063	                Rhodobacter sphaeroides
-~~~
+```
 {: .output}  
 
 |------------------------------+------------------------------------------------------------------------------|   
@@ -235,29 +235,29 @@ We now have the taxonomic identity of the reads of the whole metagenome, but we 
 For this, the `kraken2` is a little bit different; here, we can look at the command for the `JP4D.001.fasta` MAG:
 
 **No need to run this**
-~~~
+```
 $ mkdir TAXONOMY_MAG
 $ kraken2 --db kraken-db --threads 12 -input JP4D.001.fasta --output TAXONOMY_MAG/JP4D.001.kraken --report TAXONOMY_MAG/JP4D.001.report
-~~~
+```
 {: .language-bash}
 
 The results of this are pre-computed in the `~/dc_workshop/taxonomy/mags_taxonomy/` directory
-~~~
+```
 $ cd ~/dc_workshop/taxonomy/mags_taxonomy
 $ ls
-~~~
+```
 {: .bash} 
-~~~
+```
 JP4D.001.kraken
 JP4D.001.report
-~~~
+```
 {: .output} 
 
-~~~
+```
 more ~/dc_workshop/taxonomy/mags_taxonomy/JP4D.001.report
-~~~
+```
 {: .bash} 
-~~~
+```
  50.96	955	955	U	0	unclassified
  49.04	919	1	R	1	root
  48.83	915	0	R1	131567	  cellular organisms
@@ -271,7 +271,7 @@ more ~/dc_workshop/taxonomy/mags_taxonomy/JP4D.001.report
   .
   .
   .
-~~~
+```
 {: .output}  
 
 Looking at the report, we can see that half of the contigs 
@@ -281,7 +281,7 @@ have been assigned an OTU. This result is weird because we expected only one gen
 To exemplify how a report of a complete and not contaminated 
 MAG should look like this; let us look at the report of this MAG from 
 another study:
-~~~
+```
 100.00	108	0	R	1	root
 100.00	108	0	R1	131567	  cellular organisms
 100.00	108	0	D	2	    Bacteria
@@ -291,7 +291,7 @@ another study:
 100.00	108	0	F	41294	            Bradyrhizobiaceae
 100.00	108	0	G	374	              Bradyrhizobium
 100.00	108	108	S	2057741	                Bradyrhizobium sp. SK17
-~~~
+```
 {: .output} 
 
 ## Visualization of taxonomic assignment results  
@@ -306,38 +306,38 @@ our taxonomy directory, which contains the pre-calculated Kraken outputs.
 
 ### Krona  
 With Krona, we will explore the taxonomy of the JP4D.001 MAG.
-~~~
+```
 $ cd ~/dc_workshop/taxonomy/mags_taxonomy
-~~~
+```
 {: .language-bash}  
 
 Krona is called with the `ktImportTaxonomy` command that needs an input and an output file.  
 In our case, we will create the input file with columns three and four from `JP4D.001.kraken` file.     
-~~~
+```
 $ cut -f2,3 JP4D.001.kraken > JP4D.001.krona.input
-~~~
+```
 {: .language-bash}  
 
 Now we call Krona in our `JP4D.001.krona.input` file and save results in `JP4D.001.krona.out.html`.  
-~~~
+```
 $ ktImportTaxonomy JP4D.001.krona.input -o JP4D.001.krona.out.html
-~~~
+```
 {: .language-bash}  
 
-~~~
+```
 Loading taxonomy...
 Importing JP4D.001.krona.input...
    [ WARNING ]  The following taxonomy IDs were not found in the local database and were set to root
                 (if they were recently added to NCBI, use updateTaxonomy.sh to update the local
                 database): 1804984 2109625 2259134
-~~~
+```
 {: .output}  
 
 And finally, open another terminal on your local computer, download the 
 Krona output and open it on a browser.
-~~~
+```
 $ scp dcuser@ec2-3-235-238-92.compute-1.amazonaws.com:~/dc_workshop/taxonomy/JP4D.001.krona.out.html . 
-~~~
+```
 {: .language-bash}  
 You will see a page like this:
 
@@ -370,9 +370,9 @@ First, we need to download the files needed as inputs in Pavian; this time, we w
 `JC1A.report` and `JP4D.report`.  
 These files correspond to our Kraken reports. Again in our local 
 machine, let us use the `scp` command.  
-~~~
+```
 $ scp dcuser@ec2-3-235-238-92.compute-1.amazonaws.com:~/dc_workshop/taxonomy/*report . 
-~~~
+```
 {: .language-bash}
 
 We go to the [Pavian demo WebSite](https://fbreitwieser.shinyapps.io/pavian/), 
