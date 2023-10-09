@@ -2,7 +2,7 @@
 # Taxonomic Assignment
 
 ### Questions:
-- How can I know to which taxa my sequences belong?
+- How can I know to which taxa my sequences belong to?
 
 ### Objectives:
 - Understand how taxonomic assignment works.
@@ -18,14 +18,16 @@
 
 A taxonomic assignment is a process of assigning an Operational Taxonomic
 Unit (OTU, that is, groups of related individuals) to sequences that can be 
-reads or contigs. Sequences are compared against a database constructed using complete genomes. When a sequence finds a good enough match in the database, it is assigned to the corresponding OTU. The comparison can be made in different ways.  
+reads or contigs. Sequences are compared against a database constructed using complete genomes. 
+When a sequence finds a good enough match in the database, it is assigned to the corresponding OTU. 
+The comparison can be made in different ways.  
 
 ### Strategies for taxonomic assignment  
 
 There are many programs for doing taxonomic mapping, 
 and almost all of them follow one of the following strategies:  
 
-1. BLAST: Using BLAST or DIAMOND, these mappers search for the most likely hit 
+1. Homology: Using BLAST or DIAMOND, these mappers search for the most likely hit 
 for each sequence within a database of genomes (i.e., mapping). This strategy is slow.    
   
 2. Markers: They look for markers of a database made a priori in the sequences 
@@ -70,9 +72,9 @@ high accuracy and fast classification speeds. `kraken2` is already installed in 
 environment**, let us have a look at `kraken2` help.  
  
 ```  
-$ kraken2  --help
+$ apptainer run /contrib/singularity/shared/bhurwitz/kraken2:2.1.3--pl5321hdcf5f25_0.sif kraken2  --help
 ``` 
-{: .language-bash}
+
 
 ```
 Need to specify input filenames!
@@ -117,40 +119,37 @@ If none of the *-compressed flags are specified, and the filename provided
 is a regular file, automatic format detection is attempted.
 
 ```  
-{: .output}
 
 In the help, we can see that in addition to our input files, we also need a database to compare them.  The database you use will determine the result you get for your data. Imagine you are searching for a recently discovered lineage that is not part of the available databases. Would you find it?
 
-There are [several databases](http://ccb.jhu.edu/software/kraken2/downloads.shtml) 
+There are [several databases](https://benlangmead.github.io/aws-indexes/k2) 
 compatible to be used with kraken2 in the taxonomical assignment process. 
 
-Unfortunately, even the smallest Kraken database Minikraken, which needs 8Gb of free RAM, is not small enough to be run by the machines we are using, so **we will not be able to run `kraken2`**. We can check our available RAM with `free -h`to be sure of this.
-```
-$ free -h
-```
-{: .language-bash}
-
-```
-              total        used        free      shared  buff/cache   available
-Mem:           3.9G        272M        3.3G         48M        251M        3.3G
-Swap:            0B          0B          0B
-```
-{: .output}
+We will be using the PlusPF	Standard plus Refeq protozoa & fungi from 2023-06-05 which is located in /groups/bhurwitz/databases/kraken2/k2_pluspf_20230605
   
 ### Taxonomic assignment of metagenomic reads
 
-As we have learned, taxonomic assignments can be attempted before the assembly. 
-In this case, we would use FASTQ files as inputs, which would be 
+As we have learned, taxonomic assignments can be done on the read-level before the assembly.
+
+We will run this step in our homework, but this compute time / load is too high for our in-class exercise.
+
+In this case, we can use FASTQ files as inputs, which would be 
 `JP4D_R1.trim.fastq.gz` and `JP4D_R2.trim.fastq.gz`. And the outputs would be two files: the report
 `JP4D.report` and the kraken file `JP4D.kraken`.  
   
-To run kraken2, we would use a command like this:  
-**No need to run this**
+To run kraken2, we will use the following command
+
 ```
+$ interactive -t 04:30:00 -m 24G -a bh_class
 $ mkdir TAXONOMY_READS
-$ kraken2 --db kraken-db --threads 8 --paired JP4D_R1.trim.fastq.gz JP4D_R2.trim.fastq.gz --output TAXONOMY_READS/JP4D.kraken --report TAXONOMY_READS/JP4D.report
+$ apptainer run /contrib/singularity/shared/bhurwitz/kraken2:2.1.3--pl5321hdcf5f25_0.sif kraken2 --db  --threads 8 --paired JP4D_R1.trim.fastq.gz JP4D_R2.trim.fastq.gz --output TAXONOMY_READS/JP4D.kraken --report TAXONOMY_READS/JP4D.report
+$ DB_DIR="/groups/bhurwitz/databases/kraken2/k2_pluspf_20230605"
+$ WORK_DIR=/xdisk/bhurwitz/bh_class/$netid/assignments/11_taxonomy
+$ apptainer run ${KRAKEN2} kraken2 --db ${DB_DIR} --paired \
+  --classified-out ${OUTDIR}/cseqs#.fq --output ${OUTDIR}/kraken_results.txt \
+  --report ${OUTDIR}/kraken_report.txt --use-names --threads 24 \
+  ${PAIR1} ${PAIR2}
 ```
-{: .language-bash}
 
 Since we cannot run `kraken2` here, we precomputed its results in a server, i.e., a more powerful machine. 
 In the server we ran `kraken2` and obtained`JP4D-kraken.kraken` and `JP4D.report`.
