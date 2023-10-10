@@ -48,9 +48,7 @@ classification with the most probable position.
   
 When you do the taxonomic assignment of metagenomes, a key result is the abundance of each taxon or OTU in your sample. 
  The absolute abundance of a taxon is the number of sequences (reads or contigs, depending on what you did) assigned to it. 
- Moreover, its relative abundance is the proportion of sequences assigned to it. It is essential to be aware of the many biases that can skew the 
-abundances along the metagenomics workflow, shown in the figure, and that because of them, we may not be obtaining the actual abundance of 
-the organisms in the sample.
+ Moreover, its relative abundance is the proportion of sequences assigned to it. It is essential to be aware of the many biases that can skew the abundances along the metagenomics workflow, shown in the figure, and that because of them, we may not be obtaining the actual abundance of the organisms in the sample.
 
 <a href="../fig/03-06-02.png">
   <img src="../fig/03-06-02.png" alt="Flow diagram that shows how the initial composition of 33% for each of the three taxa in the sample ends up being 4%, 72%, and 24% after the biases imposed by the extraction, PCR, sequencing and bioinformatics steps." />
@@ -68,13 +66,11 @@ the organisms in the sample.
 
 [Kraken 2](https://ccb.jhu.edu/software/kraken2/) is the newest version of Kraken, 
 a taxonomic classification system using exact k-mer matches to achieve 
-high accuracy and fast classification speeds. `kraken2` is already installed in the **metagenomics
-environment**, let us have a look at `kraken2` help.  
+high accuracy and fast classification speeds. Let's looks at the help menu for kraken2:
  
 ```  
 $ apptainer run /contrib/singularity/shared/bhurwitz/kraken2:2.1.3--pl5321hdcf5f25_0.sif kraken2  --help
 ``` 
-
 
 ```
 Need to specify input filenames!
@@ -125,40 +121,35 @@ In the help, we can see that in addition to our input files, we also need a data
 There are [several databases](https://benlangmead.github.io/aws-indexes/k2) 
 compatible to be used with kraken2 in the taxonomical assignment process. 
 
-We will be using the PlusPF	Standard plus Refeq protozoa & fungi from 2023-06-05 which is located in /groups/bhurwitz/databases/kraken2/k2_pluspf_20230605
+We will be using the PlusPF	Standard plus Refeq protozoa & fungi from 2023-06-05 which is located in /groups/bhurwitz/databases/kraken2/k2_pluspf_20230605 for our analyses.
   
 ### Taxonomic assignment of metagenomic reads
 
-As we have learned, taxonomic assignments can be done on the read-level before the assembly.
+Taxonomic assignments can either be done on the read-level before the assembly, or on the contigs after assembly.
 
-We will run this step in our homework, but this compute time / load is too high for our in-class exercise.
+We will run this step in our homework, but this compute time / load is too high for our in-class exercise. Instead, we will use a pre-computed file with the kraken output. 
 
-In this case, we can use FASTQ files as inputs, which would be 
-`JP4D_R1.trim.fastq.gz` and `JP4D_R2.trim.fastq.gz`. And the outputs would be two files: the report
-`JP4D.report` and the kraken file `JP4D.kraken`.  
+In this case, we can use FASTQ files as inputs, which would be: 
+`JP4D_R1.trim.fastq.gz` and `JP4D_R2.trim.fastq.gz`. And the outputs would be two files: the report `JP4D.report` and the kraken file `JP4D.kraken`.  
   
-To run kraken2, we will use the following command
+To run kraken2, we will use a command like this in the homework: 
+
+*** No need to run this command, it is just provided as an example ***
 
 ```
-$ interactive -t 04:30:00 -m 24G -a bh_class
-$ mkdir TAXONOMY_READS
-$ apptainer run /contrib/singularity/shared/bhurwitz/kraken2:2.1.3--pl5321hdcf5f25_0.sif kraken2 --db  --threads 8 --paired JP4D_R1.trim.fastq.gz JP4D_R2.trim.fastq.gz --output TAXONOMY_READS/JP4D.kraken --report TAXONOMY_READS/JP4D.report
-$ DB_DIR="/groups/bhurwitz/databases/kraken2/k2_pluspf_20230605"
-$ WORK_DIR=/xdisk/bhurwitz/bh_class/$netid/assignments/11_taxonomy
 $ apptainer run ${KRAKEN2} kraken2 --db ${DB_DIR} --paired \
   --classified-out ${OUTDIR}/cseqs#.fq --output ${OUTDIR}/kraken_results.txt \
   --report ${OUTDIR}/kraken_report.txt --use-names --threads 24 \
-  ${PAIR1} ${PAIR2}
+  JP4D_R1.trim.fastq.gz JP4D_R2.trim.fastq.gz
 ```
 
-Since we cannot run `kraken2` here, we precomputed its results in a server, i.e., a more powerful machine. 
-In the server we ran `kraken2` and obtained`JP4D-kraken.kraken` and `JP4D.report`.
+The files from the pre-computed output are `JP4D.kraken` and `JP4D.report`.
 
-Let us look at the precomputed outputs of `kraken2` for our JP4D reads.  
+Let us look at the precomputed outputs for `kraken2` for our JP4D reads.
+
 ```
-head ~/dc_workshop/taxonomy/JP4D.kraken  
+head /xdisk/bhurwitz/bh_class/YOUR_NETID/exercises/11_taxonomy/JP4D.kraken  
 ```
-{: .language-bash}
 
 ```
 U	MISEQ-LAB244-W7:156:000000000-A80CV:1:1101:19691:2037	0	250|251	0:216 |:| 0:217
@@ -172,9 +163,8 @@ U	MISEQ-LAB244-W7:156:000000000-A80CV:1:1101:14217:2104	0	251|227	0:217 |:| 0:19
 C	MISEQ-LAB244-W7:156:000000000-A80CV:1:1101:15110:2108	2109625	136|169	0:51 31989:5 2109625:7 0:39 |:| 0:5 74033:2 31989:5 1077935:1 31989:7 0:7 60890:2 0:105 2109625:1
 C	MISEQ-LAB244-W7:156:000000000-A80CV:1:1101:19558:2111	119045	251|133	0:18 1224:9 2:5 119045:4 0:181 |:| 0:99
 ```
-{: .output}
 
-  This information may need to be clarified. Let us take out our cheatsheet to understand some of its components:
+This information may need to be clarified. Let us take out our cheatsheet to understand some of its components:
 
 
 |------------------------------+------------------------------------------------------------------------------|  
@@ -191,12 +181,13 @@ C	MISEQ-LAB244-W7:156:000000000-A80CV:1:1101:19558:2111	119045	251|133	0:18 1224
 |  0:28 350054:5 1224:2 0:1 2:5 0:77 2219696:5 0:93 379:4 0:82|kmers hit to a taxonomic ID *e.g.,* tax ID 350054 has five hits, tax ID 1224 has two hits, etc. |   
 |-------------------+-----------------------------------------------------------------------------------------|  
 
-The Kraken file could be more readable. So let us look at the report file:
+The Kraken file is more readable. So let us look at the report file:
   
 ```
-head ~/dc_workshop/taxonomy/JP4D.report
+head /xdisk/bhurwitz/bh_class/YOUR_NETID/exercises/11_taxonomy/JP4D.report
 ```
-{: .language-bash} 
+
+
 ```
  78.13	587119	587119	U	0	unclassified
  21.87	164308	1166	R	1	root
@@ -209,7 +200,6 @@ head ~/dc_workshop/taxonomy/JP4D.report
   1.23	9235	420	G	1060	              Rhodobacter
   0.76	5733	4446	S	1063	                Rhodobacter sphaeroides
 ```
-{: .output}  
 
 |------------------------------+------------------------------------------------------------------------------|   
 | Column example  |                              Description                                     |    
@@ -229,33 +219,35 @@ head ~/dc_workshop/taxonomy/JP4D.report
   
 ### Taxonomic assignment of the contigs of a MAG
  
-We now have the taxonomic identity of the reads of the whole metagenome, but we need to know to which taxon our MAGs correspond. For this, we have to make the taxonomic assignment with their contigs instead of its reads because we do not have the reads corresponding to a MAG separated from the reads of the entire sample. 
+We now have the taxonomic identity of the reads of the whole metagenome, but we need to know to which taxon our MAGs correspond to. For this, we have to make the taxonomic assignment with the contigs instead of the reads because we do not have the reads corresponding to a MAG separated from the reads of the entire sample. 
 
 For this, the `kraken2` is a little bit different; here, we can look at the command for the `JP4D.001.fasta` MAG:
 
-**No need to run this**
-```
-$ mkdir TAXONOMY_MAG
-$ kraken2 --db kraken-db --threads 12 -input JP4D.001.fasta --output TAXONOMY_MAG/JP4D.001.kraken --report TAXONOMY_MAG/JP4D.001.report
-```
-{: .language-bash}
+*** No need to run this command it is just provided as an example ***
 
-The results of this are pre-computed in the `~/dc_workshop/taxonomy/mags_taxonomy/` directory
 ```
-$ cd ~/dc_workshop/taxonomy/mags_taxonomy
+$ apptainer run ${KRAKEN2} kraken2 --db ${DB_DIR} \
+  --classified-out ${OUTDIR}/c_contigs.fa --output ${OUTDIR}/kraken_results.txt \
+  --report ${OUTDIR}/kraken_report.txt --use-names --threads 24 \
+  JP4D.001.fasta
+```
+
+The results of this are pre-computed in the `/xdisk/bhurwitz/bh_class/YOUR_NETID/exercises/11_taxonomy/mags_taxonomy/` directory
+
+```
+$ cd /xdisk/bhurwitz/bh_class/YOUR_NETID/exercises/11_taxonomy/mags_taxonomy/
 $ ls
 ```
-{: .bash} 
+
 ```
 JP4D.001.kraken
 JP4D.001.report
 ```
-{: .output} 
 
 ```
-more ~/dc_workshop/taxonomy/mags_taxonomy/JP4D.001.report
+$ more JP4D.001.report
 ```
-{: .bash} 
+
 ```
  50.96	955	955	U	0	unclassified
  49.04	919	1	R	1	root
@@ -271,15 +263,14 @@ more ~/dc_workshop/taxonomy/mags_taxonomy/JP4D.001.report
   .
   .
 ```
-{: .output}  
 
 Looking at the report, we can see that half of the contigs 
 are unclassified and that a tiny proportion of contigs 
 have been assigned an OTU. This result is weird because we expected only one genome in the bin.
   
-To exemplify how a report of a complete and not contaminated 
-MAG should look like this; let us look at the report of this MAG from 
-another study:
+To exemplify how a report of a complete and uncontaminated 
+MAG should look like, let's look at the report of this MAG from another study:
+
 ```
 100.00	108	0	R	1	root
 100.00	108	0	R1	131567	  cellular organisms
@@ -291,57 +282,58 @@ another study:
 100.00	108	0	G	374	              Bradyrhizobium
 100.00	108	108	S	2057741	                Bradyrhizobium sp. SK17
 ```
-{: .output} 
 
 ## Visualization of taxonomic assignment results  
   
-After we have the taxonomy assignation, what follows is some 
-visualization of our results. 
+After we have the taxonomy assignment, we can visualize our results using Krona:
+
+
 [Krona](https://github.com/marbl/Krona/wiki) is a hierarchical 
 data visualization software. Krona allows data to be explored with zooming 
 and multi-layered pie charts and supports several bioinformatics 
-tools and raw data formats. To use Krona in our results, let us first go into 
+tools and raw data formats. To use Krona in our results, let's first go into 
 our taxonomy directory, which contains the pre-calculated Kraken outputs.  
 
 ### Krona  
 With Krona, we will explore the taxonomy of the JP4D.001 MAG.
+
 ```
-$ cd ~/dc_workshop/taxonomy/mags_taxonomy
+$ cd /xdisk/bhurwitz/bh_class/YOUR_NETID/exercises/11_taxonomy/mags_taxonomy
 ```
-{: .language-bash}  
 
 Krona is called with the `ktImportTaxonomy` command that needs an input and an output file.  
-In our case, we will create the input file with columns three and four from `JP4D.001.kraken` file.     
+In our case, we will create the input file with columns three and four from `JP4D.001.kraken` file.
+
 ```
 $ cut -f2,3 JP4D.001.kraken > JP4D.001.krona.input
 ```
-{: .language-bash}  
 
-Now we call Krona in our `JP4D.001.krona.input` file and save results in `JP4D.001.krona.out.html`.  
-```
-$ ktImportTaxonomy JP4D.001.krona.input -o JP4D.001.krona.out.html
-```
-{: .language-bash}  
+Now we call Krona in our `JP4D.001.krona.input` file and save results in `JP4D.001.krona.out.html`. 
 
 ```
+$ /contrib/singularity/shared/bhurwitz/krona:2.8.1--pl5321hdfd78af_1.sif ktImportTaxonomy -q 2 4D.001.kraken -tax /groups/bhurwitz/databases/krona/KronaTools-2.8.1/taxonomy -o KronaReport.html
+```
+
+```
+   [ WARNING ]  Score column already in use; not reading scores.
 Loading taxonomy...
-Importing JP4D.001.krona.input...
-   [ WARNING ]  The following taxonomy IDs were not found in the local database and were set to root
-                (if they were recently added to NCBI, use updateTaxonomy.sh to update the local
-                database): 1804984 2109625 2259134
+Importing JP4D.001.kraken...
+   [ WARNING ]  The following taxonomy IDs were not found in the local database and were set to root (if they were recently added to NCBI, use updateTaxonomy.sh to update the
+                local database): 2259134 80870 1637841 2052837 1804984 2109625
+Writing KronaReport.html...
 ```
-{: .output}  
 
-And finally, open another terminal on your local computer, download the 
-Krona output and open it on a browser.
+No need to worry about the warnings.
+Now, you can open the file in your home directory from a Jupyter server on the HPC
+
 ```
-$ scp dcuser@ec2-3-235-238-92.compute-1.amazonaws.com:~/dc_workshop/taxonomy/JP4D.001.krona.out.html . 
+$ cp KronaReport.html ~ 
 ```
-{: .language-bash}  
+
 You will see a page like this:
 
-<a href="{{ page.root }}/fig/03-06-03.png">
-  <img src="{{ page.root }}/fig/03-06-03.png" alt="Krona displays a circled-shape bacterial taxonomy plot with abundance percentages of each taxon" />
+<a href="../fig/03-06-03.png">
+  <img src="../fig/03-06-03.png" alt="Krona displays a circled-shape bacterial taxonomy plot with abundance percentages of each taxon" />
 </a>
 
 > ## Exercise 1: Exploring Krona visualization
@@ -349,60 +341,57 @@ You will see a page like this:
 > What percentage of bacteria is represented by the genus _Paracoccus_?
 > 
 > Hint: A search box is in the window's top left corner. 
-> 
->> ## Solution
->> 2% of Bacteria corresponds to the genus Paracoccus in this sample.
->> In the top right of the window, we see little pie charts that change whenever we change the visualization
->> to expand certain taxa.   
->> 
-> {: .solution}
-{: .challenge} 
+
+<details>
+<summary markdown="span">Solution</summary>
+<ul> 
+2% of Bacteria corresponds to the genus Paracoccus in this sample.
+In the top right of the window, we see little pie charts that change whenever we change the visualization to expand certain taxa.   
+</details>
+
 
 ### Pavian
-Pavian is another visualization tool that allows comparison 
-between multiple samples. Pavian should be locally installed 
-and needs R and Shiny, but we can try the 
+Pavian is another visualization tool that allows comparison between multiple samples. Pavian should be locally installed and needs R and Shiny, but we can try the 
 [Pavian demo WebSite](https://fbreitwieser.shinyapps.io/pavian/) to visualize our results.  
 
-First, we need to download the files needed as inputs in Pavian; this time, we will visualize the 
-  assignment of the reads of both samples:
-`JC1A.report` and `JP4D.report`.  
-These files correspond to our Kraken reports. Again in our local 
-machine, let us use the `scp` command.  
-```
-$ scp dcuser@ec2-3-235-238-92.compute-1.amazonaws.com:~/dc_workshop/taxonomy/*report . 
-```
-{: .language-bash}
+First, we need to download the files needed as inputs in Pavian; this time, we will visualize the assignment of the reads of both samples:
+`JC1A.report` and `JP4D.report`. These files correspond to our Kraken reports.
 
-We go to the [Pavian demo WebSite](https://fbreitwieser.shinyapps.io/pavian/), 
-click on Browse, and choose our reports. You need to select both reports at the same time.
+First let's copy thes files to your home directory and download from the Jupyter server on the HPC to your local computers.
 
-<a href="{{ page.root }}/fig/03-06-04.png">
-  <img src="{{ page.root }}/fig/03-06-04.png" alt="Pavian website showing the upload of two reports" />
+```
+$ cp /xdisk/bhurwitz/bh_class/bonnie/exercises/11_taxonomy/*report ~ 
+```
+
+Now go to the [Pavian demo WebSite](https://fbreitwieser.shinyapps.io/pavian/), 
+click on Browse, and choose your reports. You need to select both reports at the same time.
+
+<a href="../fig/03-06-04.png">
+  <img src="../fig/03-06-04.png" alt="Pavian website showing the upload of two reports" />
 </a>
 
 We click on the Results Overview tab.
 
-<a href="{{ page.root }}/fig/03-06-05.png">
-  <img src="{{ page.root }}/fig/03-06-05.png" alt="Results Overview tab of the Pavian website where it shows the number of reads classified to several categories for the two samples" />
+<a href="../fig/03-06-05.png">
+  <img src="../fig/03-06-05.png" alt="Results Overview tab of the Pavian website where it shows the number of reads classified to several categories for the two samples" />
 </a>
 
 We click on the Sample tab.
 
-<a href="{{ page.root }}/fig/03-06-06.png">
-  <img src="{{ page.root }}/fig/03-06-06.png" alt="Sankey type visualization that shows the abundance of each taxonomic label in a tree-like manner" />
+<a href="../fig/03-06-06.png">
+  <img src="../fig/03-06-06.png" alt="Sankey type visualization that shows the abundance of each taxonomic label in a tree-like manner" />
 </a>
 
 We can look at the abundance of a specific taxon by clicking on it.
 
-<a href="{{ page.root }}/fig/03-06-07.png">
-  <img src="{{ page.root }}/fig/03-06-07.png" alt="A bar chart of the abundance of reads of the two samples, showing a segment for the read identified at the specific taxon and another segment for the number of reads identifies at children of the specified taxon" />
+<a href="../fig/03-06-07.png">
+  <img src="../fig/03-06-07.png" alt="A bar chart of the abundance of reads of the two samples, showing a segment for the read identified at the specific taxon and another segment for the number of reads identifies at children of the specified taxon" />
 </a>
 
 We can look at a comparison of both our samples in the Comparison tab. 
 
-<a href="{{ page.root }}/fig/03-06-08.png">
-  <img src="{{ page.root }}/fig/03-06-08.png" alt="A table of the same format as the Kraken report but for both samples at once." />
+<a href="../fig/03-06-08.png">
+  <img src="../fig/03-06-08.png" alt="A table of the same format as the Kraken report but for both samples at once." />
 </a>
 
 > ## Discussion: Unclassified reads
@@ -410,18 +399,17 @@ We can look at a comparison of both our samples in the Comparison tab.
 > As you can see, a percentage of our data could not be assigned to belong to a specific OTU.  
 > Which factors can affect the taxonomic assignation so that a read is unclassified?
 > 
->> ## Solution
->> 
->> **Unclassified reads** can be the result of different factors that can go from sequencing errors to problems with the algorithm being used
->> to generate the result. The widely used Next-generation sequencing (NGS) platforms, 
->> showed [average error rate of 0.24±0.06% per base](https://www.nature.com/articles/s41598-018-29325-6).
->> Besides the sequencing error, we need to consider the status of the database being used to perform the taxonomic assignation.  
->> All the characterized genomes obtained by different research groups are scattered in different repositories, pages, and banks 
->> in the cloud. Some are still unpublished. Incomplete databases can affect the performance of the taxonomic assignation. Imagine that 
->> the dominant OTU in your sample belongs to a lineage that has never been characterized and does not have a public genome available to 
->> be used as a template for the database. This possibility makes the assignation an impossible task and can promote the generation of false positives
->> because the algorithm will assign a different identity to all those reads.
-> {: .solution}
-{: .discussion}
-                             
-{% include links.md %}
+<details>
+<summary markdown="span">Solution</summary>
+<ul> 
+
+**Unclassified reads** can be the result of different factors that can go from sequencing errors to problems with the algorithm being used
+to generate the result. The widely used Next-generation sequencing (NGS) platforms, 
+showed [average error rate of 0.24±0.06% per base](https://www.nature.com/articles/s41598-018-29325-6).
+Besides the sequencing error, we need to consider the status of the database being used to perform the taxonomic assignation.  
+All the characterized genomes obtained by different research groups are scattered in different repositories, pages, and banks 
+in the cloud. Some are still unpublished. Incomplete databases can affect the performance of the taxonomic assignation. Imagine that 
+the dominant OTU in your sample belongs to a lineage that has never been characterized and does not have a public genome available to 
+be used as a template for the database. This possibility makes the assignation an impossible task and can promote the generation of false positives
+because the algorithm will assign a different identity to all those reads.
+</details>
