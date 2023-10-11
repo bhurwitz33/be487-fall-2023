@@ -1,28 +1,29 @@
 ---
-title: "R Data Types"
-teaching: 10
-exercises: 5
-questions:
-- "What types of data does the R language have?"
-objectives:
-- "Learn the types of data that we can manage in R."
-keypoints:
-- "R uses different types of data to store information."
+# "R Data Types"
+
+### Questions:
+- What types of data does the R language have?
+
+### Objectives:
+- Learn the types of data that we can manage in R.
+
+### Keypoints:
+- R uses different types of data to store information.
 ---
+
 ## Types of data
 
 We already used numbers to generate a result. But this is not the only type of data that RStudio 
 can manage. We can use the command `typeof()` to corroborate the data type of our object `addition`:
 
-~~~
+```
 > typeof(addition)
-~~~
-{: .language-r}
+```
 
-~~~
+
+```
 > [1] "double"
-~~~
-{: .output}
+```
 
 There are five types of data in RStudio:
 * Double
@@ -31,51 +32,51 @@ There are five types of data in RStudio:
 * Logical
 * Character
 
-~~~
+```
 > typeof(5L) #Integer type can contain only whole numbers followed by a capital L
-~~~
-{: .language-r}
-~~~
+```
+
+```
 [1] "integer"
-~~~
-{: .output}
+```
 
-~~~
+
+```
 > typeof(72+5i)
-~~~
-{: .language-r}
-~~~
+```
+
+```
 [1] "complex"
-~~~
-{: .output}
+```
 
-~~~
+
+```
 > addition == subtraction
-~~~
-{: .language-r}
-~~~
+```
+
+```
 [1] FALSE
-~~~
-{: .output}
+```
 
-~~~
+
+```
 > typeof(addition == subtraction)
-~~~
-{: .language-r}
-~~~
-[1] "logical"
-~~~
-{: .output}
+```
 
-~~~
+```
+[1] "logical"
+```
+
+
+```
 > result <- "4 and 3 are not the same on Earth. On Mars maybe... "
 > typeof(result)
-~~~
-{: .language-r}
-~~~
+```
+
+```
 [1] "character"
-~~~
-{: .output}
+```
+
 
 No matter how complicated our analysis can be, all data in R will belong to one of these
 five data types. Data types are important because we want to know "who is who, and 
@@ -85,48 +86,52 @@ the manipulation of diverse types of data together in what is called a **data-fr
 ## Data structures
 
 Besides the data types, there are different ways of organizing the data in R called *data structures*. The simple data structure is the *vector*, which is a sequence of data of the same type. We can create a vector with the function `c()`.
-~~~
+
+```
 > char_vector <- c("a", "a", "b", "b", "c", "c")
 > typeof(char_vector)
-~~~
-{: .language-r}
-~~~
+```
+
+```
 [1] "character"
-~~~
-{: .output}
+```
+
 
 A more complex data structure is the *factor*, which holds the names of categories (called levels) and a sequence of the occurrences of those categories.
+
 Here we can see how *factor* works:
-~~~
+
+```
 > char_factor <- as.factor(char_vector)
 > char_factor
-~~~
-{: .language-r}
-~~~
+```
+
+```
 [1] a a b b c c
 Levels: a b c
-~~~
-{: .output}
+```
+
 
 And here, we can ask for the structure of the object.
-~~~
+```
 > str(char_factor)
-~~~
-{: .language-r}
-~~~
+```
+
+```
 Factor w/ 3 levels "a","b","c": 1 1 2 2 3 3
-~~~
-{: .output}
+```
+
 
 Here, you see the levels of the factors and a sequence of numbers. Each number represents a level, and this sequence holds the information about which goes in which position. That is why we will get an "integer" if we ask about the type of data in the object.
-~~~
+
+```
 > typeof(char_factor)
-~~~
-{: .language-r}
-~~~
+```
+
+```
 [1] "integer"
-~~~
-{: .output}
+```
+
 
 When we are dealing with categorical data, factors are the way to go.
 
@@ -159,6 +164,5 @@ When we are dealing with categorical data, factors are the way to go.
 >> And each set of numbers with the letter 
 >> `i` of imaginary, indicates R that this is a set of 
 >> complex numbers.
-> {: .solution}
-{: .challenge} 
+
 
