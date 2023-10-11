@@ -239,7 +239,7 @@
    "outputs": [],
    "source": [
     "# Welcome back, let's see if the job is still running\n",
-    "!squeue --user=$netid"
+    "!squeue --job=YOUR_JOBID"
    ]
   },
   {
@@ -249,7 +249,7 @@
    "source": [
     "#### Let's check out the assembly stats from QUAST\n",
     "\n",
-    "You should see assembly statistics for both the megahit and metaspades assembly. Do the assemblies look similar?"
+    "You should see assembly statistics for both the megahit and metaspades assembly. Notice anything interesting?"
    ]
   },
   {
@@ -332,14 +332,21 @@
     "  mkdir $METASPADES_OUTDIR\n",
     "fi\n",
     "\n",
-    "MEGAHIT_CONTIGS=\"${MEGAHIT_DIR}/${SAMPLE_ID}/out_concoct/fasta_bins\"\n",
-    "METASPADES_CONTIGS=\"${METASPADES_DIR}/${SAMPLE_ID}/out_concoct/fasta_bins\"\n",
+    "### Note that all of the bins are in the MEGAHIT_DIR\n",
+    "### We are going to move these into directory by sample\n",
+    "mkdir ${MEGAHIT_DIR}/${SAMPLE_ID}\n",
+    "mkdir ${METASPADES_DIR}/${SAMPLE_ID}\n",
+    "mv ${MEGAHIT_DIR}/${SAMPLE_ID}*.fasta ${MEGAHIT_DIR}/${SAMPLE_ID}\n",
+    "mv ${METASPADES_DIR}/${SAMPLE_ID}*.fasta ${METASPADES_DIR}/${SAMPLE_ID}\n",
+    "\n",
+    "MEGAHIT_CONTIGS=\"${MEGAHIT_DIR}/${SAMPLE_ID}\"\n",
+    "METASPADES_CONTIGS=\"${METASPADES_DIR}/${SAMPLE_ID}\"\n",
     "\n",
     "### Run Megahit\n",
     "apptainer run /contrib/singularity/shared/bhurwitz/checkm2\\:1.0.1--pyh7cba7a3_0.sif checkm2 \\\n",
     "        predict --threads 24 \\\n",
     "        --input $MEGAHIT_CONTIGS \\\n",
-    "        -x fa \\\n",
+    "        -x fasta \\\n",
     "        --output-directory $MEGAHIT_OUTDIR/${SAMPLE_ID} \\\n",
     "        --database_path /groups/bhurwitz/databases/checkm2_database/uniref100.KO.1.dmnd\n",
     "        \n",
@@ -347,7 +354,7 @@
     "apptainer run /contrib/singularity/shared/bhurwitz/checkm2\\:1.0.1--pyh7cba7a3_0.sif checkm2 \\\n",
     "        predict --threads 24 \\\n",
     "        --input $METASPADES_CONTIGS \\\n",
-    "        -x fa \\\n",
+    "        -x fasta \\\n",
     "        --output-directory $METASPADES_OUTDIR/${SAMPLE_ID} \\\n",
     "        --database_path /groups/bhurwitz/databases/checkm2_database/uniref100.KO.1.dmnd    \n",
     "'''\n",
@@ -375,7 +382,7 @@
    "outputs": [],
    "source": [
     "# Welcome back, let's see if the job is still running\n",
-    "!squeue --user=$netid"
+    "!squeue --job=YOUR_JOBID"
    ]
   },
   {
