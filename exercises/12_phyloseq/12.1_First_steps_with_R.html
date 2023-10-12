@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>12.1_First_steps_with_R.md</title>
+<meta http-equiv="Content-type" content="text/html;charset=UTF-8">
+
+<style>
+/* https://github.com/microsoft/vscode/blob/master/extensions/markdown-language-features/media/markdown.css */
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
+body {
+	font-family: var(--vscode-markdown-font-family, -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif);
+	font-size: var(--vscode-markdown-font-size, 14px);
+	padding: 0 26px;
+	line-height: var(--vscode-markdown-line-height, 22px);
+	word-wrap: break-word;
+}
+
+#code-csp-warning {
+	position: fixed;
+	top: 0;
+	right: 0;
+	color: white;
+	margin: 16px;
+	text-align: center;
+	font-size: 12px;
+	font-family: sans-serif;
+	background-color:#444444;
+	cursor: pointer;
+	padding: 6px;
+	box-shadow: 1px 1px 1px rgba(0,0,0,.25);
+}
+
+#code-csp-warning:hover {
+	text-decoration: none;
+	background-color:#007acc;
+	box-shadow: 2px 2px 2px rgba(0,0,0,.25);
+}
+
+body.scrollBeyondLastLine {
+	margin-bottom: calc(100vh - 22px);
+}
+
+body.showEditorSelection .code-line {
+	position: relative;
+}
+
+body.showEditorSelection .code-active-line:before,
+body.showEditorSelection .code-line:hover:before {
+	content: "";
+	display: block;
+	position: absolute;
+	top: 0;
+	left: -12px;
+	height: 100%;
+}
+
+body.showEditorSelection li.code-active-line:before,
+body.showEditorSelection li.code-line:hover:before {
+	left: -30px;
+}
+
+.vscode-light.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.15);
+}
+
+.vscode-light.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.40);
+}
+
+.vscode-light.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+.vscode-dark.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.4);
+}
+
+.vscode-dark.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.60);
+}
+
+.vscode-dark.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+.vscode-high-contrast.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 160, 0, 0.7);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 160, 0, 1);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+img {
+	max-width: 100%;
+	max-height: 100%;
+}
+
+a {
+	text-decoration: none;
+}
+
+a:hover {
+	text-decoration: underline;
+}
+
+a:focus,
+input:focus,
+select:focus,
+textarea:focus {
+	outline: 1px solid -webkit-focus-ring-color;
+	outline-offset: -1px;
+}
+
+hr {
+	border: 0;
+	height: 2px;
+	border-bottom: 2px solid;
+}
+
+h1 {
+	padding-bottom: 0.3em;
+	line-height: 1.2;
+	border-bottom-width: 1px;
+	border-bottom-style: solid;
+}
+
+h1, h2, h3 {
+	font-weight: normal;
+}
+
+table {
+	border-collapse: collapse;
+}
+
+table > thead > tr > th {
+	text-align: left;
+	border-bottom: 1px solid;
+}
+
+table > thead > tr > th,
+table > thead > tr > td,
+table > tbody > tr > th,
+table > tbody > tr > td {
+	padding: 5px 10px;
+}
+
+table > tbody > tr + tr > td {
+	border-top: 1px solid;
+}
+
+blockquote {
+	margin: 0 7px 0 5px;
+	padding: 0 16px 0 10px;
+	border-left-width: 5px;
+	border-left-style: solid;
+}
+
+code {
+	font-family: Menlo, Monaco, Consolas, "Droid Sans Mono", "Courier New", monospace, "Droid Sans Fallback";
+	font-size: 1em;
+	line-height: 1.357em;
+}
+
+body.wordWrap pre {
+	white-space: pre-wrap;
+}
+
+pre:not(.hljs),
+pre.hljs code > div {
+	padding: 16px;
+	border-radius: 3px;
+	overflow: auto;
+}
+
+pre code {
+	color: var(--vscode-editor-foreground);
+	tab-size: 4;
+}
+
+/** Theming */
+
+.vscode-light pre {
+	background-color: rgba(220, 220, 220, 0.4);
+}
+
+.vscode-dark pre {
+	background-color: rgba(10, 10, 10, 0.4);
+}
+
+.vscode-high-contrast pre {
+	background-color: rgb(0, 0, 0);
+}
+
+.vscode-high-contrast h1 {
+	border-color: rgb(0, 0, 0);
+}
+
+.vscode-light table > thead > tr > th {
+	border-color: rgba(0, 0, 0, 0.69);
+}
+
+.vscode-dark table > thead > tr > th {
+	border-color: rgba(255, 255, 255, 0.69);
+}
+
+.vscode-light h1,
+.vscode-light hr,
+.vscode-light table > tbody > tr + tr > td {
+	border-color: rgba(0, 0, 0, 0.18);
+}
+
+.vscode-dark h1,
+.vscode-dark hr,
+.vscode-dark table > tbody > tr + tr > td {
+	border-color: rgba(255, 255, 255, 0.18);
+}
+
+</style>
+
+<style>
+/* Tomorrow Theme */
+/* http://jmblog.github.com/color-themes-for-google-code-highlightjs */
+/* Original theme - https://github.com/chriskempson/tomorrow-theme */
+
+/* Tomorrow Comment */
+.hljs-comment,
+.hljs-quote {
+	color: #8e908c;
+}
+
+/* Tomorrow Red */
+.hljs-variable,
+.hljs-template-variable,
+.hljs-tag,
+.hljs-name,
+.hljs-selector-id,
+.hljs-selector-class,
+.hljs-regexp,
+.hljs-deletion {
+	color: #c82829;
+}
+
+/* Tomorrow Orange */
+.hljs-number,
+.hljs-built_in,
+.hljs-builtin-name,
+.hljs-literal,
+.hljs-type,
+.hljs-params,
+.hljs-meta,
+.hljs-link {
+	color: #f5871f;
+}
+
+/* Tomorrow Yellow */
+.hljs-attribute {
+	color: #eab700;
+}
+
+/* Tomorrow Green */
+.hljs-string,
+.hljs-symbol,
+.hljs-bullet,
+.hljs-addition {
+	color: #718c00;
+}
+
+/* Tomorrow Blue */
+.hljs-title,
+.hljs-section {
+	color: #4271ae;
+}
+
+/* Tomorrow Purple */
+.hljs-keyword,
+.hljs-selector-tag {
+	color: #8959a8;
+}
+
+.hljs {
+	display: block;
+	overflow-x: auto;
+	color: #4d4d4c;
+	padding: 0.5em;
+}
+
+.hljs-emphasis {
+	font-style: italic;
+}
+
+.hljs-strong {
+	font-weight: bold;
+}
+</style>
+
+<style>
+/*
+ * Markdown PDF CSS
+ */
+
+ body {
+	font-family: -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif, "Meiryo";
+	padding: 0 12px;
+}
+
+pre {
+	background-color: #f8f8f8;
+	border: 1px solid #cccccc;
+	border-radius: 3px;
+	overflow-x: auto;
+	white-space: pre-wrap;
+	overflow-wrap: break-word;
+}
+
+pre:not(.hljs) {
+	padding: 23px;
+	line-height: 19px;
+}
+
+blockquote {
+	background: rgba(127, 127, 127, 0.1);
+	border-color: rgba(0, 122, 204, 0.5);
+}
+
+.emoji {
+	height: 1.4em;
+}
+
+code {
+	font-size: 14px;
+	line-height: 19px;
+}
+
+/* for inline code */
+:not(pre):not(.hljs) > code {
+	color: #C9AE75; /* Change the old color so it seems less like an error */
+	font-size: inherit;
+}
+
+/* Page Break : use <div class="page"/> to insert page break
+-------------------------------------------------------- */
+.page {
+	page-break-after: always;
+}
+
+</style>
+
+<script src="https://unpkg.com/mermaid/dist/mermaid.min.js"></script>
+</head>
+<body>
+  <script>
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: document.body.classList.contains('vscode-dark') || document.body.classList.contains('vscode-high-contrast')
+          ? 'dark'
+          : 'default'
+    });
+  </script>
+<p><em>It takes courage to sail in uncharted waters</em>
+-Snoopy</p>
+<h2 id="rstudio-setup">RStudio setup</h2>
+<h3 id="what-is-r-and-what-can-it-be-used-for">What is R, and what can it be used for?</h3>
+<p>&quot;R&quot; is used to name a programming language that for statistical
+computing and graphics. RStudio is the most popular GUI program for script writing and interaction with R software.</p>
+<p>R uses a series of written commands, which is great!
+If you rely on clicking, pointing, and remembering where to click, mistakes can happen.
+Moreover, if you get more data, it is easier to just
+<em>re-run</em> your script to obtain results. Also, working with scripts
+makes the steps you follow for your analysis clear and shareable.
+Here are some of the advantages of working with R:</p>
+<ul>
+<li>R code is reproducible</li>
+<li>R produces high-quality graphics</li>
+<li>R has a large community</li>
+<li>R is interdisciplinary</li>
+<li>R works on data of all colors and sizes</li>
+<li>R is free!</li>
+</ul>
+<h3 id="what-is-an-r-markdown-notebook">What is an R Markdown notebook?</h3>
+<p>As we move into the data analysis phase of the class, we will begin to use R Markdown notebooks to guide you through how to perform data analysis and create visualizations. Similar to a Jupyter notebook, an R Markdown notebook allows you to integrate narrative text written in Markdown, interspersed with chunks of R code. When you run the code in the document, the R code is executed, and the results are inserted into the document, creating a seamless blend of text and code output. This makes it easy to create dynamic documents that include data analysis, visualizations, and explanations in a single, reproducible format.</p>
+<p>The R Markdown file typically has the extension &quot;.Rmd&quot;. To create an R Markdown document, you need an environment that supports R Markdown, such as RStudio (we will use RStudio from the UA HPC on demand site, more on that later).</p>
+<h3 id="getting-started-by-setting-a-common-package-library">Getting started by setting a common package library</h3>
+<p>R uses a package manager to install libraries contributed by the user community. We will be using a number of these packages as we work through different exercises in our R markdown notebooks. To ensure a stable global environment for all students in the class, we will use a common repository where I have pre-installed the packages for the class with the correct versions and dependencies. In order to use this common library, you will need to create a file in your home directory to tell RStudio (on the on demand HPC) which library to use. To do this, go to a shell and copy/paste the following command:</p>
+<pre class="hljs"><code><div>echo 'R_LIBS=/groups/bhurwitz/R/library_R_v4.2.2' &gt;&gt; ~/.Renviron
+</div></code></pre>
+<h3 id="rstudio-integrated-development-environmentide">RStudio Integrated Development Environment(IDE)</h3>
+<p>Great! Now we are ready to get started with using RStudio.
+RStudio is an <a href="https://en.wikipedia.org/wiki/Integrated_development_environment#:~:text=An%20integrated%20development%20environment%20(IDE,automation%20tools%20and%20a%20debugger.)">Integrated Development Environment(IDE)</a>
+which we will use to write code, navigate around files on the HPC, try code, inspect the variables we create, and visualize our plots.</p>
+<p>We will use the RStudio Integrated Development Environment (IDE) from <a href="https://ood.hpc.arizona.edu/">UA on demand portal</a>. You can get to RStudio, by selecting Interactive Apps -&gt; RStudio Server from the main menu bar.</p>
+<p>Here is what you may look at the first time you open RStudio:</p>
+<a href="../fig/Welcome_R.png" >
+  <img src="../fig/Welcome_R.png" alt="RStudio graphic interface described bellow."  width="80%" height="55%" />
+</a>
+<p>The figure shows the RStudio interface. The three windows that appear
+on the screen provide us with a space in which we can see our console
+(left side window) where the orders we want to execute are written, observe
+the generated variables (upper right), and a series of subtabs (lower right):
+<strong>Files</strong> shows us files that we have used, <strong>Plots</strong> shows us graphics that we
+are generating, <strong>Packages</strong> shows the packages that we have downloaded, <strong>Help</strong>
+it gives us information on packages, commands, and/or functions that we do not
+know, but works only with an internet connection, and <strong>Viewer</strong> shows a results preview in R markdown files.</p>
+<p>If we click on the option <code>File</code>/<code>New File</code>/<code>R Script</code>, we open up a script and we get what we can call an <em>RStudio nautical chart</em></p>
+<a href="../fig/Welcome_Rscript.png">
+  <img src="../fig/Welcome_Rscript.png" alt="
+A graphic interface window with four panels.
+A the top left, a new panel with an R script called *Untitled1* 
+is added from the previous image, 
+so now there are four panels inside the Rstudio graphic interphase window"  width="80%" height="55%"/>
+</a>
+<p>RStudio interface with a new panel is shown. Clockwise from top left: Empty script,
+Environment/History/Connections/Tutorial, Files/Plots/Packages/Help/Viewer,
+Console/Terminal/Jobs. You can enter your online RStudio to see your environment.</p>
+<h3 id="what-is-a-working-directory">What is a working directory?</h3>
+<p>As we have seen in different lessons, maintaining related data in a single folder is desirable. In RStudio, this folder is called the <strong>working directory</strong>. It is where R will be looking
+for and saving your files. If you need to check where your working directory is located use <code>getwd()</code>.</p>
+<p>From the console type:</p>
+<pre class="hljs"><code><div>getwd()
+</div></code></pre>
+<p>This should be your home directory on the HPC.</p>
+<p>To change directories we can click on the blue gear icon:
+<a href="https://user-images.githubusercontent.com/67386612/118722611-f7f59400-b7f1-11eb-8ca9-a72561f9c529.png">
+<img src="https://user-images.githubusercontent.com/67386612/118722611-f7f59400-b7f1-11eb-8ca9-a72561f9c529.png" alt="settings icon" />
+</a> on the <code>Files</code> tab, pick the option <em>Set As Working Directory</em>. Alternatively, you can use the <code>setwd()</code> command for changing it.</p>
+<p>Let's use these commands to set our working directory:</p>
+<pre class="hljs"><code><div>&gt; setwd(&quot;/xdisk/bhurwitz/bh_class/YOUR_NETID/exercises/12_phyloseq&quot;)
+
+</div></code></pre>
+<h2 id="having-a-dialogue-with-r">Having a dialogue with R</h2>
+<p>There are two main ways to interact with R in RStudio:</p>
+<ul>
+<li>Using the console.</li>
+<li>Creating and editing script files.</li>
+</ul>
+<p>The console is where commands can be typed and executed immediately, and where the
+results from executed commands will be displayed (like in the Unix shell). If R is ready to accept commands, the R console shows
+the <code>&gt;</code> prompt. You can type instructions directly into the console and press &quot;Enter&quot;, but they will be forgotten when you close the session.</p>
+<p>For example, let's do some math and save it in R objects. We can store values in variables by using the assignment operator <code>&lt;-</code>:</p>
+<pre class="hljs"><code><div>&gt; 4+3
+&gt; addition &lt;- 4+3
+&gt; subtraction &lt;- 2+1
+&gt; total &lt;- addition -subtraction
+&gt; total
+</div></code></pre>
+<p>What would happen if you exited out? Without the lesson page, can you remember what numbers the sum is made of in the variable <code>addition</code>?</p>
+<p>To make our code <strong>Reproducibile</strong> we can save all of our steps as a script where we can run each line in the script by the shortcut <code>ctrl</code> + <code>Enter</code>. Where the command on the current line will be sent to the console and will be executed.</p>
+<p>Time can be the enemy or ally of memory. We want to be sure to remember why we wrote the commands in our scripts, so we can leave comments(lines of no executable text) by beginning a line with <code>#</code>:</p>
+<pre class="hljs"><code><div># Let's do some math in RStudio. How many times a year do the supermarkets change the bread that they use for
+# display? if they change it every 15 days:
+&gt; 365/15
+</div></code></pre>
+<pre class="hljs"><code><div>[1] 24.3333
+</div></code></pre>
+
+</body>
+</html>

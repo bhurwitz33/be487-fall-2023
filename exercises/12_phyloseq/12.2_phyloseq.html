@@ -1,0 +1,558 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>12.2_phyloseq.md</title>
+<meta http-equiv="Content-type" content="text/html;charset=UTF-8">
+
+<style>
+/* https://github.com/microsoft/vscode/blob/master/extensions/markdown-language-features/media/markdown.css */
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
+body {
+	font-family: var(--vscode-markdown-font-family, -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif);
+	font-size: var(--vscode-markdown-font-size, 14px);
+	padding: 0 26px;
+	line-height: var(--vscode-markdown-line-height, 22px);
+	word-wrap: break-word;
+}
+
+#code-csp-warning {
+	position: fixed;
+	top: 0;
+	right: 0;
+	color: white;
+	margin: 16px;
+	text-align: center;
+	font-size: 12px;
+	font-family: sans-serif;
+	background-color:#444444;
+	cursor: pointer;
+	padding: 6px;
+	box-shadow: 1px 1px 1px rgba(0,0,0,.25);
+}
+
+#code-csp-warning:hover {
+	text-decoration: none;
+	background-color:#007acc;
+	box-shadow: 2px 2px 2px rgba(0,0,0,.25);
+}
+
+body.scrollBeyondLastLine {
+	margin-bottom: calc(100vh - 22px);
+}
+
+body.showEditorSelection .code-line {
+	position: relative;
+}
+
+body.showEditorSelection .code-active-line:before,
+body.showEditorSelection .code-line:hover:before {
+	content: "";
+	display: block;
+	position: absolute;
+	top: 0;
+	left: -12px;
+	height: 100%;
+}
+
+body.showEditorSelection li.code-active-line:before,
+body.showEditorSelection li.code-line:hover:before {
+	left: -30px;
+}
+
+.vscode-light.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.15);
+}
+
+.vscode-light.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.40);
+}
+
+.vscode-light.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+.vscode-dark.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.4);
+}
+
+.vscode-dark.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.60);
+}
+
+.vscode-dark.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+.vscode-high-contrast.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 160, 0, 0.7);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 160, 0, 1);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+img {
+	max-width: 100%;
+	max-height: 100%;
+}
+
+a {
+	text-decoration: none;
+}
+
+a:hover {
+	text-decoration: underline;
+}
+
+a:focus,
+input:focus,
+select:focus,
+textarea:focus {
+	outline: 1px solid -webkit-focus-ring-color;
+	outline-offset: -1px;
+}
+
+hr {
+	border: 0;
+	height: 2px;
+	border-bottom: 2px solid;
+}
+
+h1 {
+	padding-bottom: 0.3em;
+	line-height: 1.2;
+	border-bottom-width: 1px;
+	border-bottom-style: solid;
+}
+
+h1, h2, h3 {
+	font-weight: normal;
+}
+
+table {
+	border-collapse: collapse;
+}
+
+table > thead > tr > th {
+	text-align: left;
+	border-bottom: 1px solid;
+}
+
+table > thead > tr > th,
+table > thead > tr > td,
+table > tbody > tr > th,
+table > tbody > tr > td {
+	padding: 5px 10px;
+}
+
+table > tbody > tr + tr > td {
+	border-top: 1px solid;
+}
+
+blockquote {
+	margin: 0 7px 0 5px;
+	padding: 0 16px 0 10px;
+	border-left-width: 5px;
+	border-left-style: solid;
+}
+
+code {
+	font-family: Menlo, Monaco, Consolas, "Droid Sans Mono", "Courier New", monospace, "Droid Sans Fallback";
+	font-size: 1em;
+	line-height: 1.357em;
+}
+
+body.wordWrap pre {
+	white-space: pre-wrap;
+}
+
+pre:not(.hljs),
+pre.hljs code > div {
+	padding: 16px;
+	border-radius: 3px;
+	overflow: auto;
+}
+
+pre code {
+	color: var(--vscode-editor-foreground);
+	tab-size: 4;
+}
+
+/** Theming */
+
+.vscode-light pre {
+	background-color: rgba(220, 220, 220, 0.4);
+}
+
+.vscode-dark pre {
+	background-color: rgba(10, 10, 10, 0.4);
+}
+
+.vscode-high-contrast pre {
+	background-color: rgb(0, 0, 0);
+}
+
+.vscode-high-contrast h1 {
+	border-color: rgb(0, 0, 0);
+}
+
+.vscode-light table > thead > tr > th {
+	border-color: rgba(0, 0, 0, 0.69);
+}
+
+.vscode-dark table > thead > tr > th {
+	border-color: rgba(255, 255, 255, 0.69);
+}
+
+.vscode-light h1,
+.vscode-light hr,
+.vscode-light table > tbody > tr + tr > td {
+	border-color: rgba(0, 0, 0, 0.18);
+}
+
+.vscode-dark h1,
+.vscode-dark hr,
+.vscode-dark table > tbody > tr + tr > td {
+	border-color: rgba(255, 255, 255, 0.18);
+}
+
+</style>
+
+<style>
+/* Tomorrow Theme */
+/* http://jmblog.github.com/color-themes-for-google-code-highlightjs */
+/* Original theme - https://github.com/chriskempson/tomorrow-theme */
+
+/* Tomorrow Comment */
+.hljs-comment,
+.hljs-quote {
+	color: #8e908c;
+}
+
+/* Tomorrow Red */
+.hljs-variable,
+.hljs-template-variable,
+.hljs-tag,
+.hljs-name,
+.hljs-selector-id,
+.hljs-selector-class,
+.hljs-regexp,
+.hljs-deletion {
+	color: #c82829;
+}
+
+/* Tomorrow Orange */
+.hljs-number,
+.hljs-built_in,
+.hljs-builtin-name,
+.hljs-literal,
+.hljs-type,
+.hljs-params,
+.hljs-meta,
+.hljs-link {
+	color: #f5871f;
+}
+
+/* Tomorrow Yellow */
+.hljs-attribute {
+	color: #eab700;
+}
+
+/* Tomorrow Green */
+.hljs-string,
+.hljs-symbol,
+.hljs-bullet,
+.hljs-addition {
+	color: #718c00;
+}
+
+/* Tomorrow Blue */
+.hljs-title,
+.hljs-section {
+	color: #4271ae;
+}
+
+/* Tomorrow Purple */
+.hljs-keyword,
+.hljs-selector-tag {
+	color: #8959a8;
+}
+
+.hljs {
+	display: block;
+	overflow-x: auto;
+	color: #4d4d4c;
+	padding: 0.5em;
+}
+
+.hljs-emphasis {
+	font-style: italic;
+}
+
+.hljs-strong {
+	font-weight: bold;
+}
+</style>
+
+<style>
+/*
+ * Markdown PDF CSS
+ */
+
+ body {
+	font-family: -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif, "Meiryo";
+	padding: 0 12px;
+}
+
+pre {
+	background-color: #f8f8f8;
+	border: 1px solid #cccccc;
+	border-radius: 3px;
+	overflow-x: auto;
+	white-space: pre-wrap;
+	overflow-wrap: break-word;
+}
+
+pre:not(.hljs) {
+	padding: 23px;
+	line-height: 19px;
+}
+
+blockquote {
+	background: rgba(127, 127, 127, 0.1);
+	border-color: rgba(0, 122, 204, 0.5);
+}
+
+.emoji {
+	height: 1.4em;
+}
+
+code {
+	font-size: 14px;
+	line-height: 19px;
+}
+
+/* for inline code */
+:not(pre):not(.hljs) > code {
+	color: #C9AE75; /* Change the old color so it seems less like an error */
+	font-size: inherit;
+}
+
+/* Page Break : use <div class="page"/> to insert page break
+-------------------------------------------------------- */
+.page {
+	page-break-after: always;
+}
+
+</style>
+
+<script src="https://unpkg.com/mermaid/dist/mermaid.min.js"></script>
+</head>
+<body>
+  <script>
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: document.body.classList.contains('vscode-dark') || document.body.classList.contains('vscode-high-contrast')
+          ? 'dark'
+          : 'default'
+    });
+  </script>
+<h2 id="creating-lineage-and-rank-tables">Creating lineage and rank tables</h2>
+<p>In this exercise, we will use RStudio to analyze our microbial samples. You do not have to install anything, you just need to start R Studio from the UA on-demand portal. Check out 12.1_first_steps_with_R for a quick tutorial on using R on the HPC.</p>
+<p>Packages like Qiime2, MEGAN, Vegan, or Phyloseq in R allow us to analyze diversity and abundance by manipulating taxonomic assignment data. In this lesson, we will use Phyloseq. In order to do so, we need to generate
+an abundance matrix from the Kraken output files from the last lesson. One program widely used for this purpose is called <code>kraken-biom</code>.</p>
+<p>To do this, we could go to our now familiar Bash terminal, to convert our kraken files into biom format.</p>
+<h3 id="kraken-biom">Kraken-biom</h3>
+<p><a href="https://github.com/smdabdoub/kraken-biom">Kraken-biom</a> is a program that creates BIOM tables from the Kraken output.</p>
+<p>In order to run Kraken-biom, we have to move to
+the folder where our taxonomic data files are located:</p>
+<pre class="hljs"><code><div>$ cd /xdisk/bhurwitz/bh_class/YOUR_NETID/exercises/11_taxonomy
+</div></code></pre>
+<p>First, we will visualize the content of our directory by the <code>ls</code> command.</p>
+<pre class="hljs"><code><div>$ ls
+</div></code></pre>
+<pre class="hljs"><code><div>JC1A.kraken  JC1A.report  JP41.report  JP4D.kraken  JP4D.report  mags_taxonomy
+</div></code></pre>
+<p>The <code>kraken-biom</code> program is installed as a container. Let's take a look at the different flags that <code>kraken-biom</code> has:</p>
+<pre class="hljs"><code><div>$ /contrib/singularity/shared/bhurwitz/kraken-biom:1.2.0--pyh5e36f6f_0.sif kraken-biom -h                  
+</div></code></pre>
+<pre class="hljs"><code><div>usage: kraken-biom [-h] [-k REPORTS_FP] [--max {D,P,C,O,F,G,S,SS}]
+                   [--min {D,P,C,O,F,G,S,SS}] [-o OUTPUT_FP] [-m METADATA]
+                   [--otu_fp OTU_FP] [--fmt {hdf5,json,tsv}] [--gzip]
+                   [--version] [-v]
+                   [kraken_reports ...]
+
+Create BIOM-format tables (http://biom-format.org) from Kraken output 
+(http://ccb.jhu.edu/software/kraken/).
+.
+.
+.
+</div></code></pre>
+<p>By taking a quick looks, we can see that we need a specific output
+from Kraken: the <code>.reports</code>.</p>
+<p>With the following command, we will create a table in <a href="https://biom-format.org/">Biom</a> format called <code>cuatroc.biom</code>. We will include the two samples we have been working with (<code>JC1A</code> and <code>JP4D</code>) and a third one (<code>JP41</code>) to be able to perform specific analyses later on.</p>
+<pre class="hljs"><code><div>$ /contrib/singularity/shared/bhurwitz/kraken-biom:1.2.0--pyh5e36f6f_0.sif  kraken-biom JC1A.report JP4D.report JP41.report --fmt json -o cuatroc.biom
+$ cp cuatroc.biom ../12_phyloseq
+</div></code></pre>
+<p>If we inspect our folder, we will see that the <code>cuatroc.biom</code> file has been created. This <code>biom</code> object contains both the abundance and the ID (a number) of each OTU.<br>
+With this result, we are ready to return to RStudio's console and begin to manipulate our taxonomic-data.</p>
+<blockquote>
+<h2 id="command-line-prompts">Command line prompts</h2>
+<p>Note that you can distinguish the Bash terminal from the R console by looking at the prompt. In Bash is the <code>$</code> sign, and in R is the <code>&gt;</code> sign.</p>
+</blockquote>
+<h2 id="creating-and-manipulating-phyloseq-objects">Creating and manipulating Phyloseq objects</h2>
+<h3 id="load-required-packages">Load required packages</h3>
+<p>Phyloseq is a library with tools to analyze and plot your metagenomics samples' taxonomic assignment and abundance information. I have already installed phyloseq for you, can you should be using the shared library from the 12.1 lesson.</p>
+<p>You can check out the installation instructions here: <a href="https://joey711.github.io/phyloseq/">phyloseq</a></p>
+<p>Next, we need to load the libraries (a process needed every time we begin a new work session in R):</p>
+<pre class="hljs"><code><div>&gt; library(&quot;phyloseq&quot;)
+&gt; library(&quot;ggplot2&quot;)
+&gt; library(&quot;RColorBrewer&quot;)
+&gt; library(&quot;patchwork&quot;)
+</div></code></pre>
+<h3 id="creating-the-phyloseq-object">Creating the phyloseq object</h3>
+<p>First, we tell R in which directory we are working.</p>
+<pre class="hljs"><code><div>&gt; setwd(&quot;/xdisk/bhurwitz/bh_class/YOUR_NETID/exercises/12_phyloseq&quot;)
+</div></code></pre>
+<p>Then we can create the phyloseq object with the <code>import_biom</code> command:</p>
+<pre class="hljs"><code><div>&gt; merged_metagenomes &lt;- import_biom(&quot;cuatroc.biom&quot;)
+</div></code></pre>
+<p>Now, we can inspect the result by asking the class of the object created and doing a close inspection of some of its content:</p>
+<pre class="hljs"><code><div>&gt; class(merged_metagenomes)
+</div></code></pre>
+<pre class="hljs"><code><div>[1] &quot;phyloseq&quot;
+attr(&quot;package&quot;)
+[1] &quot;phyloseq&quot;
+</div></code></pre>
+<p>The &quot;class&quot; command indicates that we already have our phyloseq object.</p>
+<h3 id="exploring-the-taxonomic-labels">Exploring the taxonomic labels</h3>
+<p>Let's try to access the data that is stored inside our <code>merged_metagenomes</code> object. Since a phyloseq object
+is a special object in R, we need to use the operator <code>@</code> to explore the subsections of data inside <code>merged_metagenomes</code>.
+To see the data in these subsections we can type <code>merged_metagenomes@otu_table</code> or <code>merged_metagenomes@tax_table</code>
+Let's see what is inside our <code>tax_table</code>:</p>
+<pre class="hljs"><code><div>&gt; View(merged_metagenomes@tax_table@.Data)
+</div></code></pre>
+<a href="../fig/03-07-01.png">
+  <img src="../fig/03-07-01.png" alt="A table where the taxonomic 
+  identification information of all OTUs is displayed. Each row represents one 
+  OTU and the columns represent its identification at different levels in the taxonomic classification ranks, begging with Kingdom until we reach Species 
+  in the seventh column." />
+</a>
+<em> Figure 1. Table of the taxonomic labels from our `merged_metagenomes` object. <em/>
+<p>Here we can see that the <code>tax_table</code> inside our phyloseq object stores all the taxonomic labels corresponding to each OTU. Numbers in the row names of the table identify OTUs.</p>
+<p>Next, let us get rid of some of the unnecessary characters
+in the OTUs id and put names to the taxonomic ranks:</p>
+<p>To remove unnecessary characters in <code>.Data</code> (matrix), we will use the command <code>substring()</code>. This command helps extract or replace characters in a vector. To use the command, we have to indicate the vector (x) followed by the first element to replace or extract (first) and the last element to be replaced (last). For instance: <code>substring (x, first, last)</code>. <code>substring()</code> is a &quot;flexible&quot; command, especially to select
+characters of different lengths, as in our case. Therefore, it is not necessary to indicate &quot;last&quot;, so it will take the last position of the character by
+default. Since a matrix is an arrangement of vectors, we can use this command. Each character in <code>.Data</code> is preceded by three spaces occupied by a
+letter and two underscores, for example: <code>o__Rhodobacterales</code>. In this case, &quot;Rodobacterales&quot; starts at position 4 with an R. So, to remove the unnecessary characters, we will use the following code:</p>
+<pre class="hljs"><code><div>&gt; merged_metagenomes@tax_table@.Data &lt;- substring(merged_metagenomes@tax_table@.Data, 4)
+&gt; colnames(merged_metagenomes@tax_table@.Data)&lt;- c(&quot;Kingdom&quot;, &quot;Phylum&quot;, &quot;Class&quot;, &quot;Order&quot;, &quot;Family&quot;, &quot;Genus&quot;, &quot;Species&quot;)
+</div></code></pre>
+<a href="../fig/03-07-02.png">
+  <img src="../fig/03-07-02.png" alt="The same table we saw in Figure 3 but with informative names in each of the columns. Now, we can see which of 
+  the columns are associated with which taxonomic classification rank" />
+</a>
+<em> Figure 2. Table of the taxonomic labels from our `merged_metagenomes` object with corrections. <em/>
+<p>We will use a command named <code>unique()</code> to explore how many phyla we have. Let us see the result
+we obtain from the following code:</p>
+<pre class="hljs"><code><div>&gt; unique(merged_metagenomes@tax_table@.Data[,&quot;Phylum&quot;])
+</div></code></pre>
+<pre class="hljs"><code><div> [1] &quot;Proteobacteria&quot;              &quot;Actinobacteria&quot;              &quot;Firmicutes&quot;                 
+ [4] &quot;Cyanobacteria&quot;               &quot;Deinococcus-Thermus&quot;         &quot;Chloroflexi&quot;                
+ [7] &quot;Armatimonadetes&quot;             &quot;Bacteroidetes&quot;               &quot;Chlorobi&quot;                   
+[10] &quot;Gemmatimonadetes&quot;            &quot;Planctomycetes&quot;              &quot;Verrucomicrobia&quot;            
+[13] &quot;Lentisphaerae&quot;               &quot;Kiritimatiellaeota&quot;          &quot;Chlamydiae&quot;                 
+[16] &quot;Acidobacteria&quot;               &quot;Spirochaetes&quot;                &quot;Synergistetes&quot;              
+[19] &quot;Nitrospirae&quot;                 &quot;Tenericutes&quot;                 &quot;Coprothermobacterota&quot;       
+[22] &quot;Ignavibacteriae&quot;             &quot;Candidatus Cloacimonetes&quot;    &quot;Fibrobacteres&quot;              
+[25] &quot;Fusobacteria&quot;                &quot;Thermotogae&quot;                 &quot;Aquificae&quot;                  
+[28] &quot;Thermodesulfobacteria&quot;       &quot;Deferribacteres&quot;             &quot;Chrysiogenetes&quot;             
+[31] &quot;Calditrichaeota&quot;             &quot;Elusimicrobia&quot;               &quot;Caldiserica&quot;                
+[34] &quot;Candidatus Saccharibacteria&quot; &quot;Dictyoglomi&quot; 
+</div></code></pre>
+<p>Knowing phyla is helpful, but what we need to know is how many of our OTUs have been assigned to the phylum
+Firmicutes?. Let´s use the command <code>sum()</code> to ask R:</p>
+<pre class="hljs"><code><div>&gt; sum(merged_metagenomes@tax_table@.Data[,&quot;Phylum&quot;] == &quot;Firmicutes&quot;)
+</div></code></pre>
+<pre class="hljs"><code><div>[1] 580
+</div></code></pre>
+<p>Now let's see how many taxa are in that phylum:</p>
+<pre class="hljs"><code><div>&gt; unique(merged_metagenomes@tax_table@.Data[merged_metagenomes@tax_table@.Data[,&quot;Phylum&quot;] == &quot;Firmicutes&quot;, &quot;Class&quot;])
+</div></code></pre>
+<pre class="hljs"><code><div>[1] &quot;Bacilli&quot;          &quot;Clostridia&quot;      
+[3] &quot;Negativicutes&quot;    &quot;Limnochordia&quot;    
+[5] &quot;&quot;                 &quot;Tissierellia&quot;    
+[7] &quot;Erysipelotrichia&quot;
+</div></code></pre>
+<h3 id="exploring-the-abundance-table">Exploring the abundance table</h3>
+<p>Until now, we have looked at the part of the phyloseq object that stores the information about the taxonomy (at all the possible levels) of each OTU found in our samples. However, there is also a part of the phyloseq object that stores the information about how many reads correspond to certain OTUs in each sample. This table is the <code>otu_table</code>.</p>
+<pre class="hljs"><code><div>&gt; View(merged_metagenomes@otu_table@.Data)
+</div></code></pre>
+<a href="../fig/03-07-03.png">
+  <img src="../fig/03-07-03.png" alt="A table where the abundance of each OTU in each sample is shown. Each row represents one 
+  OTU and the columns represent the samples. In the intersection, a number indicates how many sequenced reads of that OTU are present in that sample." />
+</a>
+<em> Figure 3. Table of the abundance of reads in the `merged_metagenomes` object. <em/>
+<p>We will take advantage of this information later on in our analyses.</p>
+<blockquote>
+<h2 id="phyloseq-objects">Phyloseq objects</h2>
+<p>Finally, we can review our object and see that all datasets (i.e., JC1A, JP4D, and JP41) are in the object.
+If you look at our Phyloseq object, you will see that there are more data types
+that we can use to build our object(<code>phyloseq()</code>), such as a phylogenetic tree and metadata
+concerning our samples. These are optional, so we will use our basic
+phyloseq object, composed of the abundances of specific OTUs and the
+names of those OTUs.</p>
+</blockquote>
+<blockquote>
+<h2 id="exercise-1-explore-a-phylum">Exercise 1: Explore a phylum</h2>
+<p>Go into groups and choose one phylum that is interesting for your
+group, and use the code above to find out how many OTUs have been assigned to your chosen phylum and what are the unique names of the genera inside it.
+がんばって! (ganbatte; <em>good luck</em>):</p>
+</blockquote>
+<details>
+  <summary markdown="span">Solution</summary>
+  <ul> 
+Change the name of a new phylum wherever needed and the name of the rank we are asking for to get the result.
+As an example, here is the solution for Proteobacteria:
+<pre class="hljs"><code><div>sum(merged_metagenomes@tax_table@.Data[,&quot;Phylum&quot;] == &quot;Proteobacteria&quot;)
+</div></code></pre>
+<pre class="hljs"><code><div>unique(merged_metagenomes@tax_table@.Data[merged_metagenomes@tax_table@.Data[,&quot;Phylum&quot;] == &quot;Proteobacteria&quot;, &quot;Genus&quot;])
+</div></code></pre>
+</details> 
+<br>
+<blockquote>
+<h2 id="exercise-2-searching-for-the-read-counts">Exercise 2: Searching for the read counts</h2>
+<p>Using the information from both the <code>tax_table</code> and the <code>otu_table</code>, find how many reads there are for
+any species of your interest (one that can be found in the <code>tax_table</code>).<br>
+<strong>Hint</strong>: Remember that you can access the contents of a data frame with the <code>[&quot;row_name&quot;, &quot;column_name&quot;]</code> syntax.<br>
+がんばって! (ganbatte; <em>good luck</em>):</p>
+</blockquote>
+<details>
+  <summary markdown="span">Solution</summary>
+  <ul> 
+Go to the `tax_table`: 
+<pre class="hljs"><code><div>&gt;View(merged_metagenomes@tax_table@.Data)
+</div></code></pre>
+<p>Take note of the OTU number for some species:
+<a href="../fig/03-07-04.png">
+<img src="../fig/03-07-04.png" alt="The OTU number is in the leftmost space of the table as a row name for the searched species." />
+</a>
+<em> Figure 4. The row of the <code>tax_table</code> corresponds to the species <em>Paracoccus zhejiangensis</em>. <em/></p>
+<p>Search for the row of the <code>otu_table</code> with the row name you chose.</p>
+<pre class="hljs"><code><div>&gt; merged_metagenomes@otu_table@.Data[&quot;1077935&quot;,]
+</div></code></pre>
+<pre class="hljs"><code><div>JC1A JP4D JP41 
+   42  782  257 
+</div></code></pre>
+</details>
+</body>
+</html>
