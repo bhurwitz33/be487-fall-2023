@@ -409,6 +409,9 @@ With this result, we are ready to return to RStudio's console and begin to manip
 <p>Note that you can distinguish the Bash terminal from the R console by looking at the prompt. In Bash is the <code>$</code> sign, and in R is the <code>&gt;</code> sign.</p>
 </blockquote>
 <h2 id="creating-and-manipulating-phyloseq-objects">Creating and manipulating Phyloseq objects</h2>
+<p>Before getting started in RStudio (on the HPC ondemand below), make sure that you have run this in the shell on the HPC to set the right envionment</p>
+<pre class="hljs"><code><div>echo 'R_LIBS=/groups/bhurwitz/R/library_R_v4.2.2' &gt;&gt; ~/.Renviron
+</div></code></pre>
 <h3 id="load-required-packages">Load required packages</h3>
 <p>Phyloseq is a library with tools to analyze and plot your metagenomics samples' taxonomic assignment and abundance information. I have already installed phyloseq for you, can you should be using the shared library from the 12.1 lesson.</p>
 <p>You can check out the installation instructions here: <a href="https://joey711.github.io/phyloseq/">phyloseq</a></p>
