@@ -68,7 +68,8 @@ When you do the taxonomic assignment of metagenomes, a key result is the abundan
 a taxonomic classification system using exact k-mer matches to achieve 
 high accuracy and fast classification speeds. Let's looks at the help menu for kraken2:
  
-```  
+``` 
+$ interactive 
 $ apptainer run /contrib/singularity/shared/bhurwitz/kraken2:2.1.3--pl5321hdcf5f25_0.sif kraken2  --help
 ``` 
 
@@ -311,6 +312,8 @@ $ cut -f2,3 JP4D.001.kraken > JP4D.001.krona.input
 Now we call Krona in our `JP4D.001.krona.input` file and save results in `JP4D.001.krona.out.html`. 
 
 ```
+## remember to run this after you are in interactive mode
+$ interactive
 $ /contrib/singularity/shared/bhurwitz/krona:2.8.1--pl5321hdfd78af_1.sif ktImportTaxonomy -q 2 JP4D.001.krona.input -tax /groups/bhurwitz/databases/krona/KronaTools-2.8.1/taxonomy -o KronaReport.html
 ```
 
