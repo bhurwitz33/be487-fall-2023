@@ -29,7 +29,7 @@ library(shiny)
 ```
 
 ```{r}
-mice <- readRDS(here::here('data/mice.rds'))
+mice <- readRDS('/xdisk/bhurwitz/bh_class/data/microviz/mice.rds')
 ```
 
 Now that we are getting into microbiome analytics, we are going to transition to using more complete datasets with taxonomic data and metadata.

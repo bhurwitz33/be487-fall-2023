@@ -29,7 +29,7 @@ library(shiny)
 ```
 
 ```{r}
-mice <- readRDS(here::here('data/mice.rds'))
+mice <- readRDS('/xdisk/bhurwitz/bh_class/data/microviz/mice.rds')
 ```
 
 # Reminder about our example `mice` dataset
@@ -175,18 +175,22 @@ Practice making plots and doing simple statistical tests.
 
 What about richness?
 
-# Extension exercises
+# Exercises
 
 <details>
 
 <summary>
 
-**Click here for an extension activity with an IBD dataset:**
+**Click here for an exercise with an IBD dataset:**
 
 </summary>
 
 
 **Inflammatory Bowel Disease study**
+
+```{r}
+ibd <- readRDS('/xdisk/bhurwitz/bh_class/data/microviz/ibd.rds') # not sure if we need to run this?
+```
 
 ```{r}
 ibd <- corncob::ibd_phylo %>% 
@@ -196,7 +200,7 @@ ibd <- corncob::ibd_phylo %>%
 
 `ibd` is another phyloseq object containing 16S rRNA gene amplicon sequencing data, from a 2012 study of Inflammatory Bowel Disease in children and young adults.
 
-It's "old" data: they used 454 Pyrosequencing, and clustered the raw sequences into "OTUs".
+It is an "old" data: where they used 454 Pyrosequencing, and clustered the raw sequences into "OTUs".
 
 Have a look at the data, like we did before for the `mice` dataset.
 

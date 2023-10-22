@@ -1,0 +1,100 @@
+---
+title: "Microbiome data analysis with microViz"
+subtitle: "Dissimilarity, ordination, & filtering"
+author: "David Barnett"
+date: "`r Sys.Date()`"
+output: 
+  html_document:
+    theme: paper
+    toc: true
+    toc_depth: 3
+    toc_float: 
+      collapsed: true
+---
+
+# Setup
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, fig.width = 6, fig.height = 4, dpi = 120)
+```
+
+```{r message=FALSE}
+library(seriation)
+library(dplyr)
+library(purrr)
+library(ggplot2)
+library(phyloseq)
+library(microViz)
+library(shiny)
+```
+
+```{r}
+mice <- readRDS('/xdisk/bhurwitz/bh_class/data/microviz/mice.rds')
+shao19 <- readRDS('/xdisk/bhurwitz/bh_class/data/microviz/shao19.rds')
+```
+
+
+# Beta diversity (part 2)
+
+## Dissimilarity measures
+
+What are we doing?
+Calculating the dissimilarity of two samples' compositions.
+We talked about these dissimilarity measures in the lecture.
+
+-   Binary Jaccard - presence-absence only
+-   Bray-Curtis - abundance weighted
+-   UniFrac distances (unweighted, weighted, generalised)
+
+To simplify and speed up the analyses, we're going to take a smaller part of the dataset.
+We'll only look at the 300 infant fecal samples from 4 days of age.
+
+```{r}
+shao4 <- shao19 %>% ps_filter(family_role == "child", infant_age == 4)
+```
+
+We're going to filter out rare taxa quite strictly, for similar reasons.
+But we won't overwrite our smaller dataset: we'll do the filtering per analysis.
+
+```{r}
+shao4 %>%
+  tax_filter(min_prevalence = 2.5 / 100) %>%
+  tax_agg(rank = "genus") %>%
+  tax_transform("binary") %>% # converts counts to absence/presence: 0/1
+  dist_calc(dist = "jaccard")
+```
+
+So we get our pairwise dissimilarities, in a distance matrix 
+attached as an extra part on the original phyloseq object, as part of a container object 
+(a "ps_extra" class object created by microViz, which also stores info about the aggregation and transformations you performed)
+
+```{r}
+distances <- shao4 %>%
+  tax_filter(min_prevalence = 2.5 / 100, verbose = FALSE) %>%
+  tax_agg(rank = "genus") %>%
+  tax_transform("binary") %>%
+  dist_calc(dist = "jaccard") %>%
+  dist_get()
+```
+
+You can extract the dissimilarities or distances with dist_get. 
+
+```{r}
+as.matrix(distances)[1:5, 1:5]
+```
+
+The Binary Jaccard dissimilarities range between zero (identical) and one (no shared genera).
+
+```{r}
+range(distances)
+```
+
+
+# Session info
+
+Records your package versions etc.
+Useful for debugging / reproducing analysis.
+
+```{r}
+devtools::session_info()
+```
