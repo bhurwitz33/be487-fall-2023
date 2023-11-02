@@ -10,12 +10,16 @@ output:
     toc_depth: 3
     toc_float: 
       collapsed: true
+editor_options: 
+  markdown: 
+    wrap: sentence
 ---
 
 # Setup
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE, fig.width = 6, fig.height = 4, dpi = 120)
+knitr::opts_knit$set(root.dir = '/xdisk/bhurwitz/bh_class/bonnie/exercises/15_beta_diversity_1')
 ```
 
 ```{r message=FALSE}
@@ -31,8 +35,9 @@ library(shiny)
 ```{r}
 mice <- readRDS('/xdisk/bhurwitz/bh_class/data/microviz/mice.rds')
 shao19 <- readRDS('/xdisk/bhurwitz/bh_class/data/microviz/shao19.rds')
+mice <- tax_fix(mice, verbose = FALSE)
+shao19 <- tax_fix(shao19, verbose = FALSE)
 ```
-
 
 # Beta diversity (part 1)
 
@@ -45,16 +50,12 @@ Alpha diversity is sometimes referred to as "within sample" diversity.
 
 Now we're going to look at "beta diversity", or "between sample" diversity.
 
-For this part we're going to swap to another dataset.
+For this part we're going to move to another dataset.
 So you get a little bit more practice examining a phyloseq object.
 Look at the rank names, sample data variables etc.
 
 ```{r}
 shao19 # this object has another part!
-```
-
-```{r}
-#
 ```
 
 ## Filtering
@@ -268,7 +269,6 @@ Depends on what analysis method you are filtering for!
 -   alpha diversity = DO NOT FILTER
 -   beta diversity = relevance of threshold depends on your distance measure (next topic!)
 -   differential abundance testing = stringent filtering, prevalence \>5%, \>10%? (last topic!)
-
 
 # Session info
 

@@ -10,12 +10,16 @@ output:
     toc_depth: 3
     toc_float: 
       collapsed: true
+editor_options: 
+  markdown: 
+    wrap: sentence
 ---
 
 # Setup
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE, fig.width = 6, fig.height = 4, dpi = 120)
+knitr::opts_knit$set(root.dir = '/xdisk/bhurwitz/bh_class/bonnie/exercises/14_alpha_diversity')
 ```
 
 ```{r message=FALSE}
@@ -30,20 +34,16 @@ library(shiny)
 
 ```{r}
 mice <- readRDS('/xdisk/bhurwitz/bh_class/data/microviz/mice.rds')
+mice <- tax_fix(mice, verbose = FALSE)
 ```
 
 # Reminder about our example `mice` dataset
 
-`mice` is 16S rRNA gene amplicon sequencing data, from the mouse antibiotics study 
-This is a `phyloseq` S4 object, containing processed microbiota data from the mouse study.
+`mice` is 16S rRNA gene amplicon sequencing data, from the mouse antibiotics study This is a `phyloseq` S4 object, containing processed microbiota data from the mouse study.
 
 <details>
 
-<summary>
-
-**Click here for more details about the mice dataset:**
-
-</summary>
+<summary>**Click here for more details about the mice dataset:**</summary>
 
 **The mice data**
 
@@ -179,12 +179,7 @@ What about richness?
 
 <details>
 
-<summary>
-
-**Click here for an exercise with an IBD dataset:**
-
-</summary>
-
+<summary>**Click here for an exercise with an IBD dataset:**</summary>
 
 **Inflammatory Bowel Disease study**
 
@@ -218,16 +213,11 @@ You can perform alpha diversity analysis: Try comparing the alpha diversity of t
 #
 ```
 
-
 </details>
 
 <details>
 
-<summary>
-
-**Click here for additional notes on richness and readcount**
-
-</summary>
+<summary>**Click here for additional notes on richness and readcount**</summary>
 
 **Additional notes on richness and readcount**
 
@@ -264,7 +254,6 @@ mice %>%
 2)  **Harder solution**: Explore more rigorous methods like `breakaway` by Amy Willis and team. <https://www.frontiersin.org/articles/10.3389/fmicb.2019.02407/full>
 
 </details>
-
 
 # Session info
 
