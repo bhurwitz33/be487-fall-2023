@@ -1,5 +1,5 @@
 ---
-title: "HW14: alpha diversity"
+title: "HW16: beta diversity 2"
 author: "Bonnie Hurwitz"
 date: "`r Sys.Date()`"
 output:
@@ -15,7 +15,7 @@ output:
     toc_depth: 3
     toc_float:
       collapsed: yes
-subtitle: Exploring Alpha Diversity
+subtitle: Exploring Beta Diversity Part 2
 editor_options:
   markdown:
     wrap: sentence
@@ -26,7 +26,7 @@ editor_options:
 ```{r setup, include=FALSE}
 # Change your NETID
 knitr::opts_chunk$set(echo = TRUE, fig.width = 6, fig.height = 4, dpi = 120)
-knitr::opts_knit$set(root.dir = '/xdisk/bhurwitz/bh_class/NETID/assignments/14_alpha_diversity')
+knitr::opts_knit$set(root.dir = '/xdisk/bhurwitz/bh_class/NETID/assignments/16_beta_diversity_2')
 ```
 
 ```{r}
@@ -62,7 +62,109 @@ colnames(fmt@tax_table@.Data)<- c("Kingdom", "Phylum", "Class", "Order", "Family
 fmt <- tax_fix(fmt, verbose = FALSE)
 ```
 
-### Starting here
+# Beta diversity (part 2)
+
+## Dissimilarity measures
+
+What are we doing? Calculating the dissimilarity of two samples' compositions (pairwise distance).
+
+Diversity β measures how different two or more communities are, either in their composition (richness) 
+or in the abundance of the organisms that compose it (abundance). 
+
+There are several dissimilarity measures we can use:
+
+-   Binary Jaccard - presence-absence only
+-   Bray-Curtis - abundance weighted
+-   UniFrac distances (unweighted, weighted, generalised)
+
+More details on each distance metric:
+
+- Jaccard distance: Based on the presence/absence of species (diversity). 
+It goes from 0 (same species in the community) to 1 (no species in common)
+
+- Bray-Curtis dissimilarity: The difference in richness and abundance across environments (samples). Weight on abundance. 
+Measures the differences from 0 (equal communities) to 1 (different communities)
+
+- UniFrac: Measures the phylogenetic distance; how alike the trees in each community are. 
+There are two types, without weights (diversity) and with weights (diversity and abundance)  
+
+Note that we are going to filter out rare taxa for each analysis rather than filter the entire fmt dataset.
+
+### Jaccard distances
+
+Let's start out by calcualting the Jaccard Distances.
+
+```{r}
+fmt %>%
+  tax_filter(min_prevalence = 2.5 / 100) %>%
+  tax_agg(rank = "Genus") %>%
+  tax_transform("binary") %>% # converts counts to absence/presence: 0/1
+  dist_calc(dist = "jaccard")
+```
+
+So we get our pairwise dissimilarities, in a distance matrix 
+
+```{r}
+jdistances <- fmt %>%
+  tax_filter(min_prevalence = 2.5 / 100, verbose = FALSE) %>%
+  tax_agg(rank = "Genus") %>%
+  tax_transform("binary") %>%
+  dist_calc(dist = "jaccard") %>%
+  dist_get()
+```
+
+You can extract the dissimilarities or distances with dist_get. Change the matrix size based on the number of samples you have.
+
+```{r}
+sample_names(fmt) # count the number of sample names
+```
+
+```{r}
+as.matrix(jdistances)[1:10, 1:10]
+```
+
+The Binary Jaccard dissimilarities range between zero (identical) and one (no shared genera). Let's see what the range is for our pairwise sample distances.
+
+```{r}
+range(jdistances)
+```
+
+
+### Bray-Curtis Distances
+
+Next, let's account for abundance and calculate the Bray-Curtis Distances.
+
+```{r}
+fmt %>%
+  tax_filter(min_prevalence = 2.5 / 100) %>%
+  tax_agg(rank = "Genus") %>%
+  dist_calc(dist = "bray")
+```
+
+Hiw do the distances change when we account for abundance? Let's create the distance matrix. 
+
+
+```{r}
+bdistances <- fmt %>%
+  tax_filter(min_prevalence = 2.5 / 100, verbose = FALSE) %>%
+  tax_agg(rank = "Genus") %>%
+  dist_calc(dist = "bray") %>%
+  dist_get()
+```
+
+You can extract the dissimilarities or distances with dist_get. Change this based on the number of samples you have.
+
+```{r}
+as.matrix(bdistances)[1:10, 1:10]
+```
+
+What is the range of values that we see in the pairwise distance matrix? Why is this different from the Jaccard distance?
+
+```{r}
+range(bdistances)
+```
+
+## Finishing up
 
 Copy your notebook into the current working directory. Be sure to change to your NETID.
 
@@ -70,7 +172,7 @@ Also, take a minute to "knit" the Rmd notebook into word, and submit this on D2L
 
 ```{bash, engine.opts='-l'}
 # copy your notebook into the working directory
-cp ~/hw13_microviz.Rmd /xdisk/bhurwitz/bh_class/NETID/assignments/13_microviz
+cp ~/hw16_beta_diversity_2.Rmd /xdisk/bhurwitz/bh_class/NETID/assignments/beta_diversity_2
 ```
 
 # Session info

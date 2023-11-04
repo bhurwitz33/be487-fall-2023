@@ -1,5 +1,5 @@
 ---
-title: "HW14: alpha diversity"
+title: "HW15: beta diversity 1"
 author: "Bonnie Hurwitz"
 date: "`r Sys.Date()`"
 output:
@@ -15,7 +15,7 @@ output:
     toc_depth: 3
     toc_float:
       collapsed: yes
-subtitle: Exploring Alpha Diversity
+subtitle: Exploring Beta Diversity Part 1
 editor_options:
   markdown:
     wrap: sentence
@@ -26,7 +26,7 @@ editor_options:
 ```{r setup, include=FALSE}
 # Change your NETID
 knitr::opts_chunk$set(echo = TRUE, fig.width = 6, fig.height = 4, dpi = 120)
-knitr::opts_knit$set(root.dir = '/xdisk/bhurwitz/bh_class/NETID/assignments/14_alpha_diversity')
+knitr::opts_knit$set(root.dir = '/xdisk/bhurwitz/bh_class/NETID/assignments/15_beta_diversity_1')
 ```
 
 ```{r}
@@ -64,13 +64,201 @@ fmt <- tax_fix(fmt, verbose = FALSE)
 
 ### Starting here
 
+# Beta diversity (part 1)
+
+β diversity is the difference (measured as distance) between two or more environments. 
+
+It can be measured with metrics like Bray-Curtis dissimilarity, Jaccard distance, or UniFrac distance, to name a few. Each one 
+of this measures are focused on a characteristic of the community (*e.g.,* Unifrac distance measures the phylogenetic relationship
+between the species of the community).
+
+## Filtering
+
+First, we need to talk about filtering.
+
+### Sample filtering
+
+First, we need to check if any of your samples have a surprisingly low total number of (classified) reads.
+This can suggest that something went wrong in the lab (or during sample collection) and the data from this sample might be unreliable.
+
+```{r, fig.height=3, fig.width=6}
+fmt %>% 
+  ps_mutate(reads = sample_sums(fmt)) %>% 
+  samdat_tbl() %>% 
+  ggplot(aes(x = reads)) + 
+  geom_freqpoly(bins = 500) +
+  geom_rug(alpha = 0.5) +
+  scale_x_log10(labels = scales::label_number()) +
+  labs(x = 'Number of classified reads', y = NULL) +
+  theme_bw()
+```
+
+How many is enough?
+There is no easy answer.
+
+These samples have great depth. There are a few with much less reads than the rest, and a few with under a million.
+You might consider dropping the samples with under a million reads, to see if it affects your results, but in this case we won't.
+
+### Taxon filtering
+
+Next, we want to filter out **rare** taxa, before performing our analysis.
+
+#### Why remove rare taxa?
+
+**Rare taxa might be:**
+
+1.  Rare taxa might be erroneous: sequencing errors, chimeric sequences...
+
+2.  Statistical challenges:
+
+    -   There are often A LOT of different rare taxa
+        -   Sparsity, lots of zeros
+        -   Low precision in very low abundance taxa (integer counts)
+        -   Multiple comparisons (we'll get to that later)
+    -   Having many many taxa in your dataset can really slow down some analyses!
+
+3.  Biological (ir)relevance:
+
+    -   For many (most?) microbiome research questions, rare taxa are less likely to be relevant
+    -   For common host health problems and the human/animal microbiome, if a taxon only occurs in every 100th person, it is less likely to be relevant to risk common disease outcomes (?)
+
+
+#### How to remove rare taxa?
+
+**What is rare?** Two main concepts.
+
+-   Low **prevalence** - taxon only detected in a small number of samples in your dataset.
+-   Low **abundance** - relatively few reads assigned to that taxon (on average or in total)
+
+Consider the impact of issues 1, 2, and 3. Let's say we are not interested in unique taxa that occur in fewer than 2% of samples, and they have to have at least 10,000 reads in total across all samples.
+
+```{r}
+# before filtering
+ntaxa(fmt)
+
+# after filtering
+fmt %>% 
+  tax_filter(min_prevalence = 5 / 100, min_total_abundance = 10000) %>% 
+  ntaxa()
+```
+
+Wow so that would remove **most** of our unique taxa!
+What is going on? Let's make some plots!
+
+```{r}
+# make table of summary statistics for the unique taxa in fmt
+# Nothing will be output, this is used in the next step
+fmtTaxaStats <- tibble(
+  taxon = taxa_names(fmt),
+  prevalence = microbiome::prevalence(fmt),
+  total_abundance = taxa_sums(fmt)
+)
+```
+
+```{r}
+p <- fmtTaxaStats %>%
+  ggplot(aes(total_abundance, prevalence)) +
+  geom_point(alpha = 0.5) +
+  geom_rug(alpha = 0.1) +
+  scale_x_continuous(
+    labels = scales::label_number(), name = "Total Abundance"
+  ) +
+  scale_y_continuous(
+    labels = scales::label_percent(), breaks = scales::breaks_pretty(n = 9),
+    name = "Prevalence (%)",
+    sec.axis = sec_axis(
+      trans = ~ . * nsamples(fmt), breaks = scales::breaks_pretty(n = 9),
+      name = "Prevalence (N samples)"
+    )
+  ) +
+  theme_bw()
+p
+```
+
+So most taxa have a low prevalence, and handful have way more reads than most.
+
+Let's label those points to check which taxa are the big time players.
+
+```{r}
+p + ggrepel::geom_text_repel(
+  data = function(df) filter(df, total_abundance > 5e6 | prevalence > 1.0),
+  mapping = aes(label = taxon), size = 2.5, min.segment.length = 0, force = 15
+)
+```
+
+Now let's zoom in on the less abundant taxa by log-transforming the axes.
+We'll also add lines indicating the thresholds of 5% prevalence and 10000 reads abundance.
+
+```{r}
+fmtTaxaStats %>%
+  ggplot(aes(x = total_abundance, y = prevalence)) +
+  geom_vline(xintercept = 10000, color = "red", linetype = "dotted") +
+  geom_hline(yintercept = 5 / 100, color = "red", linetype = "dotted") +
+  geom_point(alpha = 0.5) +
+  geom_rug(alpha = 0.1) +
+  scale_x_log10(labels = scales::label_number(), name = "Total Abundance") +
+  scale_y_log10(
+    labels = scales::label_percent(), breaks = scales::breaks_log(n = 9),
+    name = "Prevalence (%)",
+    sec.axis = sec_axis(
+      trans = ~ . * nsamples(fmt), breaks = scales::breaks_log(n = 9),
+      name = "Prevalence (N samples)"
+    )
+  ) +
+  theme_bw()
+```
+
+We can break this down by phylum if we add the taxonomic table information.
+
+```{r, fig.height = 5, fig.width=8}
+# don't worry about this code if it's confusing, just focus on the plot output
+fmt %>%
+  tax_table() %>%
+  as.data.frame() %>%
+  as_tibble(rownames = "taxon") %>%
+  left_join(fmtTaxaStats, by = "taxon") %>%
+  add_count(Phylum, name = "phylum_count", sort = TRUE) %>%
+  mutate(Phylum = factor(Phylum, levels = unique(Phylum))) %>% # to fix facet order
+  mutate(Phylum = forcats::fct_lump_n(Phylum, n = 5)) %>%
+  mutate(Phylum = forcats::fct_explicit_na(Phylum, na_level = "Other")) %>%
+  ggplot(aes(total_abundance, prevalence)) +
+  geom_vline(xintercept = 10000, color = "red", linetype = "dotted") +
+  geom_hline(yintercept = 5 / 100, color = "red", linetype = "dotted") +
+  geom_point(alpha = 0.5, size = 1) +
+  geom_rug(alpha = 0.2) +
+  scale_x_log10(
+    labels = scales::label_log(), breaks = scales::breaks_log(n = 5),
+    name = "Total Abundance"
+  ) +
+  scale_y_log10(
+    labels = scales::label_percent(), breaks = scales::breaks_log(n = 9),
+    name = "Prevalence (%)",
+    sec.axis = sec_axis(
+      trans = ~ . * nsamples(fmt), breaks = scales::breaks_log(n = 9),
+      name = "Prevalence (N samples)"
+    )
+  ) +
+  facet_wrap("Phylum") +
+  theme_bw(10)
+```
+
+**How to pick a threshold?**
+
+Depends on what analysis method you are filtering for!
+
+-   alpha diversity = DO NOT FILTER
+-   beta diversity = relevance of threshold depends on your distance measure
+-   differential abundance testing = stringent filtering, prevalence \>5%, \>10%?
+
+## Finishing up
+
 Copy your notebook into the current working directory. Be sure to change to your NETID.
 
 Also, take a minute to "knit" the Rmd notebook into word, and submit this on D2L. Note that this will become useful later for your report, when you select a few graphs to include.
 
 ```{bash, engine.opts='-l'}
 # copy your notebook into the working directory
-cp ~/hw13_microviz.Rmd /xdisk/bhurwitz/bh_class/NETID/assignments/13_microviz
+cp ~/hw15_beta_diversity_1.Rmd /xdisk/bhurwitz/bh_class/NETID/assignments/beta_diversity_1
 ```
 
 # Session info
