@@ -1,0 +1,242 @@
+---
+title: "HW14: alpha diversity"
+author: "Bonnie Hurwitz"
+date: "`r Sys.Date()`"
+output:
+  word_document:
+    toc: yes
+    toc_depth: '3'
+  pdf_document:
+    toc: yes
+    toc_depth: '3'
+  html_document:
+    theme: paper
+    toc: yes
+    toc_depth: 3
+    toc_float:
+      collapsed: yes
+subtitle: Exploring Alpha Diversity
+editor_options:
+  markdown:
+    wrap: sentence
+---
+
+# Setup
+
+```{r setup, include=FALSE}
+# Change your NETID
+knitr::opts_chunk$set(echo = TRUE, fig.width = 6, fig.height = 4, dpi = 120)
+knitr::opts_knit$set(root.dir = '/xdisk/bhurwitz/bh_class/NETID/assignments/14_alpha_diversity')
+```
+
+```{r}
+getwd()
+```
+
+```{r message=FALSE}
+library(seriation)
+library(dplyr)
+library(purrr)
+library(ggplot2)
+library(phyloseq)
+library(microViz)
+library(shiny)
+```
+
+## Importing and fixing taxa your FMT dataset
+
+To get started, we need to import our example.biom file into R and work with it using the phyloseq package
+
+```{r}
+# replace your NETID and SETID here, for example set21.biom
+fmt <- import_biom("/xdisk/bhurwitz/bh_class/NETID/assignments/12_phyloseq/SETID.biom")
+```
+
+### Fixing tax_table
+
+Let's format the dataset.
+
+```{r}
+fmt@tax_table@.Data <- substring(fmt@tax_table@.Data, 4)
+colnames(fmt@tax_table@.Data)<- c("Kingdom", "Phylum", "Class", "Order", "Family", "Genus", "Species")
+fmt <- tax_fix(fmt, verbose = FALSE)
+```
+
+## Alpha diversity
+
+Species diversity, in its simplest definition, is the number of species in a particular area and their relative abundance (evenness).
+Once we know the taxonomic composition of our metagenomes, we can do diversity analyses. 
+Here we will discuss the two most used diversity metrics, α diversity (within one metagenome) and β (across metagenomes).   
+
+- α Diversity: Can be represented only as richness (*, i.e.,* the number of different species in an environment), 
+or it can be measured considering the abundance of the species in the environment as well 
+(*i.e.,* the number of individuals of each species inside the environment). 
+
+If you want to read more about diversity, I recommend to you this [paper](https://link.springer.com/article/10.1007/s00442-010-1812-0) on 
+the concept of diversity.
+
+To measure α-diversity, we use indexes such as Shannon's, Simpson's, Chao1, etc. 
+
+
+### α diversity indexes 
+
+|-------------------+-----------------------------------------------------------------------------------------------------------------|   
+| Diversity Indices |                             Description                                                                         |   
+|-------------------+-----------------------------------------------------------------------------------------------------------------|   
+|      Shannon (H)  | Estimation of species richness and species evenness. More weight on richness.                                   |   
+|-------------------+-----------------------------------------------------------------------------------------------------------------|   
+|    Simpson's (D)  |Estimation of species richness and species evenness. More weigth on evenness.                                    |                              
+|-------------------+-----------------------------------------------------------------------------------------------------------------|   
+|     Chao1         | Abundance based on species represented by a single individual (singletons) and two individuals (doubletons).    |            
+|-------------------+-----------------------------------------------------------------------------------------------------------------|   
+
+## Why is this interesting?
+
+### Biologically
+
+-   Lower gut microbiome diversity is related to worse health in adult humans.
+-   Higher diversity ecosystems are often considered healthier, more mature, and more resilient to perturbation.
+-   BUT: diverse == healthy does not hold for all ecosystems, e.g. early infant gut microbiome, so consider your own data and hypotheses carefully.
+
+### Practically
+
+Diversity indices provide a simple one number summary of each ecosystem: easy to compare and do stats with.
+
+## Richness
+
+The more the merrier. The simplest measure is just counting, aka "Observed Richness".
+
+Before we get started, let's calculate some simple statistics for our metagenomes.
+Using the `sample_sums()` command, we can see how many reads there are in each of the metagenomes.
+ 
+```{r}
+sample_sums(fmt)
+```
+
+Also, the Max, Min, and Mean output on `summary()` can give us a sense of the evenness. 
+For example, the OTU that occurs the most times in a sample is reported as the Max.
+
+```{r}
+summary(fmt@otu_table@.Data)
+```
+
+Now, Let's compute the observed richness and label each sample with it.
+
+```{r}
+fmt %>% 
+  ps_calc_richness(rank = 'Genus', index = 'observed', varname = 'N genera') %>%
+  comp_barplot(
+    tax_level = "Genus", n_taxa = 12, label = 'N genera', bar_width = 0.7,
+    sample_order = 'asis', merge_other = FALSE#, tax_transform_for_plot = 'identity'
+  ) +
+  coord_flip()
+```
+
+## Diversity
+
+Richness and evenness matter. Let's check these out.
+
+```{r}
+fmt %>% 
+  ps_calc_diversity(rank = 'Genus', index = 'shannon') %>%
+  ps_mutate(shannon_Genus = round(shannon_Genus, digits = 2)) %>% 
+  comp_barplot(
+    tax_level = "Genus", n_taxa = 12, label = 'shannon_Genus', bar_width = 0.7,
+    sample_order = 'asis', merge_other = FALSE
+  ) +
+  coord_flip()
+```
+
+## Statistics with alpha diversity
+
+Let's calculate alpha diversity values for our complete FMT dataset.
+
+```{r, fig.width=3, fig.height=1}
+fmt %>% 
+  ps_calc_diversity(rank = 'Genus', index = 'shannon') %>%
+  samdat_tbl() %>% 
+  ggplot(aes(x = shannon_Genus, y = "FMT samples over time")) + 
+  geom_point(position = position_jitter(height = 0.2), alpha = 0.5) +
+  labs(x = 'Shannon diversity (Genus)', y = NULL) +
+  xlim(1, 2.5) +
+  theme_bw() 
+```
+
+Let's calculate alpha diversity for the donor vs recipient fmt datasets.
+I suspect that the average gut microbiota diversity of the donors will differ from the recipients.
+
+```{r, fig.width=4, fig.height=2.5}
+fmt %>% 
+  ps_calc_diversity(rank = 'Genus', index = 'shannon') %>%
+  samdat_tbl() %>% 
+  ggplot(aes(y = type, x = shannon_Genus)) +
+  geom_boxplot(width = 0.3) + 
+  geom_point(position = position_jitter(height = 0.2), alpha = 0.5) +
+  theme_bw()
+```
+
+It looks like the recipient fmt have lower gut microbiota diversity on average.
+A simple statistical test supports this.
+
+```{r}
+fmt %>% 
+  ps_calc_diversity(rank = 'Genus', index = 'shannon') %>%
+  samdat_tbl() %>% 
+  wilcox.test(formula = shannon_Genus ~ type, data = .)
+```
+
+Simple approaches like Observed Richness are sensitive to what ecologists call "sampling effort".
+For macroecologists, this is actually how much time/effort you spent trying to count all the organisms present in an ecosystem.
+In our case, the amount of total reads obtained represents the sampling effort: more reads, more effort.
+Indeed we can see that the samples with a much lower readcount have lower observed richness.
+
+(Furthermore, as this richness estimate is based on a sample, and not the actual ecosystem, 
+the richness estimate actually has quantifiable uncertainty too.)
+
+```{r}
+fmt %>% 
+  ps_calc_richness(rank = 'Genus', index = 'observed', varname = 'N genera') %>%
+  comp_barplot(
+    tax_level = "Genus", n_taxa = 12, label = 'N genera', bar_width = 0.7,
+    sample_order = 'asis', merge_other = FALSE, tax_transform_for_plot = 'identity'
+  )
+```
+
+```{r, fig.width=5, fig.height=3}
+fmt %>% 
+  ps_calc_richness(rank = 'Genus', index = 'observed', varname = 'genera') %>%
+  ps_mutate(readcount = sample_sums(fmt)) %>% 
+  samdat_tbl() %>% 
+  ggplot(aes(readcount, genera)) + 
+  geom_point(alpha = 0.4, size = 2.5) +
+  theme_bw(14)
+```
+
+**What to do:**
+
+1)  **Simple solution**: Ignore the problem. Whilst you can't interpret the richness of any individual sample as being correct, 
+                         it is still usually valid to compare richness across groups of samples, as the readcount variation is only random noise, 
+                         and should be uncorrelated with your grouping variable (but do check this).
+2)  **Harder solution**: Explore more rigorous methods like `breakaway` by Amy Willis and team. 
+                        <https://www.frontiersin.org/articles/10.3389/fmicb.2019.02407/full>
+
+
+### Finishing up
+
+Copy your notebook into the current working directory. Be sure to change to your NETID.
+
+Also, take a minute to "knit" the Rmd notebook into word, and submit this on D2L. Note that this will become useful later for your report, when you select a few graphs to include.
+
+```{bash, engine.opts='-l'}
+# copy your notebook into the working directory
+cp ~/hw13_microviz.Rmd /xdisk/bhurwitz/bh_class/NETID/assignments/13_microviz
+```
+
+# Session info
+
+Records your package versions etc.
+Useful for debugging / reproducing analysis.
+
+```{r}
+devtools::session_info()
+```

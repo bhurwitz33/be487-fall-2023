@@ -16,6 +16,7 @@ output:
 
 ```{r setup}
 knitr::opts_chunk$set(echo = TRUE, fig.width = 6, fig.height = 4, dpi = 120)
+knitr::opts_knit$set(root.dir = '/xdisk/bhurwitz/bh_class/NETID/exercises/18_abundance_trans') # Change your NETID
 ```
 
 ```{r message=FALSE}

@@ -1,6 +1,6 @@
 ---
-title: "Microbiome data analysis with microViz"
-author: "David Barnett"
+title: "HW13: microviz"
+author: "Bonnie Hurwitz"
 date: "`r Sys.Date()`"
 output:
   word_document:
@@ -24,8 +24,9 @@ editor_options:
 # Setup
 
 ```{r setup, include=FALSE}
+# Change your NETID
 knitr::opts_chunk$set(echo = TRUE, fig.width = 6, fig.height = 4, dpi = 120)
-knitr::opts_knit$set(root.dir = '/xdisk/bhurwitz/bh_class/bonnie/exercises/13_microviz')
+knitr::opts_knit$set(root.dir = '/xdisk/bhurwitz/bh_class/NETID/assignments/13_microviz')
 ```
 
 ```{r}
@@ -43,171 +44,197 @@ library(microViz)
 library(shiny)
 ```
 
-```{r}
-mice <- readRDS('/xdisk/bhurwitz/bh_class/data/microviz/mice.rds')
-```
+## Importing and fixing taxa your FMT dataset
 
-Now that we are getting into microbiome analytics, we are going to transition to using more complete datasets with taxonomic data and metadata.
-We'll start by using a gut microbiome from a study of antibiotic administration in mice.
-
--   `mice` is 16S rRNA gene amplicon sequencing data, from the mouse antibiotics study
-    -   They used Illumina MiSeq and processed the data into ASVs using DADA2
-
-The data has already been processed from fastq files into counts per taxon, and are available to you on the UA cluster.
-This is the exciting bit, you get to explore and visualize the data, and do statistics (yay!).
-
-# Intro to phyloseq
-
-This is a `phyloseq` S4 object, containing processed microbiota data from the mouse study.
-
-<details>
-
-<summary>**Click here for more details about the mice dataset:**</summary>
-
-**The mice data**
-
-The data originate from a study on the effects of oral antibiotic administration on flavivirus infection (<https://www.ncbi.nlm.nih.gov/pubmed/29590614>).
-Sequence data was generated from extracted nucleic acid from stool samples collected from individually caged mice and amplified using primers specific for the V4 region using primers 515F/806R.
-
-The study followed flavivirus infection after the following treatments:
-
-1)  Koolaid: Antibiotics are provided to the mice via their drinking water. As many of the antibiotics taste bad, koolaid is added as a sweetener. Therefore, the appropriate control is water spiked and labelled *koolaid*.
-2)  Ampicillin (Amp): <https://en.wikipedia.org/wiki/Ampicillin>
-3)  Metronidazole (Met): <https://en.wikipedia.org/wiki/Metronidazole>
-4)  Ampicillin + Metronidazole (Amp+Metro)
-
-Treatments were supplied ad libitum for 2 weeks prior to viral infection and maintained for 2 weeks post-infection.
-Primary outcome was mouse survival.
-Each treatment group had two subgroups of mice that were either a) left uninfected as controls or b) infected with West Nile Virus via a subcutaneous foot pad injection.
-
-</details>
-
-Get a little familiar with the object.
-What does it have in it?
-Can you look at each part?
-
-The printed object shows you functions you can use to access the data inside.
-
-You can also use the `@` symbol.
+To get started, we need to import our example.biom file into R and work with it using the phyloseq package
 
 ```{r}
-mice
-# View(mice)
+# replace your NETID and SETID here, for example set21.biom
+fmt <- import_biom("/xdisk/bhurwitz/bh_class/NETID/assignments/12_phyloseq/SETID.biom")
 ```
+
+Now you have your dataset loaded, and we can get started by looking at what is in it.
+This is a `phyloseq` S4 object, containing processed microbiota data from our FMT study. Your set has a subset of the total data set. Each set is comprised of 2-3 donors and 2-3 recipients for an FMT. Also, you might find that some of the samples have been sequenced multiple times where there are replicates of the same sample. 
+
+We can start out by looking at what is in our phyloseq object.
 
 ```{r}
-tax_table(mice) %>% head()
+fmt
+# View(fmt)
 ```
+Next, let's look at the tax_table and see what taxa we have.
 
 ```{r}
-rank_names(mice)
+tax_table(fmt) %>% head()
 ```
+
+Oh no! These taxa are formatted based on the kraken2 output. Notice that each of the taxa in `.Data` is preceded by a letter followed by two underscores. For example: `o__Rhodobacterales`. In this case, "Rodobacterales" starts at position 4 with an R.To remove unnecessary characters in `.Data` (matrix), we will use the command `substring()`. This command helps extract or replace characters in a vector.
 
 ```{r}
-otu_table(mice)[1:15, 1:8] 
-# mice@otu_table[1:15, 1:10] # the same result
+fmt@tax_table@.Data <- substring(fmt@tax_table@.Data, 4)
 ```
+
+Did it work?
 
 ```{r}
-sample_variables(mice)
+tax_table(fmt) %>% head()
 ```
+
+Looks great! Now, we just have the Taxa ids. Next, we need to change the ranks into a meaningful name. We currently have "Rank1, Rank2, ..." and we need "Kingdom, Phylum, ..". We can change the column names with the following code:
 
 ```{r}
-sample_data(mice)[1:15, 1:5]
+colnames(fmt@tax_table@.Data)<- c("Kingdom", "Phylum", "Class", "Order", "Family", "Genus", "Species")
 ```
+
+Let's check and see how everything looks:
 
 ```{r}
-sample_names(mice) %>% head(10) 
+tax_table(fmt) %>% head()
 ```
 
-# Looking at microbiome data
+## Using phyloseq objects
 
-Okay, so how do we look at the microbiota abundance data?
-To do this, we're going to use the R package `microViz`
+We just created a phyloseq object from our .biom file called "fmt". What does the phyloseq object have in it?
 
-## Barcharts: bad to better
-
-Lets take a very small subset of this data to get started.
-Just the control group (vehicle treatment) at day 13.
+First, we can look at what is in the tax_table. This is a list of all of the taxa and the taxonomic ranks for each one. 
 
 ```{r}
-# We can filter the samples like this, using the sample_data information
-mice %>% 
-  ps_filter(treatment_days == 'D13', virus == 'WNV2000', treatment == 'Vehicle')
+tax_table(fmt) %>% head()
 ```
+
+Next, we can get a list of all of the taxonomic ranks in our phyloseq object
+
+```{r}
+rank_names(fmt)
+```
+
+Let's check and see how many samples we have in our dataset. You will need to use this information in the next section.
+
+```{r}
+sample_names(fmt)
+```
+Looks like I have 10 samples in my dataset. How about you? Change the code below to list the first 15 taxa for each sample in the otu_table.
+
+```{r}
+otu_table(fmt)[1:15, 1:10] 
+# note that this assumes you have 9 samples, but you may have more or less
+# if you get an out of bounds error, you might not have set the sample number correctly
+```
+
+Let's check out the metadata we have for our samples. This will be important for our analyses and deciding how to group the datasets.
+
+```{r}
+sample_variables(fmt)
+```
+
+Lastly, we can also view the sample data for each metagenome.
+
+```{r}
+sample_data(fmt)
+```
+
+OK, let's dive into using a few other commands to explore our dataset. We will use a command named `unique()` to see how many phyla we have. Let's see the result we obtain from the following code:
+
+```{r}
+unique(fmt@tax_table@.Data[,"Phylum"])
+```
+
+We know that the gut microbiome has common phyla. Let´s use the command `sum()` to ask R to add some of these up for us. Note we are using the new phylum names.
+
+```{r}
+sum(fmt@tax_table@.Data[,"Phylum"] == "Bacillota") # Firmicutes
+sum(fmt@tax_table@.Data[,"Phylum"] == "Bacteroidota") # Bacteroidetes
+sum(fmt@tax_table@.Data[,"Phylum"] == "Actinomycetota") # Actinobacteria
+sum(fmt@tax_table@.Data[,"Phylum"] == "Verrucomicrobiota") # Verrucomicrobia
+sum(fmt@tax_table@.Data[,"Phylum"] == "Pseudomonadota") #Proteobacteria
+```
+
+Let's say you want to find out how many Classes are in the Phylum "Bacillota", you can do that with the code below (or try another Phylum):
+
+```{r}
+unique(fmt@tax_table@.Data[fmt@tax_table@.Data[,"Phylum"] == "Bacillota", "Class"])
+#unique(fmt@tax_table@.Data[fmt@tax_table@.Data[,"Phylum"] == "Bacteroidota", "Class"])
+#unique(fmt@tax_table@.Data[fmt@tax_table@.Data[,"Phylum"] == "Actinomycetota", "Class"])
+#unique(fmt@tax_table@.Data[fmt@tax_table@.Data[,"Phylum"] == "Verrucomicrobiota", "Class"])
+#unique(fmt@tax_table@.Data[fmt@tax_table@.Data[,"Phylum"] == "Pseudomonadota", "Class"])
+```
+
+# Barcharts, from bad to better
+
+Let's start to look at our FMT data using barcharts. First, we will generate some basic bar charts, and then start to group our data based on our metadata to see if we can learn more about each of the FMT groups in our dataset. 
 
 ### Bad bars
 
+First, let's plot each unique taxa and count them.
+
 ```{r}
-mice %>% 
-  ps_filter(treatment_days == 'D13', virus == 'WNV2000', treatment == 'Vehicle') %>%
+fmt %>%
   comp_barplot(
     tax_level = 'unique', n_taxa = 12, bar_width = 0.7,
-    sample_order = 'asis', tax_transform_for_plot = 'identity'
+    sample_order = 'asis', x = "gid", tax_transform_for_plot = 'identity'
   ) +
   coord_flip() 
 ```
 
-What is going on here??
-The unique taxa have uninformative IDs, and we also got a message about problems with the taxonomy table.
+What is going on here?? We have two problems. The unique taxa have uninformative IDs, and we also got a message about problems with the taxonomy table. 
 
-The total number of reads also varies a lot between samples!
-The total number of reads for each sample is NOT a reliable indicator of the biomass or bacterial load of each sample.
-So for now we will just consider the relative abundance of each taxon, as proportions of the total counts for that sample.
+Also notice that the total number of reads varies a lot between samples. The total number of reads for each sample is NOT a reliable indicator of the biomass or bacterial load of each sample. So instead we will just consider the relative abundance of each taxon, as proportions of the total counts for that sample.
 
 ### Compositions (%)
 
 ```{r}
-mice %>% 
-  ps_filter(treatment_days == 'D13', virus == 'WNV2000', treatment == 'Vehicle') %>%
+fmt %>% 
   comp_barplot(
-    tax_level = 'unique', n_taxa = 12, sample_order = 'asis', bar_width = 0.7
+    tax_level = 'unique', n_taxa = 12, sample_order = 'asis', x = "gid", bar_width = 0.7
   ) +
   coord_flip()
 ```
 
 ### Fixing tax_table
 
-Let's look at the taxonomy table interactively
+We can look at the taxonomy table interactively.  
 
 ```{r}
-# tax_fix_interactive(mice) # run this in the R Console for an interactive look
+#tax_fix_interactive(mice) # run this in the R Console for an interactive look
 ```
 
-Looks like we just need to fill in some blank cells when a sequence was not classified at genus or family.
-`tax_fix` can do this, it just copies down info from a higher rank classification.
-Let's update our `mice` phyloseq object with this fix.
+Or, we can go straight to using tax_fix() to do the work for us. 
+
+What does tax_fix do? tax_fix searches all the ranks of the phyloseq object tax_table for: 
+
+1. short values, like “g__”, ““,” “, etc. (any with fewer characters than min_length)
+2. common, longer but uninformative values like “unknown” (see full list at ?tax_fix)
+3. NAs 
+
+tax_fix replaces these values with the next higher taxonomic rank.
 
 ```{r}
-mice <- tax_fix(mice, verbose = FALSE)
+fmt <- tax_fix(fmt, verbose = FALSE)
 ```
 
 We can also rename the unique taxa with a more informative name, according to their classification at the rank of Family (and how common they are).
 
 ```{r}
-mice %>% taxa_names() %>% head
-mice <- tax_rename(mice, rank = 'Family')
-mice %>% taxa_names() %>% head
+fmt %>% taxa_names() %>% head
+fmt <- tax_rename(fmt, rank = 'Family')
+fmt %>% taxa_names() %>% head
 ```
-
-Let's try again with the better names.
+Let's try again with the better names. 
 
 ```{r}
-mice %>% 
-  ps_filter(treatment_days == 'D13', virus == 'WNV2000', treatment == 'Vehicle') %>%
+fmt %>% 
   comp_barplot(
-    tax_level = 'unique', n_taxa = 12, sample_order = 'asis', bar_width = 0.7
+    tax_level = 'unique', n_taxa = 12, sample_order = 'asis', x = "gid", bar_width = 0.7
     ) +
   coord_flip()
 ```
 
-Sadly we don't have enough distinct colours to show all the unique taxa.
+Sadly we don't have enough distinct colors to show all the unique taxa. But, we can look at these in shades of grey.
 
 ```{r}
-mice %>% 
-  ps_filter(treatment_days == 'D13', virus == 'WNV2000', treatment == 'Vehicle') %>%
+fmt %>% 
   comp_barplot(
-    tax_level = 'unique', n_taxa = 12, sample_order = 'asis', bar_width = 0.7,
+    tax_level = 'unique', n_taxa = 12, sample_order = 'asis', x = "gid", bar_width = 0.7,
     merge_other = FALSE
     ) +
   coord_flip()
@@ -216,71 +243,131 @@ mice %>%
 ### Aggregating taxa
 
 So let's "aggregate" all the counts into family-level groups.
-For each family, this adds together all the counts from every ASV that belongs to that family.
+For each family, this adds together all the counts from every species that belongs to that family.
 We can do that by changing the `tax_level` argument to "Family".
 
 ```{r dev = "png"}
-mice %>% 
-  ps_filter(treatment_days == 'D13', virus == 'WNV2000', treatment == 'Vehicle') %>%
+fmt %>% 
   comp_barplot(
-    tax_level = "Family", n_taxa = 10, bar_width = 0.7, sample_order = 'asis'
+    label = "type",
+    tax_level = "Family", n_taxa = 10, bar_width = 0.7, x = "gid", sample_order = 'asis'
   ) +
   coord_flip()
 ```
 
-By aggregating at family level, we have sacrificed taxonomic resolution, compared to using ASVs.
-But this way we can get an idea of which families are the most abundant, and how variable the communities are.
-
-Try making some similar plots aggregated at different taxonomic ranks.
+By aggregating at family level, we have sacrificed taxonomic resolution, compared to using species-level assignments.But this way we can get an idea of which families are the most abundant, and how variable the communities are. Try making some similar plots aggregated at different taxonomic ranks.
 
 ```{r}
-# rank_names(mice)
-# mice %>%
-#   ps_filter(treatment_days == 'D13', virus == 'WNV2000', treatment == 'Vehicle') %>%
+# rank_names(fmt)
+# fmt %>%
 #   comp_barplot(tax_level = , n_taxa = 10, sample_order = 'asis', merge_other = FALSE)
 ```
 
 ```{r}
-mice %>% 
-  ps_filter(treatment_days == 'D13', virus == 'WNV2000', treatment == 'Vehicle') %>% 
+fmt %>% 
   comp_barplot(
-    tax_level = "Genus", n_taxa = 12, bar_width = 0.7,
+    tax_level = "Genus", n_taxa = 12, bar_width = 0.7, x = "gid",
     sample_order = 'asis', merge_other = FALSE
   ) +
   coord_flip()
 ```
 
-Many of the ASVs in this mice data, the *Porphyromonadaceae*, could not be classified at genus level.
 
 ```{r}
-mice %>% 
-  ps_filter(treatment_days == 'D13', virus == 'WNV2000', treatment == 'Vehicle') %>% 
+fmt %>% 
   comp_barplot(
-    tax_level = "Phylum", n_taxa = 7, bar_width = 0.7, sample_order = 'asis'
+    tax_level = "Phylum", n_taxa = 7, bar_width = 0.7, x = "gid", sample_order = 'asis'
   ) +
   coord_flip()
 ```
 
-### Fickle Phyla
+### Using metadata to create better graphs
 
-A note on phylum names!
-There have been major changes this year and some of these are now old names.
-Most published research is of course with the old names (and still probably will be for a year or so).
+When we look at the plots above by GID (genomic identifier, a unique identifier for each metagenome) we don't have any information about whether the sample is from a donor or recipient or if they are part of the same "group" or series of FMTs between a donor an recipient over time. Let's start to use the metadata with our barcharts to untangle some of this.
 
-# Fun with barcharts
-
-More examples/tutorial of visualizing microbiome data using stacked barcharts can be found here: <https://david-barnett.github.io/microViz/articles/web-only/compositions.html>
-
-Try it out for yourself a bit!
-
-Bar charts often look better when you sort the samples by similarity.
-The webpage mentions using Bray-Curtis distances and hierarchical clustering to sort samples.
-We haven't discussed dissimilarity or distances yet, but we will in the next session today!
-
-For now, just appreciate that it can make the bar charts easier to read!
+First, Let's group the barcharts by subject. 
 
 ```{r}
+plots <- fmt %>% comp_barplot("Genus", n_taxa = 12, x = "gid", group_by = "subject")
 
+# combine plots with shared legend
+patchwork::wrap_plots(plots, nrow = 2, guides = "collect") 
+
+```
+
+Do any of the GIDs look exactly the sample? Let's check how many of our samples have duplicates. In other words, the same sample was sequenced multiple times. 
+
+```{r}
+plots <- fmt %>% comp_barplot("Genus", n_taxa = 12, x = "gid", group_by = "sample")
+
+# combine plots with shared legend
+patchwork::wrap_plots(plots, nrow = 2, guides = "collect") 
+
+```
+
+Next, Let's organize our sample by their group. This tells us about the donor, and subsequent recipient samples over time. 
+
+```{r}
+plots <- fmt %>% comp_barplot("Genus", n_taxa = 12, group_by = "group", sample_order = "asis", x = "gid", label = "type")
+
+# combine plots with shared legend
+patchwork::wrap_plots(plots, nrow = 1, guides = "collect") 
+
+```
+
+What is we want to separate by donor and recipient to see each set separately. Let's try that...
+
+```{r}
+fmt %>%
+  ps_seriate(rank = "Genus") %>%
+  ps_mutate(
+    type = factor(type, levels = unique(type))
+  ) %>%
+  comp_barplot(
+    tax_level = "Genus", sample_order = "asis", bar_width = 0.7,
+    x = "gid"
+  ) +
+  facet_wrap(
+    facets = vars(type), labeller = as_labeller(~ paste("Type", .))
+  ) +
+  theme_bw() + # slightly clearer axes for facets
+  labs(x = "Gid", y = "Relative Abundance") +
+  scale_y_continuous(
+    expand = expansion(add = c(0, 0.1)), # axis starts exactly at 0
+    labels = scales::label_percent()
+  )
+```
+
+What if we want to see the samples and donors together with but just in a single group. Let's try that...
+
+```{r}
+times_list <- fmt %>%
+  ps_seriate(rank = "Genus") %>% 
+  ps_mutate(gid = factor(gid, levels = unique(gid))) %>%
+  comp_barplot(
+    tax_level = "Genus", n_taxa = 12,
+    sample_order = "asis", # don't bother sorting 
+    group_by = "group", bar_width = 0.7, x = "gid",
+    merge_other = FALSE, bar_outline_colour = "grey25"
+  )
+
+times_list %>%
+  patchwork::wrap_plots(guides = "collect", heights = c(7, 6)) &
+  facet_wrap(~type, nrow = 1) &
+  ylab("Relative abundance") &
+  coord_flip() &
+  theme(text = element_text(size = 10), panel.spacing.x = unit(5, "mm"))
+```
+
+What did you find out? Are the recipient samples moving closer to looking like the donor sample? How much of the community is shared between the donor sample, and the last recipient sample? Can you tell which of your FMT's were "successful"? How do we determine this?
+
+Copy your notebook into the current working directory. Be sure to change to your NETID.
+
+Also, take a minute to "knit" the Rmd notebook into word, and submit this on D2L. Note that this will become useful later for your report, when you select a few graphs to include.
+
+```{bash, engine.opts='-l'}
+# copy your notebook into the working directory
+cp ~/hw13_microviz.Rmd /xdisk/bhurwitz/bh_class/NETID/assignments/13_microviz
 ```
 
 # Session info

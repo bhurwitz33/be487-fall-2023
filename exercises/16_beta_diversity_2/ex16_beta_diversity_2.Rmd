@@ -16,6 +16,7 @@ output:
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE, fig.width = 6, fig.height = 4, dpi = 120)
+knitr::opts_knit$set(root.dir = '/xdisk/bhurwitz/bh_class/NETID/exercises/16_beta_diversity_2') # Change your NETID
 ```
 
 ```{r message=FALSE}
@@ -29,7 +30,6 @@ library(shiny)
 ```
 
 ```{r}
-mice <- readRDS('/xdisk/bhurwitz/bh_class/data/microviz/mice.rds')
 shao19 <- readRDS('/xdisk/bhurwitz/bh_class/data/microviz/shao19.rds')
 ```
 

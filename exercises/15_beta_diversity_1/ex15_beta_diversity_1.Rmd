@@ -19,7 +19,7 @@ editor_options:
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE, fig.width = 6, fig.height = 4, dpi = 120)
-knitr::opts_knit$set(root.dir = '/xdisk/bhurwitz/bh_class/bonnie/exercises/15_beta_diversity_1')
+knitr::opts_knit$set(root.dir = '/xdisk/bhurwitz/bh_class/NETID/exercises/13_microviz') # Change your NETID
 ```
 
 ```{r message=FALSE}

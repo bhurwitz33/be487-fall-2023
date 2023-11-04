@@ -1,0 +1,83 @@
+---
+title: "HW14: alpha diversity"
+author: "Bonnie Hurwitz"
+date: "`r Sys.Date()`"
+output:
+  word_document:
+    toc: yes
+    toc_depth: '3'
+  pdf_document:
+    toc: yes
+    toc_depth: '3'
+  html_document:
+    theme: paper
+    toc: yes
+    toc_depth: 3
+    toc_float:
+      collapsed: yes
+subtitle: Exploring Alpha Diversity
+editor_options:
+  markdown:
+    wrap: sentence
+---
+
+# Setup
+
+```{r setup, include=FALSE}
+# Change your NETID
+knitr::opts_chunk$set(echo = TRUE, fig.width = 6, fig.height = 4, dpi = 120)
+knitr::opts_knit$set(root.dir = '/xdisk/bhurwitz/bh_class/NETID/assignments/14_alpha_diversity')
+```
+
+```{r}
+getwd()
+```
+
+```{r message=FALSE}
+library(seriation)
+library(dplyr)
+library(purrr)
+library(ggplot2)
+library(phyloseq)
+library(microViz)
+library(shiny)
+```
+
+## Importing and fixing taxa your FMT dataset
+
+To get started, we need to import our example.biom file into R and work with it using the phyloseq package
+
+```{r}
+# replace your NETID and SETID here, for example set21.biom
+fmt <- import_biom("/xdisk/bhurwitz/bh_class/NETID/assignments/12_phyloseq/SETID.biom")
+```
+
+### Fixing tax_table
+
+Let's format the dataset.
+
+```{r}
+fmt@tax_table@.Data <- substring(fmt@tax_table@.Data, 4)
+colnames(fmt@tax_table@.Data)<- c("Kingdom", "Phylum", "Class", "Order", "Family", "Genus", "Species")
+fmt <- tax_fix(fmt, verbose = FALSE)
+```
+
+### Starting here
+
+Copy your notebook into the current working directory. Be sure to change to your NETID.
+
+Also, take a minute to "knit" the Rmd notebook into word, and submit this on D2L. Note that this will become useful later for your report, when you select a few graphs to include.
+
+```{bash, engine.opts='-l'}
+# copy your notebook into the working directory
+cp ~/hw13_microviz.Rmd /xdisk/bhurwitz/bh_class/NETID/assignments/13_microviz
+```
+
+# Session info
+
+Records your package versions etc.
+Useful for debugging / reproducing analysis.
+
+```{r}
+devtools::session_info()
+```
