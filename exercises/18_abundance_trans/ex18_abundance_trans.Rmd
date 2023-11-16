@@ -19,6 +19,13 @@ knitr::opts_chunk$set(echo = TRUE, fig.width = 6, fig.height = 4, dpi = 120)
 knitr::opts_knit$set(root.dir = '/xdisk/bhurwitz/bh_class/NETID/exercises/18_abundance_trans') # Change your NETID
 ```
 
+```{bash, engine.opts='-l'}
+# R library png requires a newer version of libpng than we have installed on the operating system on our nodes
+# This will help us to get our beautiful figures below.
+module load libpng/1.6.37
+```
+
+
 ```{r message=FALSE}
 library(seriation)
 library(dplyr)
@@ -117,7 +124,8 @@ shao4_sorted %>%
   )
 ```
 
-Even though we have picked the top 20 most abundant genera, there are still a lot of zeros, We need to deal with the zeros, because `log(0)` is undefined.
+Even though we have picked the top 20 most abundant genera, there are still a lot of zeros, We need to deal with the zeros, 
+because `log(0)` is undefined.
 The solution is to add a small amount to every value (or just every zero), before applying the log transformation.
 This small value is often called a pseudo-count.
 
@@ -182,12 +190,14 @@ This leads to two main types of problem:
 -   statistical issues: taxon abundances are not independent, but (weakly?) negatively correlated
 
 This is worse with simpler ecosystems.
-There is the same problem in theory with RNAseq data, but I suspect it is less bothersome because there are many more competing "species" of RNA transcript than there are bacterial species in even a very complex microbiome.
+There is the same problem in theory with RNAseq data, but I suspect it is less bothersome because there are many more competing "species" 
+of RNA transcript than there are bacterial species in even a very complex microbiome.
 
-The centered-log-ratio transformation (along with some other similar ratio transformations) are claimed to help with the statistical issues by transforming the abundances from the simplex to the real space.
+The centered-log-ratio transformation (along with some other similar ratio transformations) are claimed to help with the statistical issues 
+by transforming the abundances from the simplex to the real space.
 
-Practically, the CLR transformation involves finding the geometric mean of each sample, and then dividing abundance of each taxon in that sample by this geometric mean.
-Finally you take the natural log of this ratio.
+Practically, the CLR transformation involves finding the geometric mean of each sample, and then dividing abundance of each taxon in that 
+sample by this geometric mean. Finally you take the natural log of this ratio.
 
 For more details, check out Gloor 2017 (and maybe work by Thomas Quinn).
 [Microbiome Datasets are Compositional: and this is not optional](https://doi.org/10.3389/fmicb.2017.02224)
