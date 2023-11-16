@@ -20,11 +20,11 @@ knitr::opts_knit$set(root.dir = '/xdisk/bhurwitz/bh_class/NETID/exercises/18_abu
 ```
 
 ```{bash, engine.opts='-l'}
-# R library png requires a newer version of libpng than we have installed on the operating system on our nodes
+# R library png requires a newer version of libpng than we have installed on the operating system on our nodes, and updated font
 # This will help us to get our beautiful figures below.
-module load libpng/1.6.37
+export LD_LIBRARY_PATH=/opt/ohpc/pub/apps/libpng/1.6.37/lib:$LD_LIBRARY_PATH
+export FONTCONFIG_PATH=/etc/fonts
 ```
-
 
 ```{r message=FALSE}
 library(seriation)

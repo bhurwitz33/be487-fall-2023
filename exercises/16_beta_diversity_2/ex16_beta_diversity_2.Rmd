@@ -19,6 +19,13 @@ knitr::opts_chunk$set(echo = TRUE, fig.width = 6, fig.height = 4, dpi = 120)
 knitr::opts_knit$set(root.dir = '/xdisk/bhurwitz/bh_class/NETID/exercises/16_beta_diversity_2') # Change your NETID
 ```
 
+```{bash, engine.opts='-l'}
+# R library png requires a newer version of libpng than we have installed on the operating system on our nodes, and updated font
+# This will help us to get our beautiful figures below.
+export LD_LIBRARY_PATH=/opt/ohpc/pub/apps/libpng/1.6.37/lib:$LD_LIBRARY_PATH
+export FONTCONFIG_PATH=/etc/fonts
+```
+
 ```{r message=FALSE}
 library(seriation)
 library(dplyr)
