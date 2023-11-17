@@ -165,7 +165,7 @@ fmt %>%
   tax_agg(rank = "genus") %>%
   dist_calc(dist = "bray") %>%
   dist_permanova(
-    variables = c("type", "ssx_resolved", "health", "depth"),
+    variables = c("type", "ssx_resolved", "health"),
     n_perms = 99, seed = 111
   ) %>%
   perm_get()
