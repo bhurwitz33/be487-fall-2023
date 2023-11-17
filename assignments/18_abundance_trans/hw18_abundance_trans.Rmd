@@ -1,5 +1,5 @@
 ---
-title: "HW14: alpha diversity"
+title: "HW18: Abundance Transformation"
 author: "Bonnie Hurwitz"
 date: "`r Sys.Date()`"
 output:
@@ -15,7 +15,7 @@ output:
     toc_depth: 3
     toc_float:
       collapsed: yes
-subtitle: Exploring Alpha Diversity
+subtitle: Abundance Transformation
 editor_options:
   markdown:
     wrap: sentence
@@ -26,7 +26,16 @@ editor_options:
 ```{r setup, include=FALSE}
 # Change your NETID
 knitr::opts_chunk$set(echo = TRUE, fig.width = 6, fig.height = 4, dpi = 120)
-knitr::opts_knit$set(root.dir = '/xdisk/bhurwitz/bh_class/NETID/assignments/14_alpha_diversity')
+knitr::opts_knit$set(root.dir = '/xdisk/bhurwitz/bh_class/NETID/assignments/18_abundance_trans')
+```
+
+```{bash, engine.opts='-l'}
+# Let's make it so R can find the fonts we need
+export FONTCONFIG_PATH=/etc/fonts
+```
+
+```{r}
+dyn.load("/opt/ohpc/pub/apps/libpng/1.6.37/lib/libpng16.so.16")
 ```
 
 ```{r}
@@ -64,13 +73,188 @@ fmt <- tax_fix(fmt, verbose = FALSE)
 
 ### Starting here
 
+# Beta diversity (part 3)
+
+## Euclidean distances
+
+What about Euclidean distances?
+What are those?
+
+Euclidean distances are essentially a generalization of pythagoras' theorem to more dimensions.
+In our data every taxon is a feature, a dimension, on which we calculate Euclidean distances.  
+
+- Pythagoras: $c = \sqrt{a^2 + b^2}$ 
+
+- Euclidean distance: 
+
+$$d\left(p, q\right) = \sqrt{\sum _{i=1}^{n_{taxa}} \left( p_{i}-q_{i}\right)^2 }$$
+
+**Issues**
+
+-   Sensitive to sparsity (double-zero problem) --\> filter rare taxa
+-   Excessive emphasis on high-abundance taxa --\> transform features first
+-   The PCoA looks weird! most samples bunched in the middle with spindly projections..
+
+```{r}
+shao4 %>%
+  tax_filter(min_prevalence = 2.5 / 100, verbose = FALSE) %>%
+  tax_agg(rank = "genus") %>%
+  dist_calc(dist = "euclidean") %>%
+  ord_calc(method = "PCoA") %>%
+  ord_plot(alpha = 0.6, size = 2) +
+  theme_classic(12) +
+  coord_fixed(0.7) +
+  geom_rug(alpha = 0.1)
+```
+
+## Abundance transformation
+
+We already did two transformations with `tax_transform()`: binary (for Binary Jaccard distances) and compositional (for barplots).
+
+Now we need log transformations, and the centered-log-ratio, CLR, transformation.
+
+### Log transformation
+
+First let's look at the abundance again, this time with heatmaps.
+
+```{r}
+# Getting the taxa in abundance order up front
+# to keep it consistent across multiple plots
+shao4_sorted <- shao4 %>% 
+  tax_sort(by = sum, at = "genus", trans = "compositional", tree_warn = FALSE)
+```
+
+Each column is a sample (from an infant), and each row is a taxon.
+
+```{r, fig.height=3, fig.width=6}
+shao4_sorted %>%
+  tax_transform(trans = "identity", rank = "genus") %>%
+  comp_heatmap(
+    samples = 1:20, taxa = 1:20, grid_lwd = 2, name = "Counts",
+    tax_seriation = "Identity", sample_seriation = "Identity"
+  )
+```
+
+```{r, fig.height=3, fig.width=6}
+shao4_sorted %>%
+  tax_transform(trans = "compositional", rank = "genus") %>%
+  comp_heatmap(
+    samples = 1:20, taxa = 1:20, grid_lwd = 2, name = "Prop.",
+    tax_seriation = "Identity", sample_seriation = "Identity"
+  )
+```
+
+We can add the proportions on this small subset of data as numbers. 
+
+```{r, fig.height=3, fig.width=6}
+shao4_sorted %>%
+  tax_transform(trans = "compositional", rank = "genus") %>%
+  comp_heatmap(
+    numbers = heat_numbers(fmt = "%.1f"), numbers_use_counts = FALSE,
+    samples = 1:20, taxa = 1:20, grid_lwd = 2, name = "Prop.",
+    tax_seriation = "Identity", sample_seriation = "Identity"
+  )
+```
+
+Even though we have picked the top 20 most abundant genera, there are still a lot of zeros, We need to deal with the zeros, 
+because `log(0)` is undefined.
+The solution is to add a small amount to every value (or just every zero), before applying the log transformation.
+This small value is often called a pseudo-count.
+
+What value should we use for the pseudo-count?
+
+One option is to just add 1, and another popular option is to add half of the smallest observed real value (from across the whole dataset).
+
+```{r, fig.height=3, fig.width=6}
+shao4_sorted %>%
+  tax_transform(rank = "genus", trans = "log10", zero_replace = 1) %>%
+  comp_heatmap(
+    samples = 1:20, taxa = 1:20, grid_lwd = 2, name = "log10\n(x+1)",
+    tax_seriation = "Identity", sample_seriation = "Identity"
+  )
+```
+
+```{r, fig.height=3, fig.width=6}
+shao4_sorted %>%
+  tax_agg(rank = "genus") %>%
+  # tax_transform(trans = 'compositional') %>% # compositional also possible
+  tax_transform(trans = "log10", zero_replace = "halfmin", chain = TRUE) %>%
+  comp_heatmap(
+    samples = 1:20, taxa = 1:20, grid_lwd = 2, name = "log10\nhalfmin",
+    tax_seriation = "Identity", sample_seriation = "Identity"
+  )
+```
+
+In general, for zero replacement, keep it simple and **record your approach**.
+
+### Centered Log Ratio transformation:
+
+Compositionality problem is improved by the centered-log-ratio transformation. 
+
+The centered log-ratio (clr) transformation uses the geometric mean of the sample vector as the reference. 
+
+```{r, fig.height=3, fig.width=6}
+shao4_sorted %>%
+  tax_agg(rank = "genus") %>%
+  # tax_transform(trans = 'compositional') %>% # compositional also possible
+  tax_transform(trans = "clr", zero_replace = "halfmin", chain = TRUE) %>%
+  comp_heatmap(
+    samples = 1:20, taxa = 1:20, grid_lwd = 2, name = "CLR\nhalfmin",
+    colors = heat_palette(sym = TRUE),
+    tax_seriation = "Identity", sample_seriation = "Identity"
+  )
+```
+
+<details>
+
+<summary>
+**Overview of CoDa problem.**
+</summary>
+
+The sequencing data gives us relative abundances, not absolute abundances.
+The total number of reads sequenced per sample is an arbitrary total.
+
+If one taxon blooms, whilst everything else stays stable, the relative abundance of all other taxa must (appear to) go down.
+
+This leads to two main types of problem:
+
+-   interpretation caveats: see differential abundance section later
+-   statistical issues: taxon abundances are not independent, but (weakly?) negatively correlated
+
+This is worse with simpler ecosystems.
+There is the same problem in theory with RNAseq data, but I suspect it is less bothersome because there are many more competing "species" 
+of RNA transcript than there are bacterial species in even a very complex microbiome.
+
+The centered-log-ratio transformation (along with some other similar ratio transformations) are claimed to help with the statistical issues 
+by transforming the abundances from the simplex to the real space.
+
+Practically, the CLR transformation involves finding the geometric mean of each sample, and then dividing abundance of each taxon in that 
+sample by this geometric mean. Finally you take the natural log of this ratio.
+
+For more details, check out Gloor 2017 (and maybe work by Thomas Quinn).
+[Microbiome Datasets are Compositional: and this is not optional](https://doi.org/10.3389/fmicb.2017.02224)
+
+</details>
+
+## Fun with Heatmaps
+
+Heatmaps look much better when you sort the rows by similarity (using distances and hierarchical clustering!).
+
+More examples/tutorial of visualizing microbiome data using heatmaps can be found here:
+
+https://david-barnett.github.io/microViz/articles/web-only/heatmaps.html 
+
+```{r}
+
+```
+
 Copy your notebook into the current working directory. Be sure to change to your NETID.
 
 Also, take a minute to "knit" the Rmd notebook into word, and submit this on D2L. Note that this will become useful later for your report, when you select a few graphs to include.
 
 ```{bash, engine.opts='-l'}
 # copy your notebook into the working directory
-cp ~/hw13_microviz.Rmd /xdisk/bhurwitz/bh_class/NETID/assignments/13_microviz
+cp ~/hw18_abundance_trans.Rmd /xdisk/bhurwitz/bh_class/NETID/assignments/18_abundance_trans
 ```
 
 # Session info

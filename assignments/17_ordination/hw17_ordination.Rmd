@@ -1,5 +1,5 @@
 ---
-title: "HW14: alpha diversity"
+title: "HW17: ordination"
 author: "Bonnie Hurwitz"
 date: "`r Sys.Date()`"
 output:
@@ -15,7 +15,7 @@ output:
     toc_depth: 3
     toc_float:
       collapsed: yes
-subtitle: Exploring Alpha Diversity
+subtitle: Ordination
 editor_options:
   markdown:
     wrap: sentence
@@ -26,7 +26,16 @@ editor_options:
 ```{r setup, include=FALSE}
 # Change your NETID
 knitr::opts_chunk$set(echo = TRUE, fig.width = 6, fig.height = 4, dpi = 120)
-knitr::opts_knit$set(root.dir = '/xdisk/bhurwitz/bh_class/NETID/assignments/14_alpha_diversity')
+knitr::opts_knit$set(root.dir = '/xdisk/bhurwitz/bh_class/NETID/assignments/17_ordination')
+```
+
+```{bash, engine.opts='-l'}
+# Let's make it so R can find the fonts we need
+export FONTCONFIG_PATH=/etc/fonts
+```
+
+```{r}
+dyn.load("/opt/ohpc/pub/apps/libpng/1.6.37/lib/libpng16.so.16")
 ```
 
 ```{r}
@@ -45,7 +54,7 @@ library(shiny)
 
 ## Importing and fixing taxa your FMT dataset
 
-To get started, we need to import our example.biom file into R and work with it using the phyloseq package
+To get started, we need to import our set.biom file into R and work with it using the phyloseq package
 
 ```{r}
 # replace your NETID and SETID here, for example set21.biom
@@ -58,11 +67,112 @@ Let's format the dataset.
 
 ```{r}
 fmt@tax_table@.Data <- substring(fmt@tax_table@.Data, 4)
-colnames(fmt@tax_table@.Data)<- c("Kingdom", "Phylum", "Class", "Order", "Family", "Genus", "Species")
+colnames(fmt@tax_table@.Data)<- c("kingdom", "phylum", "class", "order", "family", "genus", "species")
 fmt <- tax_fix(fmt, verbose = FALSE)
 ```
 
-### Starting here
+
+## Ordination
+
+Ordination refers to the process of ordering things (in our case: samples), so that similar things (samples) are closer to each other, 
+and dissimilar things (samples) are further away.
+
+### PCoA
+
+Let's get started with a Principal Co-ordinates Analysis.
+
+Takes distance matrix and finds new dimensions (a co-ordinate system if you like).
+The new dimensions are created with the aim to preserve the original distances between samples, 
+but to capture the majority of this distance information in the first few dimensions.
+We like this because it makes it easier to visualize the patterns in your data (in 2D or 3D).
+
+```{r}
+fmt %>%
+  tax_filter(min_prevalence = 2.5 / 100, verbose = FALSE) %>%
+  tax_agg(rank = "genus") %>%
+  dist_calc(dist = "bray") %>%
+  ord_calc(method = "PCoA") %>%
+  ord_plot(alpha = 0.6, size = 2) +
+  theme_classic(12) +
+  coord_fixed(0.7)
+```
+
+Next, let's color each sample according to its dominant (most abundant) genus.
+
+```{r}
+fmt %>%
+  tax_filter(min_prevalence = 2.5 / 100, verbose = FALSE) %>%
+  ps_calc_dominant(rank = "genus", none = "Mixed", other = "Other") %>%
+  tax_agg(rank = "genus") %>%
+  dist_calc(dist = "bray") %>%
+  ord_calc(method = "PCoA") %>%
+  ord_plot(color = "dominant_genus", alpha = 0.6, size = 2) +
+  scale_color_brewer(name = "Dominant Genus", palette = "Dark2") +
+  theme_classic(12) +
+  coord_fixed(0.7)
+```
+
+## PERMANOVA:
+
+Permutational multivariate analysis of variance.
+
+-   ANOVA - analysis of variance (statistical modelling approach)
+-   Multivariate - more than one dependent variable (multiple taxa!)
+-   Permutational - statistical significance estimates obtained by shuffling the data many times
+
+**TLDR:** Are those groups on the PCoA actually different??
+
+```{r}
+fmt %>%
+  tax_filter(min_prevalence = 2.5 / 100, verbose = FALSE) %>%
+  tax_agg(rank = "genus") %>%
+  dist_calc(dist = "bray") %>%
+  ord_calc(method = "PCoA") %>%
+  ord_plot(alpha = 0.6, size = 2, color = "type") +
+  theme_classic(12) +
+  coord_fixed(0.7) +
+  stat_ellipse(aes(color = type)) +
+  scale_color_brewer(palette = "Set1")
+```
+
+```{r}
+fmt %>%
+  tax_filter(min_prevalence = 2.5 / 100, verbose = FALSE) %>%
+  tax_agg(rank = "genus") %>%
+  dist_calc(dist = "bray") %>%
+  dist_permanova(variables = "type", n_perms = 99, seed = 123) %>%
+  perm_get()
+# Use more permutations for a more reliable p.value in your real work (slower)
+# Set a random seed number for reproducibility of this stochastic method
+```
+
+Is the model output for the p value, Pr(\>F) below 0.05? If so, this indicates that there is good statistical evidence 
+that the bacterial gut microbiota composition of donors is different from recipients. 
+
+You should also report that you used Bray-Curtis dissimilarities, calculated on genera.
+(after keeping only unique taxa with a prevalence of at least 2.5%!)
+
+It's probably a good idea to decide on a couple of appropriate distance measures up front for these tests, 
+and report both (at least in supplementary material), as the choice of distance measure can affect results and conclusions!
+
+You can also adjust for covariates in PERMANOVA, and often should, depending on your study design.
+Let's fit a more complex model, adjusting for whether the c. diff infection was resolved, the health of the recipient,
+and the total number of reads in the sample.
+
+```{r}
+fmt %>%
+  tax_filter(min_prevalence = 2.5 / 100, verbose = FALSE) %>%
+  tax_agg(rank = "genus") %>%
+  dist_calc(dist = "bray") %>%
+  dist_permanova(
+    variables = c("type", "ssx_resolved", "health", "depth"),
+    n_perms = 99, seed = 111
+  ) %>%
+  perm_get()
+# Use more permutations for a more reliable p.value in your real work (slower)
+# Set a random seed number for reproducibility of this stochastic method
+```
+
 
 Copy your notebook into the current working directory. Be sure to change to your NETID.
 
@@ -70,7 +180,7 @@ Also, take a minute to "knit" the Rmd notebook into word, and submit this on D2L
 
 ```{bash, engine.opts='-l'}
 # copy your notebook into the working directory
-cp ~/hw13_microviz.Rmd /xdisk/bhurwitz/bh_class/NETID/assignments/13_microviz
+cp ~/hw17_ordination.Rmd /xdisk/bhurwitz/bh_class/YOUR_NETID/assignments/17_ordination
 ```
 
 # Session info
