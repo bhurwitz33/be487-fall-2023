@@ -160,8 +160,12 @@ We will transform the count data by first making it proportions, and then taking
 ```{r}
 bacteroidesRegression1 <- shao4 %>%
   tax_transform("compositional", rank = "genus") %>%
-  tax_transform("log2", zero_replace = "halfmin", chain = TRUE) %>%
-  tax_model(type = "lm", rank = "genus", taxa = "Bacteroides", variables = "birth_mode") %>%
+  tax_model(
+    type = "lm", rank = "genus",
+    trans = "log2", trans_args = list(zero_replace = "halfmin"),
+    taxa = "Bacteroides", variables = "birth_mode",
+    return_psx = FALSE
+  ) %>%
   pluck(1)
 
 # looking at the regression results
@@ -211,16 +215,18 @@ shao4 <- shao4 %>%
 ```{r}
 bacteroidesRegression2 <- shao4 %>%
   tax_transform("compositional", rank = "genus") %>%
-  tax_transform("log2", zero_replace = "halfmin", chain = TRUE) %>%
   tax_model(
-    type = "lm", rank = "genus", taxa = "Bacteroides",
-    variables = c("C_section", "Female", "Birth_weight_Z", "Reads_Z")
+    type = "lm", rank = "genus",
+    trans = "log2", trans_args = list(zero_replace = "halfmin"),
+    taxa = "Bacteroides", variables = c("C_section", "Female", "Birth_weight_Z", "Reads_Z"),
+    return_psx = FALSE
   ) %>%
   pluck(1)
 
 # looking at the regression results
-summary(bacteroidesRegression2)
-broom::tidy(bacteroidesRegression2, conf.int = TRUE)
+summary(bacteroidesRegression1)
+confint(bacteroidesRegression1)
+broom::tidy(bacteroidesRegression1, conf.int = TRUE)
 ```
 
 ### Many methods
@@ -261,15 +267,14 @@ So now we will fit a similar model for almost\* every taxon at every rank we hav
 ```{r}
 # The code for `taxatree_models` is quite similar to tax_model. 
 # However, you might need to run `tax_prepend_ranks` to ensure that each taxon at each rank is always unique. 
-shaoModels <- shao4 %>% 
+shaoModels <- shao4 %>%
   tax_prepend_ranks() %>%
-  tax_transform("compositional", rank = "species", keep_counts = TRUE) %>% 
-  tax_filter(min_prevalence = 0.1, undetected = 0, use_counts = TRUE) %>% 
-  tax_transform(trans = "log2", chain = TRUE, zero_replace = "halfmin") %>% 
+  tax_transform("compositional", rank = "species", keep_counts = TRUE) %>%
+  tax_filter(min_prevalence = 0.1, undetected = 0, use_counts = TRUE) %>%
   taxatree_models(
-    type = lm, 
-    ranks = c("phylum", "class", "order", "family", "genus", "species"), 
-    variables = c('C_section', 'Female', 'Birth_weight_Z', 'Reads_Z')
+    type = lm, trans = "log2", trans_args = list(zero_replace = "halfmin"),
+    ranks = c("phylum", "class", "order", "family", "genus", "species"),
+    variables = c("C_section", "Female", "Birth_weight_Z", "Reads_Z")
   )
 shaoModels
 ```
@@ -283,7 +288,7 @@ Next we will get a data.frame containing the regression coefficient estimates, t
 ```{r}
 shaoStats <- taxatree_models2stats(shaoModels)
 shaoStats
-shaoStats$taxatree_stats
+shaoStats %>% taxatree_stats_get()
 ```
 
 ### Adjusting p values
@@ -297,7 +302,7 @@ Instead of applying these adjustment methods across all 86 taxa models at all ra
 ```{r}
 shaoStats <- shaoStats %>% taxatree_stats_p_adjust(method = "BH", grouping = "rank")
 # notice the new variable
-shaoStats$taxatree_stats
+shaoStats %>% taxatree_stats_get()
 ```
 
 ## Plot all the taxatree_stats!
