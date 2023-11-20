@@ -96,7 +96,7 @@ $$d\left(p, q\right) = \sqrt{\sum _{i=1}^{n_{taxa}} \left( p_{i}-q_{i}\right)^2 
 -   The PCoA looks weird! most samples bunched in the middle with spindly projections..
 
 ```{r}
-shao4 %>%
+fmt %>%
   tax_filter(min_prevalence = 2.5 / 100, verbose = FALSE) %>%
   tax_agg(rank = "genus") %>%
   dist_calc(dist = "euclidean") %>%
@@ -120,14 +120,14 @@ First let's look at the abundance again, this time with heatmaps.
 ```{r}
 # Getting the taxa in abundance order up front
 # to keep it consistent across multiple plots
-shao4_sorted <- shao4 %>% 
+fmt_sorted <- fmt %>% 
   tax_sort(by = sum, at = "genus", trans = "compositional", tree_warn = FALSE)
 ```
 
 Each column is a sample (from an infant), and each row is a taxon.
 
 ```{r, fig.height=3, fig.width=6}
-shao4_sorted %>%
+fmt_sorted %>%
   tax_transform(trans = "identity", rank = "genus") %>%
   comp_heatmap(
     samples = 1:20, taxa = 1:20, grid_lwd = 2, name = "Counts",
@@ -136,7 +136,7 @@ shao4_sorted %>%
 ```
 
 ```{r, fig.height=3, fig.width=6}
-shao4_sorted %>%
+fmt_sorted %>%
   tax_transform(trans = "compositional", rank = "genus") %>%
   comp_heatmap(
     samples = 1:20, taxa = 1:20, grid_lwd = 2, name = "Prop.",
@@ -147,7 +147,7 @@ shao4_sorted %>%
 We can add the proportions on this small subset of data as numbers. 
 
 ```{r, fig.height=3, fig.width=6}
-shao4_sorted %>%
+fmt_sorted %>%
   tax_transform(trans = "compositional", rank = "genus") %>%
   comp_heatmap(
     numbers = heat_numbers(fmt = "%.1f"), numbers_use_counts = FALSE,
@@ -166,7 +166,7 @@ What value should we use for the pseudo-count?
 One option is to just add 1, and another popular option is to add half of the smallest observed real value (from across the whole dataset).
 
 ```{r, fig.height=3, fig.width=6}
-shao4_sorted %>%
+fmt_sorted %>%
   tax_transform(rank = "genus", trans = "log10", zero_replace = 1) %>%
   comp_heatmap(
     samples = 1:20, taxa = 1:20, grid_lwd = 2, name = "log10\n(x+1)",
@@ -175,7 +175,7 @@ shao4_sorted %>%
 ```
 
 ```{r, fig.height=3, fig.width=6}
-shao4_sorted %>%
+fmt_sorted %>%
   tax_agg(rank = "genus") %>%
   # tax_transform(trans = 'compositional') %>% # compositional also possible
   tax_transform(trans = "log10", zero_replace = "halfmin", chain = TRUE) %>%
@@ -194,7 +194,7 @@ Compositionality problem is improved by the centered-log-ratio transformation.
 The centered log-ratio (clr) transformation uses the geometric mean of the sample vector as the reference. 
 
 ```{r, fig.height=3, fig.width=6}
-shao4_sorted %>%
+fmt_sorted %>%
   tax_agg(rank = "genus") %>%
   # tax_transform(trans = 'compositional') %>% # compositional also possible
   tax_transform(trans = "clr", zero_replace = "halfmin", chain = TRUE) %>%

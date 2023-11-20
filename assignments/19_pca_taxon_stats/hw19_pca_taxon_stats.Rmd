@@ -1,5 +1,5 @@
 ---
-title: "HW14: alpha diversity"
+title: "HW19: pca_taxon_stats"
 author: "Bonnie Hurwitz"
 date: "`r Sys.Date()`"
 output:
@@ -15,7 +15,7 @@ output:
     toc_depth: 3
     toc_float:
       collapsed: yes
-subtitle: Exploring Alpha Diversity
+subtitle: Exploring PCA and Taxon Stats
 editor_options:
   markdown:
     wrap: sentence
@@ -71,8 +71,6 @@ colnames(fmt@tax_table@.Data)<- c("Kingdom", "Phylum", "Class", "Order", "Family
 fmt <- tax_fix(fmt, verbose = FALSE)
 ```
 
-### Starting here
-
 # Beta diversity (part 4)
 
 ## PCA
@@ -85,7 +83,7 @@ In fact, PCA produces equivalent results to PCoA with euclidean distances.
 So let's perform the CLR-transform first and check PCA and euclidean PCoA are the same.
 
 ```{r}
-shao4 %>%
+fmt %>%
   tax_filter(min_prevalence = 2.5 / 100, verbose = FALSE) %>%
   tax_transform(rank = "genus", trans = "clr", zero_replace = "halfmin") %>%
   dist_calc(dist = "euclidean") %>%
@@ -97,7 +95,7 @@ shao4 %>%
 ```
 
 ```{r}
-shao4 %>%
+fmt %>%
   tax_filter(min_prevalence = 2.5 / 100, verbose = FALSE) %>%
   tax_transform(rank = "genus", trans = "clr", zero_replace = "halfmin") %>%
   ord_calc(method = "PCA") %>%
@@ -112,7 +110,7 @@ Because the Principal components are built directly from a (linear) combination 
 That means we know how much each taxon contributes to each PC axis, and we can plot this information (loadings) as arrows, alongside the sample points.
 
 ```{r}
-pca <- shao4 %>%
+pca <- fmt %>%
   tax_filter(min_prevalence = 2.5 / 100, verbose = FALSE) %>%
   tax_transform(rank = "genus", trans = "clr", zero_replace = "halfmin") %>%
   ord_calc(method = "PCA") %>%
@@ -151,7 +149,7 @@ You might have already noticed this pattern, when exploring and making barplots 
 We can make another kind of barplot now, using the PCA information to order our samples in a circular layout.
 
 ```{r}
-iris <- shao4 %>%
+iris <- fmt %>%
   tax_filter(min_prevalence = 2.5 / 100, verbose = FALSE) %>%
   tax_transform(rank = "genus", trans = "clr", zero_replace = "halfmin") %>%
   ord_calc(method = "PCA") %>%
@@ -173,7 +171,7 @@ From the PCA loadings and barplots above, we have some strong suspicions about w
 This is often called "differential abundance" testing, in the style of "differential expression" testing from the transcriptomics field.
 
 ```{r}
-shao4 %>%
+fmt %>%
   comp_barplot(
     tax_level = "genus", n_taxa = 12, facet_by = "birth_mode",
     label = NULL, bar_outline_colour = NA
@@ -188,10 +186,14 @@ We will start by creating a linear regression model for one genus, Bacteroides.
 We will transform the count data by first making it proportions, and then taking the binary logarithm, log2, after adding a pseudocount.
 
 ```{r}
-bacteroidesRegression1 <- shao4 %>%
+bacteroidesRegression1 <- fmt %>%
   tax_transform("compositional", rank = "genus") %>%
-  tax_transform("log2", zero_replace = "halfmin", chain = TRUE) %>%
-  tax_model(type = "lm", rank = "genus", taxa = "Bacteroides", variables = "birth_mode") %>%
+  tax_model(
+    type = "lm", rank = "genus",
+    trans = "log2", trans_args = list(zero_replace = "halfmin"),
+    taxa = "Bacteroides", variables = "birth_mode",
+    return_psx = FALSE
+  ) %>%
   pluck(1)
 
 # looking at the regression results
@@ -215,7 +217,7 @@ Starting from a dataframe like the one produced by the code below, plot:
 3.  Hard: Do task 1 or 2 for for several taxa in one plot - (hint: `pivot_longer`)
 
 ``` r
-shao4 %>%
+fmt %>%
   tax_transform("compositional", rank = "genus") %>%
   ps_get() %>%
   ps_otu2samdat(taxa = "Bacteroides") %>%
@@ -229,7 +231,7 @@ We are going to convert the categorical variables into indicator (dummy) variabl
 You'll see this will make our subsequent plots easier to interpret later.
 
 ```{r}
-shao4 <- shao4 %>%
+fmt <- fmt %>%
   ps_mutate(
     C_section = if_else(birth_mode == "c_section", true = 1, false = 0),
     Female = if_else(sex == "female", true = 1, false = 0),
@@ -239,18 +241,20 @@ shao4 <- shao4 %>%
 ```
 
 ```{r}
-bacteroidesRegression2 <- shao4 %>%
+bacteroidesRegression2 <- fmt %>%
   tax_transform("compositional", rank = "genus") %>%
-  tax_transform("log2", zero_replace = "halfmin", chain = TRUE) %>%
   tax_model(
-    type = "lm", rank = "genus", taxa = "Bacteroides",
-    variables = c("C_section", "Female", "Birth_weight_Z", "Reads_Z")
+    type = "lm", rank = "genus",
+    trans = "log2", trans_args = list(zero_replace = "halfmin"),
+    taxa = "Bacteroides", variables = c("C_section", "Female", "Birth_weight_Z", "Reads_Z"),
+    return_psx = FALSE
   ) %>%
   pluck(1)
 
 # looking at the regression results
-summary(bacteroidesRegression2)
-broom::tidy(bacteroidesRegression2, conf.int = TRUE)
+summary(bacteroidesRegression1)
+confint(bacteroidesRegression1)
+broom::tidy(bacteroidesRegression1, conf.int = TRUE)
 ```
 
 ### Many methods
@@ -291,15 +295,14 @@ So now we will fit a similar model for almost\* every taxon at every rank we hav
 ```{r}
 # The code for `taxatree_models` is quite similar to tax_model. 
 # However, you might need to run `tax_prepend_ranks` to ensure that each taxon at each rank is always unique. 
-shaoModels <- shao4 %>% 
+shaoModels <- fmt %>%
   tax_prepend_ranks() %>%
-  tax_transform("compositional", rank = "species", keep_counts = TRUE) %>% 
-  tax_filter(min_prevalence = 0.1, undetected = 0, use_counts = TRUE) %>% 
-  tax_transform(trans = "log2", chain = TRUE, zero_replace = "halfmin") %>% 
+  tax_transform("compositional", rank = "species", keep_counts = TRUE) %>%
+  tax_filter(min_prevalence = 0.1, undetected = 0, use_counts = TRUE) %>%
   taxatree_models(
-    type = lm, 
-    ranks = c("phylum", "class", "order", "family", "genus", "species"), 
-    variables = c('C_section', 'Female', 'Birth_weight_Z', 'Reads_Z')
+    type = lm, trans = "log2", trans_args = list(zero_replace = "halfmin"),
+    ranks = c("phylum", "class", "order", "family", "genus", "species"),
+    variables = c("C_section", "Female", "Birth_weight_Z", "Reads_Z")
   )
 shaoModels
 ```
@@ -313,7 +316,7 @@ Next we will get a data.frame containing the regression coefficient estimates, t
 ```{r}
 shaoStats <- taxatree_models2stats(shaoModels)
 shaoStats
-shaoStats$taxatree_stats
+shaoStats %>% taxatree_stats_get()
 ```
 
 ### Adjusting p values
@@ -327,7 +330,7 @@ Instead of applying these adjustment methods across all 86 taxa models at all ra
 ```{r}
 shaoStats <- shaoStats %>% taxatree_stats_p_adjust(method = "BH", grouping = "rank")
 # notice the new variable
-shaoStats$taxatree_stats
+shaoStats %>% taxatree_stats_get()
 ```
 
 ## Plot all the taxatree_stats!
@@ -368,6 +371,7 @@ See an extended tutorial [here on the microViz website](https://david-barnett.gi
 ```{r}
 # try it out!
 ```
+
 
 Copy your notebook into the current working directory. Be sure to change to your NETID.
 
