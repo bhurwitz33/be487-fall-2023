@@ -26,7 +26,7 @@ editor_options:
 ```{r setup, include=FALSE}
 # Change your NETID
 knitr::opts_chunk$set(echo = TRUE, fig.width = 6, fig.height = 4, dpi = 120)
-knitr::opts_knit$set(root.dir = '/xdisk/bhurwitz/bh_class/NETID/assignments/18_abundance_trans')
+knitr::opts_knit$set(root.dir = '/xdisk/bhurwitz/bh_class/YOUR_NETID/assignments/18_abundance_trans')
 ```
 
 ```{bash, engine.opts='-l'}
@@ -58,7 +58,7 @@ To get started, we need to import our example.biom file into R and work with it 
 
 ```{r}
 # replace your NETID and SETID here, for example set21.biom
-fmt <- import_biom("/xdisk/bhurwitz/bh_class/NETID/assignments/12_phyloseq/SETID.biom")
+fmt <- import_biom("/xdisk/bhurwitz/bh_class/YOUR_NETID/assignments/12_phyloseq/YOUR_SETID.biom")
 ```
 
 ### Fixing tax_table
@@ -67,7 +67,7 @@ Let's format the dataset.
 
 ```{r}
 fmt@tax_table@.Data <- substring(fmt@tax_table@.Data, 4)
-colnames(fmt@tax_table@.Data)<- c("Kingdom", "Phylum", "Class", "Order", "Family", "Genus", "Species")
+colnames(fmt@tax_table@.Data)<- c("kingdom", "phylum", "class", "order", "family", "genus", "species")
 fmt <- tax_fix(fmt, verbose = FALSE)
 ```
 
@@ -124,13 +124,21 @@ fmt_sorted <- fmt %>%
   tax_sort(by = sum, at = "genus", trans = "compositional", tree_warn = FALSE)
 ```
 
-Each column is a sample (from an infant), and each row is a taxon.
+*Note that you will need to change the number of samples to the number you have in your set.
+
+```{bash, engine.opts='-l'}
+# Let's find out how many samples we have for the charts below.
+tail -n +2 /xdisk/bhurwitz/bh_class/YOUR_NETID/assignments/12_phyloseq/data/set*.samples.meta.txt | wc -l
+```
+
+Each column is a sample (from an FMT), and each row is a taxon.
+Use the number of samples from above.
 
 ```{r, fig.height=3, fig.width=6}
 fmt_sorted %>%
   tax_transform(trans = "identity", rank = "genus") %>%
   comp_heatmap(
-    samples = 1:20, taxa = 1:20, grid_lwd = 2, name = "Counts",
+    samples = 1:10, taxa = 1:20, grid_lwd = 2, name = "Counts",
     tax_seriation = "Identity", sample_seriation = "Identity"
   )
 ```
@@ -139,7 +147,7 @@ fmt_sorted %>%
 fmt_sorted %>%
   tax_transform(trans = "compositional", rank = "genus") %>%
   comp_heatmap(
-    samples = 1:20, taxa = 1:20, grid_lwd = 2, name = "Prop.",
+    samples = 1:10, taxa = 1:20, grid_lwd = 2, name = "Prop.",
     tax_seriation = "Identity", sample_seriation = "Identity"
   )
 ```
@@ -151,7 +159,7 @@ fmt_sorted %>%
   tax_transform(trans = "compositional", rank = "genus") %>%
   comp_heatmap(
     numbers = heat_numbers(fmt = "%.1f"), numbers_use_counts = FALSE,
-    samples = 1:20, taxa = 1:20, grid_lwd = 2, name = "Prop.",
+    samples = 1:10, taxa = 1:20, grid_lwd = 2, name = "Prop.",
     tax_seriation = "Identity", sample_seriation = "Identity"
   )
 ```
@@ -169,7 +177,7 @@ One option is to just add 1, and another popular option is to add half of the sm
 fmt_sorted %>%
   tax_transform(rank = "genus", trans = "log10", zero_replace = 1) %>%
   comp_heatmap(
-    samples = 1:20, taxa = 1:20, grid_lwd = 2, name = "log10\n(x+1)",
+    samples = 1:10, taxa = 1:20, grid_lwd = 2, name = "log10\n(x+1)",
     tax_seriation = "Identity", sample_seriation = "Identity"
   )
 ```
@@ -180,7 +188,7 @@ fmt_sorted %>%
   # tax_transform(trans = 'compositional') %>% # compositional also possible
   tax_transform(trans = "log10", zero_replace = "halfmin", chain = TRUE) %>%
   comp_heatmap(
-    samples = 1:20, taxa = 1:20, grid_lwd = 2, name = "log10\nhalfmin",
+    samples = 1:10, taxa = 1:20, grid_lwd = 2, name = "log10\nhalfmin",
     tax_seriation = "Identity", sample_seriation = "Identity"
   )
 ```
@@ -199,7 +207,7 @@ fmt_sorted %>%
   # tax_transform(trans = 'compositional') %>% # compositional also possible
   tax_transform(trans = "clr", zero_replace = "halfmin", chain = TRUE) %>%
   comp_heatmap(
-    samples = 1:20, taxa = 1:20, grid_lwd = 2, name = "CLR\nhalfmin",
+    samples = 1:10, taxa = 1:20, grid_lwd = 2, name = "CLR\nhalfmin",
     colors = heat_palette(sym = TRUE),
     tax_seriation = "Identity", sample_seriation = "Identity"
   )

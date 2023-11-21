@@ -58,7 +58,11 @@ To get started, we need to import our example.biom file into R and work with it 
 
 ```{r}
 # replace your NETID and SETID here, for example set21.biom
-fmt <- import_biom("/xdisk/bhurwitz/bh_class/NETID/assignments/12_phyloseq/SETID.biom")
+fmt <- import_biom("/xdisk/bhurwitz/bh_class/YOUR_NETID/assignments/12_phyloseq/YOUR_SETID.biom")
+```
+
+```{r}
+tax_table(fmt) %>% head()
 ```
 
 ### Fixing tax_table
@@ -67,7 +71,7 @@ Let's format the dataset.
 
 ```{r}
 fmt@tax_table@.Data <- substring(fmt@tax_table@.Data, 4)
-colnames(fmt@tax_table@.Data)<- c("Kingdom", "Phylum", "Class", "Order", "Family", "Genus", "Species")
+colnames(fmt@tax_table@.Data)<- c("kingdom", "phylum", "class", "order", "family", "genus", "species")
 fmt <- tax_fix(fmt, verbose = FALSE)
 ```
 
@@ -85,10 +89,10 @@ So let's perform the CLR-transform first and check PCA and euclidean PCoA are th
 ```{r}
 fmt %>%
   tax_filter(min_prevalence = 2.5 / 100, verbose = FALSE) %>%
-  tax_transform(rank = "genus", trans = "clr", zero_replace = "halfmin") %>%
+  tax_transform(rank = "family", trans = "clr", zero_replace = "halfmin") %>%
   dist_calc(dist = "euclidean") %>%
   ord_calc(method = "PCoA") %>%
-  ord_plot(alpha = 0.6, size = 2, color = "birth_mode") +
+  ord_plot(alpha = 0.6, size = 2, color = "type") +
   theme_classic(12) +
   coord_fixed(0.7) +
   scale_y_reverse()
@@ -97,9 +101,9 @@ fmt %>%
 ```{r}
 fmt %>%
   tax_filter(min_prevalence = 2.5 / 100, verbose = FALSE) %>%
-  tax_transform(rank = "genus", trans = "clr", zero_replace = "halfmin") %>%
+  tax_transform(rank = "family", trans = "clr", zero_replace = "halfmin") %>%
   ord_calc(method = "PCA") %>%
-  ord_plot(alpha = 0.6, size = 2, color = "birth_mode") +
+  ord_plot(alpha = 0.6, size = 2, color = "type") +
   theme_classic(12) +
   coord_fixed(0.7)
 ```
@@ -112,11 +116,11 @@ That means we know how much each taxon contributes to each PC axis, and we can p
 ```{r}
 pca <- fmt %>%
   tax_filter(min_prevalence = 2.5 / 100, verbose = FALSE) %>%
-  tax_transform(rank = "genus", trans = "clr", zero_replace = "halfmin") %>%
+  tax_transform(rank = "family", trans = "clr", zero_replace = "halfmin") %>%
   ord_calc(method = "PCA") %>%
   ord_plot(
-    alpha = 0.6, size = 2, color = "birth_mode",
-    plot_taxa = 1:6, tax_vec_length = 0.275,
+    alpha = 0.6, size = 3, color = "type", shape = "ssx_resolved",
+    plot_taxa = 1:4, tax_vec_length = 0.3,
     tax_lab_style = tax_lab_style(
       type = "text", max_angle = 90, aspect_ratio = 0.7,
       size = 3, fontface = "bold"
@@ -133,14 +137,13 @@ Cautiously.
 There are caveats and nuance to the interpretation of these plots, which are called PCA bi-plots, and you can read more about here: <https://sites.google.com/site/mb3gustame/indirect-gradient-analysis/pca>
 
 The relative length and direction of an arrow indicates how much that taxon contributes to the variation on each visible PC axis, e.g.
-Variation in Enterococcus contributes quite a lot to variation along the PC2 axis.
+Variation in Lacnospiracae contributes to variation along the PC1 axis.
 
 This allows you to infer that samples positioned at the bottom of the plot will tend to have higher relative abundance of Enterococcus than samples at the top of the plot.
 
-Interestingly, samples on the right of the plot (which tend to be vaginally-delivered infants) seem to have relatively more Bifidobacterium, Bacteroides and Escherichia, whilst the C-section born infants have relatively more Veillonella.
+Interestingly, samples on the right of the plot (which tend to be donors) seem to have relatively more Lacnospiracae, whilst the recipients have relatively more Morganellacae, Enterobacteracae, and Acidaminococcacae. 
 
-
-*(Side note, Phocaeicola were considered part of Bacteroides until this year!)*
+In past studies, "the gut microbiota of people suffering from CDI showed reductions in the abundances of Lachnospiraceae, Ruminococcaceae, Blautia spp., Prevotella spp., Dialister spp., Bifidobacterium spp., Roseburia spp., Anaerostipes spp., Faecalibacterium spp. and Coprococcus spp., in comparison with healthy people. Furthermore, increases in the abundances of Enterococcaceae and Enterococcus were associated with C. difficile infection." doi: 10.3390/pathogens11070781 So, these data make sense.
 
 You might have already noticed this pattern, when exploring and making barplots interactively with `ord_explore` earlier.
 
@@ -154,9 +157,9 @@ iris <- fmt %>%
   tax_transform(rank = "genus", trans = "clr", zero_replace = "halfmin") %>%
   ord_calc(method = "PCA") %>%
   ord_plot_iris(
-    tax_level = "genus", n_taxa = 12, other = "Other",
-    anno_colour = "birth_mode", 
-    anno_colour_style = list(alpha = 0.6, size = 0.6, show.legend = FALSE)
+    tax_level = "genus", n_taxa = 10, other = "Other",
+    anno_colour = "type",
+    anno_colour_style = list(alpha = 0.6, size = 1.0, show.legend = FALSE)
   )
 iris
 ```
@@ -167,13 +170,13 @@ patchwork::wrap_plots(pca, iris, nrow = 1, guides = "collect")
 
 # Taxon stats
 
-From the PCA loadings and barplots above, we have some strong suspicions about which taxa have a higher relative abundance in vaginally delivered infants than in c-section delivered infants, and vice versa, but we can also statistically test this.
+From the PCA loadings and barplots above, we have some strong suspicions about which taxa have a higher relative abundance in donors than in recipients, and vice versa, but we can also statistically test this.
 This is often called "differential abundance" testing, in the style of "differential expression" testing from the transcriptomics field.
 
 ```{r}
 fmt %>%
   comp_barplot(
-    tax_level = "genus", n_taxa = 12, facet_by = "birth_mode",
+    tax_level = "genus", n_taxa = 10, facet_by = "type",
     label = NULL, bar_outline_colour = NA
   ) +
   coord_flip() +
@@ -191,7 +194,7 @@ bacteroidesRegression1 <- fmt %>%
   tax_model(
     type = "lm", rank = "genus",
     trans = "log2", trans_args = list(zero_replace = "halfmin"),
-    taxa = "Bacteroides", variables = "birth_mode",
+    taxa = "Bacteroides", variables = "type",
     return_psx = FALSE
   ) %>%
   pluck(1)
@@ -212,8 +215,8 @@ broom::tidy(bacteroidesRegression1, conf.int = TRUE)
 
 Starting from a dataframe like the one produced by the code below, plot:
 
-1.  Easy: The percentage prevalence of Bacteroides in each birth_mode group
-2.  Medium: The distribution of relative abundance of Bacteroides in each birth_mode group, omitting zeros, on a log2 scale
+1.  Easy: The percentage prevalence of Bacteroides in each donor/recipient group
+2.  Medium: The distribution of relative abundance of Bacteroides in each donor/recipient group, omitting zeros, on a log2 scale
 3.  Hard: Do task 1 or 2 for for several taxa in one plot - (hint: `pivot_longer`)
 
 ``` r
@@ -233,10 +236,8 @@ You'll see this will make our subsequent plots easier to interpret later.
 ```{r}
 fmt <- fmt %>%
   ps_mutate(
-    C_section = if_else(birth_mode == "c_section", true = 1, false = 0),
-    Female = if_else(sex == "female", true = 1, false = 0),
-    Birth_weight_Z = scale(birth_weight, center = TRUE, scale = TRUE),
-    Reads_Z = scale(number_reads, center = TRUE, scale = TRUE)
+    Recipient = if_else(type == "recipient", true = 1, false = 0),
+    Resolved = if_else(ssx_resolved == "Y", true = 1, false = 0)
   )
 ```
 
@@ -246,130 +247,15 @@ bacteroidesRegression2 <- fmt %>%
   tax_model(
     type = "lm", rank = "genus",
     trans = "log2", trans_args = list(zero_replace = "halfmin"),
-    taxa = "Bacteroides", variables = c("C_section", "Female", "Birth_weight_Z", "Reads_Z"),
+    taxa = "Bacteroides", variables = c("type", "ssx_resolved"),
     return_psx = FALSE
   ) %>%
   pluck(1)
 
 # looking at the regression results
-summary(bacteroidesRegression1)
-confint(bacteroidesRegression1)
-broom::tidy(bacteroidesRegression1, conf.int = TRUE)
-```
-
-### Many methods
-
-This method is what MaAsLin2 does by default (except they call the compositional transformation "Total Sum Scaling (TSS)"). This is quite a straightforward method, so we will stick with this for today, but many statistical methods have been developed for differential abundance analyses.
-
-Microbiome abundance data are quite awkward, statistically speaking, due to their sparseness and compositionality.
-Each successive method claims to handle some aspect of this awkwardness "better" than previous methods.
-
-The aim is to have a method with adequate power to detect true associations, whilst controlling the type 1 error rate, the "false positive" reporting of associations that are not "truly" present.
-
-Results are surprisingly inconsistent across the different methods, as demonstrated this year in a [fascinating analysis by Jacob Nearing and colleagues](https://www.nature.com/articles/s41467-022-28034-z).
-
-**What to do?**
-
--   Filter out the noise & interpret results with caution! use multiple testing corrections
--   Remember it's all relative (abundance)
--   Try multiple methods and/or use same method as previous study if replicating 
-    - Avoid Lefse and edgeR? 
-    - Beware: Not all methods allow covariate adjustment & few allow random effects (for time-series)
-
-## Model all the taxa!
-
-We're not normally interested in just one taxon!
-And often it's also hard to decide which taxonomic rank we are most interested in modelling!
-
-
-*Lower ranks like species or ASVs give better resolution but also more sparsity and classification uncertainty...* *Higher ranks e.g. classes, could also be more powerful if you think most taxa within that class will follow a similar pattern.*
-
-
-So now we will fit a similar model for almost\* every taxon at every rank we have available, from phylum down to species.
-
-![](./images/model-all-the-taxa.jpg){width="50%"}
-
-
-\*We'll actually filter out species with a prevalence of less than 10%.
-
-```{r}
-# The code for `taxatree_models` is quite similar to tax_model. 
-# However, you might need to run `tax_prepend_ranks` to ensure that each taxon at each rank is always unique. 
-shaoModels <- fmt %>%
-  tax_prepend_ranks() %>%
-  tax_transform("compositional", rank = "species", keep_counts = TRUE) %>%
-  tax_filter(min_prevalence = 0.1, undetected = 0, use_counts = TRUE) %>%
-  taxatree_models(
-    type = lm, trans = "log2", trans_args = list(zero_replace = "halfmin"),
-    ranks = c("phylum", "class", "order", "family", "genus", "species"),
-    variables = c("C_section", "Female", "Birth_weight_Z", "Reads_Z")
-  )
-shaoModels
-```
-
-*Why filter the taxa? It's less likely that we are interested in rare taxa, and models of rare taxon abundances are more likely to be unreliable. Reducing the the number of taxa modelled also makes the process faster and makes visualizing the results easier!*
-
-### Getting stats from the models
-
-Next we will get a data.frame containing the regression coefficient estimates, test statistics and corresponding p values from all these regression models.
-
-```{r}
-shaoStats <- taxatree_models2stats(shaoModels)
-shaoStats
-shaoStats %>% taxatree_stats_get()
-```
-
-### Adjusting p values
-
-As we have performed a lot of statistical tests here, it is quite possible that could we find some significant p-values by chance alone.
-
-So we should correct for multiple testing / control the false discovery rate or family-wise error rate.
-
-Instead of applying these adjustment methods across all 86 taxa models at all ranks, the default behaviour is to control the family-wise error rate per taxonomic rank.
-
-```{r}
-shaoStats <- shaoStats %>% taxatree_stats_p_adjust(method = "BH", grouping = "rank")
-# notice the new variable
-shaoStats %>% taxatree_stats_get()
-```
-
-## Plot all the taxatree_stats!
-
-`taxatree_plots()` allows you to plot statistics (e.g. point estimates and significance) from all of the taxa models onto a tree layout.
-The taxon models are organised by rank, radiating out from the central root node from e.g.
-Phyla around the center to Species in the outermost ring.
-
-`taxatree_plots()` itself returns a list of plots, which you can arrange into one figure with the [`patchwork`](https://patchwork.data-imaginist.com/) package for example (and/or [`cowplot`](https://wilkelab.org/cowplot/articles/plot_grid.html)).
-
-```{r, fig.width=6, fig.height=5}
-shaoStats %>% 
-  taxatree_plots(node_size_range = c(1, 3), sig_stat = 'p.adj.BH.rank') %>% 
-  patchwork::wrap_plots(ncol = 2, guides = "collect")
-```
-
-### Taxatree Key
-
-But how do we know which taxa are which nodes?
-We can create a labelled grey tree with `taxatree_plotkey()`.
-This labels only some of the taxa based on certain conditions that we specify.
-
-```{r fig.height=4, fig.width=4.5, warning=FALSE}
-set.seed(123) # label position 
-key <- shaoStats %>% 
-  taxatree_plotkey(
-    taxon_renamer = function(x) stringr::str_remove(x, "[pfg]: "),
-    # conditions below, for filtering taxa to be labelled
-    rank == "phylum" | rank == "genus" & prevalence > 0.2
-    # all phyla are labelled, and all genera with a prevalence of over 0.2
-  ) 
-key
-```
-
-You can do more with these trees to customise them to your liking.
-See an extended tutorial [here on the microViz website](https://david-barnett.github.io/microViz/articles/web-only/modelling-taxa.html#plot-all-the-taxatree_stats): including how to directly label taxa on the colored plots, change the layout and style of the trees, and even how to use a different regression modelling approach.
-
-```{r}
-# try it out!
+summary(bacteroidesRegression2)
+confint(bacteroidesRegression2)
+broom::tidy(bacteroidesRegression2, conf.int = TRUE)
 ```
 
 
