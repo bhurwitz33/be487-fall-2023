@@ -16,16 +16,7 @@ output:
 
 ```{r setup}
 knitr::opts_chunk$set(echo = TRUE, fig.width = 6, fig.height = 4, dpi = 120)
-knitr::opts_knit$set(root.dir = '/xdisk/bhurwitz/bh_class/YOUR_NETID/exercises/19_pca_taxon_stats') # Change your NETID
-```
-
-```{bash, engine.opts='-l'}
-# Let's make it so R can find the fonts we need
-export FONTCONFIG_PATH=/etc/fonts
-```
-
-```{r}
-dyn.load("/opt/ohpc/pub/apps/libpng/1.6.37/lib/libpng16.so.16")
+knitr::opts_knit$set(root.dir = '/xdisk/bhurwitz/bh_class/bonnie/exercises/19_pca_taxon_stats') # Change your NETID
 ```
 
 ```{r message=FALSE}

@@ -54,14 +54,32 @@ We can make an ordination.
 Ordination refers to the process of ordering things (in our case: samples), so that similar things (samples) are closer to each other, 
 and dissimilar things (samples) are further away.
 
-### PCoA
+### PCoA Principal Co-ordinates Analysis is one kind of ordination.
 
-Principal Co-ordinates Analysis is one kind of ordination.
+Principal Coordinates Analysis (PCoA), also known as Classical Multidimensional Scaling (MDS), 
+is a method used for visualizing the patterns of similarities or dissimilarities in multivariate data. 
+It is particularly applied to distance or dissimilarity matrices derived from ecological, biological, or other multivariate datasets.
 
-Takes distance matrix and finds new dimensions (a co-ordinate system if you like).
-The new dimensions are created with the aim to preserve the original distances between samples, 
-but to capture the majority of this distance information in the first few dimensions.
-We like this because it makes it easier to visualize the patterns in your data (in 2D or 3D).
+Here are the key aspects of Principal Coordinates Analysis:
+
+Input Data: PCoA takes a distance matrix as input, where each element represents the dissimilarity or distance between pairs of samples. 
+These distances could be based on various metrics, such as Euclidean distance, Bray-Curtis dissimilarity, or Jaccard distance.
+
+Dimensionality Reduction: The main objective of PCoA is to reduce the dimensionality of the data while preserving the pairwise 
+distances between samples as much as possible. It transforms the original dissimilarity matrix into a set of orthogonal axes or dimensions, 
+capturing the maximum variance in the data.
+
+Visualization: PCoA is especially useful for visualizing high-dimensional data in two or three dimensions. 
+By plotting samples in the reduced-dimensional space, researchers can gain insights into the underlying patterns and relationships between samples.
+
+Preservation of Distances: The new dimensions (coordinates) are chosen in a way that retains the original pairwise distances between samples.
+This makes it easier to interpret the spatial relationships between samples in the reduced-dimensional space.
+
+Interpretation: PCoA results are often interpreted in the context of ecological or biological studies to understand the similarities 
+or dissimilarities between different samples, such as microbial communities, species compositions, or genetic distances.
+
+In summary, Principal Coordinates Analysis is a technique that aids in visualizing and interpreting patterns of dissimilarity in 
+multivariate datasets, making it a valuable tool in fields such as ecology, biology, and genetics.
 
 There is helpful info about ordination methods including PCoA on
 the GUide to STatistical Analysis in Microbial Ecology (GUSTA ME) website.
@@ -158,13 +176,31 @@ shao19 %>%
   ord_explore()
 ```
 
-## PERMANOVA:
+## PERMANOVA: Permutational multivariate analysis of variance.
 
-Permutational multivariate analysis of variance.
+PERMANOVA, which stands for Permutational Multivariate Analysis of Variance, is a statistical method used 
+for analyzing multivariate data to assess differences among group means. 
+It is an extension of traditional ANOVA (Analysis of Variance) that accommodates multiple dependent variables.
+
+Key features of PERMANOVA include:
 
 -   ANOVA - analysis of variance (statistical modelling approach)
 -   Multivariate - more than one dependent variable (multiple taxa!)
 -   Permutational - statistical significance estimates obtained by shuffling the data many times
+
+Multivariate Analysis: It is designed to handle situations where there are multiple dependent variables, 
+making it suitable for complex datasets with correlated responses.
+
+Permutational Approach: Instead of relying on assumptions about the distribution of data, PERMANOVA generates statistical 
+significance estimates by repeatedly shuffling the data and comparing the observed test statistic with the distribution
+of values obtained through permutations.
+
+Application to Ecological and Biological Studies: PERMANOVA is commonly used in ecology, biology, and other fields where 
+researchers are interested in understanding differences among groups in multivariate data, such as community composition or diversity.
+
+The primary goal of PERMANOVA is to determine whether there are statistically significant differences in the distribution of multivariate
+data among different groups or treatments, considering both location (means) and dispersion. It provides a robust method for testing hypotheses
+about group differences in the presence of non-normality or heteroscedasticity in the data.
 
 For more details. See this excellent book chapter by Marti Anderson on PERMANOVA: <https://onlinelibrary.wiley.com/doi/full/10.1002/9781118445112.stat07841>
 
