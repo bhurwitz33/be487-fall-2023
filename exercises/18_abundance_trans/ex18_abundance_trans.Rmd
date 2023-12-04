@@ -181,6 +181,33 @@ shao4_sorted %>%
 **Overview of CoDa problem.**
 </summary>
 
+Compositional Data Analysis (CoDA) refers to a statistical framework designed for the analysis of data that represents
+parts of a whole, where the information is given in the form of relative proportions or percentages. This type of data 
+arises when the variables under consideration sum to a constant total. Common examples of compositional data include 
+proportions of different species in a biological community.
+
+The CoDA problem arises because standard statistical methods are not always appropriate for analyzing compositional data. 
+Traditional statistical methods may assume that the data are unconstrained, but compositional data inherently have a constrained 
+structure—changes in the proportion of one part necessarily impact the proportions of the other parts.
+
+Some key issues associated with compositional data that the CoDA framework addresses include:
+
+Closure Axiom: Compositional data sum to a constant, and this closure constraint needs to be considered in statistical analyses. 
+The values are not independent, as changes in one part affect the others.
+
+Multicollinearity: The compositional nature of the data leads to high multicollinearity between parts, which can cause problems 
+in traditional regression analyses.
+
+Zero Components: Compositional data often contain zeros, which can be problematic for certain statistical methods.
+
+Choice of Coordinates: The choice of coordinates used to represent compositional data can affect the interpretation of results.
+
+CoDA provides specialized techniques and methodologies to address these challenges and to enable meaningful statistical analyses 
+of compositional data. This includes working in a log-ratio space, using transformations to handle zeros appropriately, and 
+employing specific statistical models suitable for compositional data.
+
+------
+
 The sequencing data gives us relative abundances, not absolute abundances.
 The total number of reads sequenced per sample is an arbitrary total.
 
@@ -203,6 +230,7 @@ sample by this geometric mean. Finally you take the natural log of this ratio.
 
 For more details, check out Gloor 2017 (and maybe work by Thomas Quinn).
 [Microbiome Datasets are Compositional: and this is not optional](https://doi.org/10.3389/fmicb.2017.02224)
+
 
 </details>
 
