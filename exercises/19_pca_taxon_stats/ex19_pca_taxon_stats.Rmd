@@ -270,7 +270,9 @@ shaoModels <- shao4 %>%
 shaoModels
 ```
 
-*Why filter the taxa? It's less likely that we are interested in rare taxa, and models of rare taxon abundances are more likely to be unreliable. Reducing the the number of taxa modelled also makes the process faster and makes visualizing the results easier!*
+*Why filter the taxa? It's less likely that we are interested in rare taxa, and models of rare taxon abundances are more 
+likely to be unreliable. Reducing the the number of taxa modelled also makes the process faster and 
+makes visualizing the results easier!*
 
 ### Getting stats from the models
 
